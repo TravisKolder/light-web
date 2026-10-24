@@ -29,3 +29,25 @@ tooling targets 5.x).
   local-only (Supabase CLI) for now?
 
 **Next:** Backlog item 1 — ESLint + `npm run lint`.
+
+## 2026-10-24 — Run 2: ESLint (backlog item 1)
+
+**Built:** ESLint 9 flat config using `eslint-config-next` (core-web-vitals
++ typescript presets) and an `npm run lint` script (`eslint .`). Next.js 16
+no longer ships `next lint`, so the script calls ESLint directly.
+
+**Files:** `eslint.config.mjs` (new), `package.json`, `package-lock.json`,
+`BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** 1 new ~10-line file, 3 lines in `package.json`, plus lockfile.
+
+**Checks:** `npm run lint` (0 findings), `npm run typecheck`, and
+`npm run build` all pass.
+
+**Problems:** None.
+
+**Questions for Travis:** None new (Run 1's questions on backlog order and
+Supabase project still stand).
+
+**Next:** Backlog item 2 — `docs/data-model.md` (entities, private fields,
+claim/document/verified rule).

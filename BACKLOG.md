@@ -4,7 +4,7 @@ Ordered. Each item should fit one small nightly session. Take the first
 unchecked item. Split anything that turns out larger.
 
 - [x] 0. Scaffold Next.js + TypeScript app, Supabase client via env vars, README, BACKLOG, BUILD_LOG.
-- [ ] 1. Add ESLint (flat config, `eslint-config-next`) with an `npm run lint` script; fix any findings.
+- [x] 1. Add ESLint (flat config, `eslint-config-next`) with an `npm run lint` script; fix any findings.
 - [ ] 2. Write `docs/data-model.md`: entities, fields, which fields are private, and the claim/document/verified status rule.
 - [ ] 3. Migration 001: `organizations`, `people` (private by default), `projects` (need, objectives, status), `project_leaders` link table.
 - [ ] 4. Migration 002: `assertions` table — generic statement attached to a project with `status` enum (`claim`, `documented`, `verified`), plus `documents` and `verifications` tables linked to assertions (verifier, date, method, finding).
