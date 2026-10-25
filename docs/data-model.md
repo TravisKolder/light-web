@@ -1,0 +1,160 @@
+# Project Passport — Data Model
+
+Design reference for the Supabase migrations (backlog items 3–8). Based on
+sections 4, 6 and 7 of `light-web-proposal-john-gross.txt`.
+
+Money in this model is **recorded only** — nothing here moves, collects, or
+solicits funds. There are no token, wallet, or payment-processing fields.
+
+## 1. The three-state rule (claim / documented / verified)
+
+Every factual statement a project makes ("the roof was completed", "we
+received $4,000 in March", "Supplier X delivered 200 bags of cement") is an
+**assertion**. Each assertion has exactly one status:
+
+| Status       | Meaning                                                    | Requires |
+|--------------|------------------------------------------------------------|----------|
+| `claim`      | Someone said it. Nothing attached yet.                     | statement text + who asserted it |
+| `documented` | At least one supporting document is attached.              | ≥ 1 `documents` row |
+| `verified`   | An independent party checked it and confirmed it.          | ≥ 1 `verifications` row with `finding = 'confirmed'` by a verifier independent of the project |
+
+Rules:
+
+- The three states are never merged. A document is not a verification; a
+  verification always names who checked, when, and how.
+- Status is stored on `assertions.status` but **enforced by a trigger**: it
+  cannot be set to `documented` without a document, or to `verified` without
+  a confirmed independent verification. Removing the supporting row drops the
+  status back down.
+- A verification with `finding = 'not_confirmed'` or `'disputed'` does not
+  raise status; the assertion is shown as **needs review** (never as "false"
+  or "fraud").
+- "Independent" means the verifier is not a leader or staff member of the
+  responsible organization for that project. Recorded as
+  `verifications.verifier_relationship` and checked by the trigger.
+- Every other record that states a fact (budget line, funds received,
+  purchase, payment, evidence item, outcome, Kingdom Return entry) links to
+  an assertion via `assertion_id`, so the UI can show a status badge on it.
+
+## 2. Entities
+
+`P` = private by default (never in public views). Everything else is public
+only if the parent project has `visibility = 'public'`.
+
+### Core (migration 001)
+
+**organizations** — responsible ministry or partner.
+`id, name, country, region, description, website, created_at`
+P: `registration_number, contact_email, contact_phone, address_line`
+
+**people** — anyone involved (leaders, workers, verifiers, beneficiaries).
+Private by default.
+`id, display_name, role_title, public_profile (bool, default false), created_at`
+P: `full_name, email, phone, address, notes`
+Only `display_name` + `role_title` appear publicly, and only when
+`public_profile = true`. Beneficiaries are never given a public profile.
+
+**projects** — the passport itself.
+`id, slug, title, organization_id, country, region, need_statement,
+objectives (text[]), status ('planned' | 'active' | 'completed' | 'paused'),
+start_date, end_date, currency, visibility ('private' | 'public'), created_at`
+
+**project_leaders** — link table.
+`project_id, person_id, role ('local_lead' | 'treasurer' | 'board' | ...), since`
+
+### Assertions and proof (migration 002)
+
+**assertions** — `id, project_id, statement, asserted_by (person_id),
+asserted_on, status, created_at`
+
+**documents** — supporting material for an assertion.
+`id, assertion_id, kind ('receipt' | 'invoice' | 'photo' | 'report' |
+'contract' | 'bank_statement' | 'other'), title, storage_path, issued_on,
+uploaded_by (person_id), created_at`
+P: `storage_path` for any document marked `contains_personal_data = true`
+(e.g. bank statements, IDs). Public views show the document's kind/title only.
+
+**verifications** — `id, assertion_id, verifier_id (person_id),
+verifier_relationship ('independent' | 'affiliated'), verified_on,
+method ('site_visit' | 'document_review' | 'third_party_audit' |
+'photo_geolocation' | 'interview' | 'other'), finding ('confirmed' |
+'not_confirmed' | 'disputed'), notes, created_at`
+
+### Budget and ledger (migration 003)
+
+**budget_lines** — `id, project_id, category, description, approved_amount,
+approved_on, assertion_id`
+
+**funds_received** — `id, project_id, amount, received_on,
+source_category ('individual' | 'church' | 'foundation' | 'local' | 'other'),
+assertion_id`
+P: `donor_name, donor_contact, donor_reference`. Public views show amount,
+date, and source category only — never donor identity.
+
+**suppliers** — `id, name, kind, country, region`
+P: `contact_name, contact_phone, contact_email, bank_details_note`
+
+**purchases** — `id, project_id, budget_line_id, supplier_id, description,
+quantity, unit, amount, purchased_on, assertion_id`
+
+**payments** — `id, purchase_id, amount, paid_on, method ('bank_transfer' |
+'mobile_money' | 'cash' | 'check'), assertion_id`
+P: `reference_number` (transaction IDs).
+
+Budget-vs-actual is computed: spent per line = sum of payments on that line's
+purchases; remaining = approved − spent.
+
+### Delivery and results (migration 004)
+
+**evidence_items** — physical-world proof of delivery.
+`id, project_id, assertion_id, kind ('photo' | 'video' | 'receipt' |
+'site_report' | 'other'), caption, captured_on, location_label, storage_path`
+P: `gps_lat, gps_lng` (precise location can endanger people; public shows
+`location_label` only), and any photo flagged `shows_identifiable_people`.
+
+**progress_reports** — `id, project_id, period_start, period_end, summary,
+setbacks, author_id, assertion_id`
+
+**outcomes** — `id, project_id, description, measure, target, achieved,
+assertion_id`
+
+**lessons** — `id, project_id, lesson, recorded_on`
+
+**sustainability_plans** — `id, project_id, plan, funding_after_grant,
+local_owner (text), review_on`
+
+### Kingdom Return (migration 005)
+
+**kingdom_return_entries** — `id, project_id, dimension ('multiplication' |
+'subtraction' | 'stewardship' | 'sustainability' | 'restoration'),
+narrative, recorded_on, author_id`
+**kingdom_return_links** — `entry_id, assertion_id | evidence_item_id`
+
+There is deliberately **no score, rating, or numeric column**. Each dimension
+is narrative plus linked evidence, per section 6: fruit is documented, not
+reduced to a number.
+
+| Dimension      | Question it answers |
+|----------------|---------------------|
+| Multiplication | What new capacity, opportunity, or lasting good was created? |
+| Subtraction    | What suffering, waste, dependency, or recurring problem was reduced? |
+| Stewardship    | Were resources used faithfully and as promised? |
+| Sustainability | Can the work continue after the original funding ends? |
+| Restoration    | When mistakes or failures occurred, were they acknowledged and corrected? |
+
+## 3. Privacy model (detail in backlog item 8)
+
+- Base tables have RLS on; `anon` has **no** direct select on any base table.
+- Public reads go through `public_*` views (`public_projects`,
+  `public_ledger`, `public_evidence`, …) that select only non-P columns and
+  only rows whose project has `visibility = 'public'`.
+- Donor, worker, and beneficiary personal details never appear in any
+  `public_*` view. Item 17 adds an automated check for this.
+- Authenticated editors are scoped to their own organization's projects.
+
+## 4. Review flags (backlog item 19)
+
+Consistency checks produce **needs review** flags, not verdicts — e.g. spent
+> approved, payment with no receipt document, claim with no document after
+N days, verification by an affiliated person. Any future AI assistance only
+adds flags for a human to look at.

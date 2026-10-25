@@ -51,3 +51,34 @@ Supabase project still stand).
 
 **Next:** Backlog item 2 — `docs/data-model.md` (entities, private fields,
 claim/document/verified rule).
+
+## 2026-10-25 — Run 3: Data model doc (backlog item 2)
+
+**Built:** `docs/data-model.md` — the design reference for migrations
+001–005 and RLS. Covers the claim / documented / verified rule (status
+stored on `assertions` but enforced by trigger; a verification must be by an
+independent verifier with `finding = 'confirmed'`; not-confirmed/disputed
+findings show as "needs review"), every entity and its fields, which fields
+are private (donor identity, contact details, payment reference numbers,
+precise GPS, personal-data documents), the `public_*` view approach for
+anonymous reads, and Kingdom Return as narrative + linked evidence with no
+score column.
+
+**Files:** `docs/data-model.md` (new), `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** 1 new doc, ~170 lines. No code changes.
+
+**Checks:** `npm run lint`, `npm run typecheck`, `npm run build` pass.
+
+**Problems:** None.
+
+**Questions for Travis:**
+- "Independent" verifier is defined as not a leader/staff of the
+  responsible organization. Is that strict enough, or should a verifier
+  also need no financial tie to the project (e.g. not a major donor)?
+- Should the passport track a single currency per project (current design)
+  or record each transaction's original currency plus an exchange rate?
+  (Run 1's questions on backlog order and Supabase project still stand.)
+
+**Next:** Backlog item 3 — Migration 001 (`organizations`, `people`,
+`projects`, `project_leaders`).
