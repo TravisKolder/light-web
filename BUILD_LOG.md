@@ -82,3 +82,26 @@ score column.
 
 **Next:** Backlog item 3 — Migration 001 (`organizations`, `people`,
 `projects`, `project_leaders`).
+
+## 2026-10-25 — Decisions from Travis (data model update)
+
+**Decisions:**
+- Independent verifiers must have **nothing to do with the project at
+  all**: not org leaders, staff, or board members, donors, suppliers, payees,
+  asserters/uploaders, or beneficiaries.
+- Money keeps its **original currency plus an exchange rate** to the
+  project's base currency.
+
+**Changed:** `docs/data-model.md`. The `verifications` insert trigger now
+rejects any verifier linked to the project anywhere in its records. A
+required `independence_declaration` covers ties the database can't see, and
+a tie found later flags the verification "needs review". Removed the
+"affiliated" verification type. Added `donor_person_id` and
+`contact_person_id` (private) so the trigger can check donor and supplier
+links. Every money row now has `amount, currency, exchange_rate, rate_date,
+rate_source, amount_base`. `projects.currency` is now `base_currency`.
+Added a review flag for outlier exchange rates.
+
+**Size:** ~40 lines in one doc. No code changes.
+
+**Next:** Backlog item 3 — Migration 001.

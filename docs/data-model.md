@@ -29,9 +29,21 @@ Rules:
 - A verification with `finding = 'not_confirmed'` or `'disputed'` does not
   raise status; the assertion is shown as **needs review** (never as "false"
   or "fraud").
-- "Independent" means the verifier is not a leader or staff member of the
-  responsible organization for that project. Recorded as
-  `verifications.verifier_relationship` and checked by the trigger.
+- "Independent" means the verifier has **nothing to do with the project at
+  all** (decided by Travis, 2026-10-25). They may not be a leader, staff
+  member, or board member of the responsible organization; a donor to the
+  project; a supplier or supplier contact; anyone paid by the project; the
+  person who made the assertion or uploaded its documents; or a beneficiary.
+  - The insert trigger on `verifications` **rejects** any verifier who
+    appears anywhere in that project's records (`project_leaders`,
+    `assertions.asserted_by`, `documents.uploaded_by`,
+    `funds_received.donor_person_id`, `suppliers.contact_person_id`,
+    `progress_reports.author_id`, `kingdom_return_entries.author_id`).
+  - Ties the database can't see (family, friendship, employment elsewhere)
+    are covered by a required `independence_declaration` the verifier
+    attests to on each verification.
+  - If a tie is discovered later, the verification is flagged **needs
+    review** and stops counting toward `verified`.
 - Every other record that states a fact (budget line, funds received,
   purchase, payment, evidence item, outcome, Kingdom Return entry) links to
   an assertion via `assertion_id`, so the UI can show a status badge on it.
@@ -57,7 +69,8 @@ Only `display_name` + `role_title` appear publicly, and only when
 **projects** — the passport itself.
 `id, slug, title, organization_id, country, region, need_statement,
 objectives (text[]), status ('planned' | 'active' | 'completed' | 'paused'),
-start_date, end_date, currency, visibility ('private' | 'public'), created_at`
+start_date, end_date, base_currency (ISO 4217, reporting currency),
+visibility ('private' | 'public'), created_at`
 
 **project_leaders** — link table.
 `project_id, person_id, role ('local_lead' | 'treasurer' | 'board' | ...), since`
@@ -75,34 +88,53 @@ P: `storage_path` for any document marked `contains_personal_data = true`
 (e.g. bank statements, IDs). Public views show the document's kind/title only.
 
 **verifications** — `id, assertion_id, verifier_id (person_id),
-verifier_relationship ('independent' | 'affiliated'), verified_on,
+independence_declaration (text, required), independence_declared_on,
+verified_on,
 method ('site_visit' | 'document_review' | 'third_party_audit' |
 'photo_geolocation' | 'interview' | 'other'), finding ('confirmed' |
 'not_confirmed' | 'disputed'), notes, created_at`
+There is no "affiliated" verification type: a connected person's review is
+not a verification. Their input can be recorded as a document instead.
 
 ### Budget and ledger (migration 003)
 
+**Currency rule** (decided by Travis, 2026-10-25): every money row keeps
+the amount **in its original currency** plus the exchange rate used to
+convert it to the project's `base_currency`. Each money row has:
+`amount, currency (ISO 4217), exchange_rate (base units per 1 original
+unit), rate_date, rate_source ('bank' | 'central_bank' | 'mobile_money' |
+'manual' | ...)`, and a generated `amount_base = amount * exchange_rate`.
+When `currency = base_currency`, `exchange_rate = 1`. The original amount is
+never overwritten; totals and budget-vs-actual use `amount_base`. The rate
+and its source are part of the record so a reviewer can check it.
+
 **budget_lines** — `id, project_id, category, description, approved_amount,
+currency, exchange_rate, rate_date, rate_source, approved_amount_base,
 approved_on, assertion_id`
 
-**funds_received** — `id, project_id, amount, received_on,
+**funds_received** — `id, project_id, amount, currency, exchange_rate,
+rate_date, rate_source, amount_base, received_on,
 source_category ('individual' | 'church' | 'foundation' | 'local' | 'other'),
 assertion_id`
-P: `donor_name, donor_contact, donor_reference`. Public views show amount,
+P: `donor_person_id, donor_name, donor_contact, donor_reference`. Public views show amount,
 date, and source category only — never donor identity.
 
 **suppliers** — `id, name, kind, country, region`
-P: `contact_name, contact_phone, contact_email, bank_details_note`
+P: `contact_person_id, contact_name, contact_phone, contact_email,
+bank_details_note`
 
 **purchases** — `id, project_id, budget_line_id, supplier_id, description,
-quantity, unit, amount, purchased_on, assertion_id`
+quantity, unit, amount, currency, exchange_rate, rate_date, rate_source,
+amount_base, purchased_on, assertion_id`
 
-**payments** — `id, purchase_id, amount, paid_on, method ('bank_transfer' |
+**payments** — `id, purchase_id, amount, currency, exchange_rate,
+rate_date, rate_source, amount_base, paid_on, method ('bank_transfer' |
 'mobile_money' | 'cash' | 'check'), assertion_id`
 P: `reference_number` (transaction IDs).
 
 Budget-vs-actual is computed: spent per line = sum of payments on that line's
-purchases; remaining = approved − spent.
+purchases (`amount_base`); remaining = approved − spent, all in
+`base_currency`. Views also show original amounts and rates.
 
 ### Delivery and results (migration 004)
 
@@ -156,5 +188,6 @@ reduced to a number.
 
 Consistency checks produce **needs review** flags, not verdicts — e.g. spent
 > approved, payment with no receipt document, claim with no document after
-N days, verification by an affiliated person. Any future AI assistance only
+N days, a verifier later found to have a tie to the project, an exchange
+rate far from other rates for the same currency and date range. Any future AI assistance only
 adds flags for a human to look at.
