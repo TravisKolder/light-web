@@ -61,10 +61,13 @@ P: `registration_number, contact_email, contact_phone, address_line`
 
 **people** — anyone involved (leaders, workers, verifiers, beneficiaries).
 Private by default.
-`id, display_name, role_title, public_profile (bool, default false), created_at`
+`id, display_name, role_title, public_profile (bool, default false),
+is_beneficiary (bool, default false), created_at`
 P: `full_name, email, phone, address, notes`
 Only `display_name` + `role_title` appear publicly, and only when
-`public_profile = true`. Beneficiaries are never given a public profile.
+`public_profile = true`. Beneficiaries are never given a public profile
+(enforced by a check constraint on `is_beneficiary`), and cannot be project
+leaders (trigger).
 
 **projects** — the passport itself.
 `id, slug, title, organization_id, country, region, need_statement,
@@ -73,7 +76,7 @@ start_date, end_date, base_currency (ISO 4217, reporting currency),
 visibility ('private' | 'public'), created_at`
 
 **project_leaders** — link table.
-`project_id, person_id, role ('local_lead' | 'treasurer' | 'board' | ...), since`
+`project_id, person_id, role ('local_lead' | 'treasurer' | 'board' | 'staff' | 'other'), since`
 
 ### Assertions and proof (migration 002)
 

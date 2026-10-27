@@ -105,3 +105,38 @@ Added a review flag for outlier exchange rates.
 **Size:** ~40 lines in one doc. No code changes.
 
 **Next:** Backlog item 3 — Migration 001.
+
+## 2026-10-27 — Run 4: Migration 001 (backlog item 3)
+
+**Built:** `supabase/migrations/20261027000001_core.sql`: `organizations`,
+`people`, `projects`, `project_leaders`.
+- Private columns (org registration/contact/address; people full name,
+  email, phone, address, notes) are commented `PRIVATE` for the item 8
+  `public_*` views.
+- Added `people.is_beneficiary`. A check constraint stops a beneficiary from
+  having a public profile, and a trigger stops a beneficiary from being a
+  project leader.
+- `projects`: enums for status and visibility (default `private`), slug
+  format check, ISO-4217 `base_currency`, end date not before start date.
+- `leader_role` enum: `local_lead`, `treasurer`, `board`, `staff`, `other`.
+- RLS is enabled on all four tables with **no policies yet**, so anon and
+  authenticated users can read nothing until item 8.
+
+**Files:** `supabase/migrations/20261027000001_core.sql` (new),
+`docs/data-model.md` (people + leader roles), `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~130-line SQL file, ~7 lines of doc changes.
+
+**Checks:** Applied the migration to a throwaway local Postgres 16. It
+applied cleanly, and the beneficiary rules and slug check rejected bad rows
+as expected. `npm run lint`, `typecheck`, and `build` pass. Nothing was
+applied to the real Supabase project.
+
+**Problems:** None.
+
+**Questions for Travis:** None new. Run 1's question about which Supabase
+project to use still stands; the migrations haven't been pushed anywhere.
+
+**Next:** Backlog item 4: Migration 002 (`assertions`, `documents`,
+`verifications`, with the status and verifier-independence triggers). It
+may need splitting: the tables in one run, the triggers in the next.
