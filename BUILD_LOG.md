@@ -140,3 +140,39 @@ project to use still stands; the migrations haven't been pushed anywhere.
 **Next:** Backlog item 4: Migration 002 (`assertions`, `documents`,
 `verifications`, with the status and verifier-independence triggers). It
 may need splitting: the tables in one run, the triggers in the next.
+
+## 2026-10-28 — Run 5: Migration 002 tables (backlog item 4a)
+
+**Split:** Item 4 was too big for one night, so it's now 4a (tables) and 4b
+(triggers). Tonight was 4a.
+
+**Built:** `supabase/migrations/20261028000002_assertions.sql`:
+- `assertions`: `status` enum (`claim` / `documented` / `verified`), default
+  `claim`, non-blank statement, cascades from `projects`.
+- `documents`: `kind` enum, `contains_personal_data` flag (its
+  `storage_path` is commented PRIVATE when the flag is set).
+- `verifications`: method and finding enums, required non-blank
+  `independence_declaration`, the declaration can't be dated after the
+  verification, and new `tie_flagged` + `tie_flag_note` columns (a note is
+  required when flagged) so a tie found later can mark it "needs review".
+- RLS enabled, no policies (same as migration 001).
+
+**Files:** `supabase/migrations/20261028000002_assertions.sql` (new),
+`docs/data-model.md` (two field lists updated), `BACKLOG.md` (split + check),
+`BUILD_LOG.md`.
+
+**Size:** ~100-line SQL file, ~5 lines of doc changes.
+
+**Checks:** Applied migrations 001 and 002 to a throwaway local Postgres 16.
+Both applied cleanly. A blank statement, a blank declaration, and a flag with
+no note were each rejected, and a valid verification was accepted. Lint,
+typecheck, and build pass (after `npm ci` in a fresh container). Nothing was applied to the real Supabase
+project.
+
+**Problems:** None.
+
+**Questions for Travis:** None new. Run 1's Supabase-project question still
+stands.
+
+**Next:** Item 4b: the status-sync trigger and the verifier-independence
+trigger.

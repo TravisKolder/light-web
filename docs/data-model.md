@@ -86,7 +86,7 @@ asserted_on, status, created_at`
 **documents** — supporting material for an assertion.
 `id, assertion_id, kind ('receipt' | 'invoice' | 'photo' | 'report' |
 'contract' | 'bank_statement' | 'other'), title, storage_path, issued_on,
-uploaded_by (person_id), created_at`
+uploaded_by (person_id), contains_personal_data (bool, default false), created_at`
 P: `storage_path` for any document marked `contains_personal_data = true`
 (e.g. bank statements, IDs). Public views show the document's kind/title only.
 
@@ -95,7 +95,9 @@ independence_declaration (text, required), independence_declared_on,
 verified_on,
 method ('site_visit' | 'document_review' | 'third_party_audit' |
 'photo_geolocation' | 'interview' | 'other'), finding ('confirmed' |
-'not_confirmed' | 'disputed'), notes, created_at`
+'not_confirmed' | 'disputed'), notes, tie_flagged (bool, default false),
+tie_flag_note (required when flagged; reviewer-facing only), created_at`
+`independence_declared_on` may not be after `verified_on`.
 There is no "affiliated" verification type: a connected person's review is
 not a verification. Their input can be recorded as a document instead.
 
