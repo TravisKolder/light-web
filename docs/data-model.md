@@ -26,6 +26,8 @@ Rules:
   cannot be set to `documented` without a document, or to `verified` without
   a confirmed independent verification. Removing the supporting row drops the
   status back down.
+  (Implemented in `supabase/migrations/20261029000003_assertion_triggers.sql`:
+  any value written to `status` is ignored and re-derived.)
 - A verification with `finding = 'not_confirmed'` or `'disputed'` does not
   raise status; the assertion is shown as **needs review** (never as "false"
   or "fraud").

@@ -176,3 +176,44 @@ stands.
 
 **Next:** Item 4b: the status-sync trigger and the verifier-independence
 trigger.
+
+## 2026-10-29 — Run 6: Assertion status + independence triggers (backlog item 4b)
+
+**Built:** `supabase/migrations/20261029000003_assertion_triggers.sql`:
+- `compute_assertion_status()` derives the status: `verified` if any
+  confirmed, unflagged verification exists; else `documented` if any
+  document exists; else `claim`.
+- A before-insert/update trigger on `assertions` ignores whatever status is
+  written and uses the derived one (new assertions always start as `claim`).
+- After-insert/update/delete triggers on `documents` and `verifications`
+  re-derive the status, so it drops back when support is removed, a
+  verification is flagged, or the finding isn't `confirmed`.
+- A before-insert/update trigger on `verifications` rejects a verifier who
+  is a beneficiary, a leader of the project, the author of any of the
+  project's assertions, or the uploader of any of its documents.
+
+**Files:** `supabase/migrations/20261029000003_assertion_triggers.sql` (new),
+`docs/data-model.md` (one note), `BACKLOG.md` (check), `BUILD_LOG.md`.
+
+**Size:** ~130-line SQL file, 2 lines of doc changes.
+
+**Checks:** Applied migrations 001–003 to a throwaway local Postgres 16.
+Tested: a hand-set `verified` stays `claim`; adding a document gives
+`documented`; leader, uploader, and beneficiary verifiers are each
+rejected; a `disputed` verification doesn't raise status; a confirmed
+independent one gives `verified`; flagging it drops back to `documented`;
+deleting the document drops to `claim`; cascades still work. Lint,
+typecheck, and build pass. Nothing applied to the real Supabase project.
+
+**Problems:** None.
+
+**Note:** The independence check runs when a verification is written. If
+the verifier is added to the project later (e.g. made a leader), the
+existing verification isn't automatically flagged. Item 19 (consistency
+flags) is a natural place to surface that as "needs review".
+
+**Questions for Travis:** None new. Run 1's Supabase-project question still
+stands.
+
+**Next:** Item 5: Migration 003 (budget lines, funds received, suppliers,
+purchases/payments). Likely to need splitting.
