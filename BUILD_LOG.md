@@ -593,3 +593,32 @@ yet (no project configured); item 12 will use `getPassport`.
 **Next:** Item 11b (editor access for Travis and John) is next in order. It
 needs Supabase Auth user ids for Travis and John when it's applied, but the
 migration can be written without them.
+
+## 2026-10-30 — Run 18 (same session): Editor access, pilot version (backlog item 11b)
+
+**Built:** `supabase/migrations/20261030000012_editors.sql`:
+- `public.editors` (Supabase Auth user id → display name), RLS on; editors
+  can read it, nobody can add themselves through the API.
+- `public.is_editor()` (security definer, empty search_path).
+- An `editors_all` policy on all 19 base tables: editors get full
+  read/write; everyone else still sees only the `public_*` views.
+- README: how to add Travis and John once they've signed up.
+
+**Files:** the new migration, `docs/data-model.md` (§3), `README.md`,
+`BACKLOG.md` (check 11b), `BUILD_LOG.md`.
+
+**Size:** ~65-line SQL file, ~20 lines of docs.
+
+**Checks:** On a throwaway Postgres 16 with a stubbed `auth` schema and
+Supabase-style grants, after migrations + seed: anon sees 0 people and
+can't write; a signed-in non-editor sees 0 people, 0 editors, can't write,
+can't add themselves as editor, but can read the public view; an editor
+sees all 6 people and can write; an editor trying to force an assertion to
+`verified` still gets the derived `claim`; an editor can't add another
+editor through the API. Leak check still passes. Lint, typecheck, build
+pass. Nothing applied to the real Supabase project.
+
+**Questions for Travis:** None. When the Supabase project is set up, you and
+John sign up, then run the insert from the README.
+
+**Next:** Item 12: project record page `/projects/[slug]`.

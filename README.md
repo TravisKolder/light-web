@@ -55,6 +55,14 @@ demos. After migrating, run
 `supabase/checks/public_views_no_private_columns.sql` to confirm no private
 column is exposed by a public view.
 
+**Editors.** For the pilot only Travis and John edit. After each has signed
+up through Supabase Auth, add them in the Supabase SQL editor:
+
+```sql
+insert into public.editors (user_id, display_name)
+select id, 'Travis' from auth.users where email = '<travis-login-email>';
+```
+
 Without Supabase configured, the app serves the same sample from
 `lib/sample/passport.json` (public fields only). Regenerate it after editing
 the seed with `scripts/export-sample-fixture.sql`, and run

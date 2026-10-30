@@ -207,9 +207,13 @@ reduced to a number.
   only rows whose project has `visibility = 'public'`.
 - Donor, worker, and beneficiary personal details never appear in any
   `public_*` view. Item 17 adds an automated check for this.
-- Editors (item 11b): for the pilot, only Travis and John, listed in an
-  `editors` table with read/write on everything. Scoping ministry staff to
-  their own organization's projects comes later.
+- Editors (item 11b, `20261030000012_editors.sql`): for the pilot, only
+  Travis and John. `public.editors` (Supabase Auth `user_id`, display name)
+  is maintained by hand in the SQL editor; `public.is_editor()` checks the
+  signed-in user; every base table has an `editors_all` policy giving
+  editors full read/write. Non-editors (anon or signed in) see only the
+  public views. The integrity triggers still apply to editors. Scoping
+  ministry staff to their own organization's projects comes later.
 - Implemented so far (`20261030000009_public_views_core_ledger.sql`):
   `public_projects`, `public_organizations` (only orgs with a public
   project), `public_project_leaders` (role always; name/title only with
