@@ -840,3 +840,33 @@ look like personal names. Good candidates for after the pilot review.
 
 **Next:** Item 20: pilot readiness pass (README walkthrough, screenshots,
 open questions for Travis and John).
+
+## 2026-10-30 — Run 27 (same session): Pilot readiness pass (backlog item 20)
+
+**Built:** `docs/pilot-readiness.md`: what each page shows, how trust and
+privacy are protected, steps to run the pilot on a real project, and seven
+open questions for Travis and John. Three screenshots in
+`docs/screenshots/` (projects list; full Passport on desktop; full Passport
+at phone width in dark mode). README links to it.
+
+**Files:** `docs/pilot-readiness.md`, `docs/screenshots/*.png` (new),
+`README.md`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~100 lines of docs, 3 screenshots (~1.7 MB total).
+
+**Checks:** Lint, typecheck, build pass.
+
+## Backlog complete — proposed next three items (for Travis to approve)
+
+All items 0–20 are checked off. Proposed next, in order:
+1. **Simple editor forms** (signed-in editors only) to add assertions,
+   documents/evidence metadata, and ledger rows, so the pilot doesn't
+   depend on the Supabase table editor.
+2. **File uploads to Supabase Storage** with private/public buckets that
+   follow `contains_personal_data` and `shows_identifiable_people`.
+3. **Database-side review flags** for what the public data can't see: a
+   verifier who later gains a role in the project, rates far from others
+   for the same currency, base currency changed after money rows exist.
+
+See the open questions in `docs/pilot-readiness.md`; the answers may change
+this order.

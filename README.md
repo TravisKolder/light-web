@@ -72,6 +72,12 @@ the seed with `scripts/export-sample-fixture.sql`, and run
 (`/p/sample-kibira-classroom-block`) and fails if any private sample value
 (names, contacts, donor or payment references, private files) appears in it.
 
+## Pilot walkthrough
+
+See [`docs/pilot-readiness.md`](docs/pilot-readiness.md) for a tour of the
+prototype, screenshots, how trust and privacy are protected, the steps to
+run the pilot on a real project, and open questions.
+
 ## Working notes
 
 - [`BACKLOG.md`](BACKLOG.md) — ordered checklist of small, one-night items.

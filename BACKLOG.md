@@ -28,4 +28,4 @@ unchecked item. Split anything that turns out larger.
 - [x] 17. Public read-only view `/p/[slug]` using only the public views; add a test/check that private fields never appear in its output.
 - [x] 18. Projects index page listing projects with status summary.
 - [x] 19. Simple consistency flags (non-AI first): e.g. spent > approved, payment without receipt, claim with no document — shown as "needs review", never as verdicts.
-- [ ] 20. Pilot readiness pass: README walkthrough, screenshots, open questions for Travis and John.
+- [x] 20. Pilot readiness pass: README walkthrough, screenshots, open questions for Travis and John.
