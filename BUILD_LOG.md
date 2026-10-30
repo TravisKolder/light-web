@@ -677,3 +677,33 @@ assertion". That's a good candidate for item 19's "needs review" flags
 (payment without receipt).
 
 **Next:** Item 14: evidence list section.
+
+## 2026-10-30 — Run 21 (same session): Evidence list (backlog item 14)
+
+**Built:** `app/projects/[slug]/Evidence.tsx`, a "Claims, evidence, and
+verification" section listing every assertion with its status badge and
+date, then:
+- **Supporting material**: public documents (kind, title, date; "file not
+  public (contains personal data)" where marked) and public evidence
+  (caption, date, location label).
+- When an assertion is documented or verified but none of its support is
+  public (e.g. a photo of children), it says "Supported by material not
+  shown publicly, to protect people's privacy."
+- **Independent verification**: finding, verifier (name only with a public
+  profile), method, date, independence-declaration date, and a "Needs
+  review" badge when tie-flagged.
+- Claims with nothing attached say so plainly.
+
+**Files:** `app/projects/[slug]/Evidence.tsx` (new),
+`app/projects/[slug]/page.tsx`, `app/globals.css`, `BACKLOG.md`,
+`BUILD_LOG.md`.
+
+**Size:** ~120 lines TSX, ~10 lines CSS.
+
+**Checks:** Lint, typecheck, build pass. Screenshot matches the seed: one
+verified (roof, with the roof photo and Ruth N.'s site visit), five
+documented (two with private files, one with only private support), one
+claim. No private file paths, references, or contact details in the HTML.
+
+**Next:** Item 15: progress reports, outcomes, lessons, sustainability
+sections.
