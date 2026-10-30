@@ -360,3 +360,37 @@ deleting the project removes all three. Lint, typecheck, and build pass.
 **Questions for Travis:** None new (see Run 9's evidence question).
 
 **Next:** Item 7: Migration 005 (Kingdom Return entries, no score).
+
+## 2026-10-30 — Run 11 (same extra session): Kingdom Return entries (backlog item 7)
+
+**Built:** `supabase/migrations/20261030000008_kingdom_return.sql`:
+- `kingdom_return_entries`: dimension enum (multiplication, subtraction,
+  stewardship, sustainability, restoration), required narrative, date,
+  author. **No score, rating, or numeric column**, by design.
+- `kingdom_return_links`: each row links an entry to exactly one assertion
+  or one evidence item from the same project; no duplicate links. Links are
+  removed when their entry, assertion, or evidence item is deleted.
+- Verifier independence now also rejects Kingdom Return authors. That
+  completes the list in `docs/data-model.md` §1.
+
+**Files:** the new migration, `docs/data-model.md` (links paragraph),
+`BACKLOG.md` (check 7), `BUILD_LOG.md`.
+
+**Size:** ~150-line SQL file (about 60 of it the re-created independence
+function), 3 lines of doc changes.
+
+**Checks:** Applied migrations 001–008 to a throwaway local Postgres 16.
+Tested: valid entry + assertion link + evidence link accepted; unknown
+dimension rejected; a link with both or neither target rejected; duplicate
+link rejected; a link to another project's assertion rejected; KR author as
+verifier rejected, independent verifier accepted; confirmed no numeric
+columns exist on the KR tables; deleting evidence removes its link only.
+Lint, typecheck, and build pass. Nothing applied to the real Supabase
+project.
+
+**Questions for Travis:** None new.
+
+**Next:** Item 8: Row Level Security and the `public_*` views. This is the
+privacy-critical step; it will likely be split (e.g. 8a views for project /
+organization / leaders / ledger, 8b evidence / reports / KR + a check that no
+PRIVATE column leaks).

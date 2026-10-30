@@ -181,7 +181,9 @@ local_owner (text), review_on`
 **kingdom_return_entries** — `id, project_id, dimension ('multiplication' |
 'subtraction' | 'stewardship' | 'sustainability' | 'restoration'),
 narrative, recorded_on, author_id`
-**kingdom_return_links** — `entry_id, assertion_id | evidence_item_id`
+**kingdom_return_links** — `id, project_id, entry_id, assertion_id |
+evidence_item_id` (exactly one target, same project as the entry, no
+duplicates)
 
 There is deliberately **no score, rating, or numeric column**. Each dimension
 is narrative plus linked evidence, per section 6: fruit is documented, not
