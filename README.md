@@ -68,6 +68,10 @@ Without Supabase configured, the app serves the same sample from
 the seed with `scripts/export-sample-fixture.sql`, and run
 `npm run check:fixture` to confirm it holds no private fields.
 
+`npm run build && npm run check:public-page` serves the public page
+(`/p/sample-kibira-classroom-block`) and fails if any private sample value
+(names, contacts, donor or payment references, private files) appears in it.
+
 ## Working notes
 
 - [`BACKLOG.md`](BACKLOG.md) — ordered checklist of small, one-night items.

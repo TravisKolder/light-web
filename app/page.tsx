@@ -26,7 +26,7 @@ export default function Home() {
         <StatusBadge status="verified" />
       </div>
       <p>
-        <Link href="/projects/sample-kibira-classroom-block">
+        <Link href="/p/sample-kibira-classroom-block">
           View the sample Project Passport
         </Link>{" "}
         <span className="muted">(fictional)</span>

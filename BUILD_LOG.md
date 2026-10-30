@@ -758,3 +758,32 @@ private photo of pupils is not shown anywhere on the page.
 that private fields never appear in its output. (The `/projects/[slug]` page
 already reads only public data; item 17 decides how the two routes differ,
 likely `/projects` becomes the editor view once editing exists.)
+
+## 2026-10-30 — Run 24 (same session): Public read-only view + leak check (backlog item 17)
+
+**Built:**
+- Moved the page body into `app/components/passport/PassportView.tsx` (with
+  `Ledger`, `Evidence`, `Results`, `KingdomReturn` alongside), so two routes
+  share it.
+- `app/p/[slug]/page.tsx`: the public read-only Passport, marked "public
+  read-only view". `/projects/[slug]` stays as a thin page over the same view
+  and is where editing will go later. Home page now links to `/p/…`.
+- `scripts/check-public-page.mjs` + `npm run check:public-page`: starts the
+  production build, fetches the public sample page, and fails if any of 29
+  private sample values (full names, private role titles, e-mail domains,
+  phone numbers, donor/payment/registration references, private file paths,
+  the private photo caption, verification notes and declaration text)
+  appears in the HTML.
+
+**Files:** `app/components/passport/*` (moved from `app/projects/[slug]/`),
+`app/projects/[slug]/page.tsx` (rewritten thin), `app/p/[slug]/page.tsx`
+(new), `scripts/check-public-page.mjs` (new), `package.json`, `app/page.tsx`,
+`README.md`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~60 lines of new pages, ~70-line check script; the rest is moves.
+
+**Checks:** Lint, typecheck, build pass. The page check passes on the real
+build and **fails** when the treasurer's private name is planted in the
+fixture (then reverted and re-checked clean).
+
+**Next:** Item 18: projects index page.
