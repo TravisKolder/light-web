@@ -18,7 +18,7 @@ unchecked item. Split anything that turns out larger.
 - [x] 8b. Public views for documents (kind/title; no personal-data paths), verifications (finding/method/date; verifier name only with public profile), evidence (no GPS, nothing showing identifiable people), progress reports, outcomes, lessons, sustainability, Kingdom Return + links. Add a SQL check script that fails if any PRIVATE-commented column appears in a public_* view.
 - [x] 9. Shared TypeScript types for the data model (`lib/types.ts`) and a status badge component showing Claim / Documented / Verified distinctly.
 - [x] 10. Seed data: one fictional sample project (e.g. a fictional village school build) with leaders, budget, a few purchases, evidence, one verification, and Kingdom Return entries. All fictional; mark clearly.
-- [ ] 11. Local fallback: load the seed data from a JSON fixture when Supabase isn't configured, so pages render in dev/preview.
+- [x] 11. Local fallback: load the seed data from a JSON fixture when Supabase isn't configured, so pages render in dev/preview.
 - [ ] 11b. Editor access, pilot version (Travis, 2026-10-30: start with just Travis and John, widen later): an `editors` table of Supabase auth user ids with RLS policies giving editors read/write on all base tables. Designed so it can later gain an `organization_id` and role to scope ministry staff. Document in `docs/data-model.md`.
 - [ ] 12. Project record page `/projects/[slug]`: header, organization, local leaders (public fields only), need, objectives.
 - [ ] 13. Budget-vs-actual ledger section: per budget line approved vs. spent vs. remaining, totals, funds received; each line shows its assertion status.

@@ -1,0 +1,534 @@
+{
+    "_note": "SAMPLE DATA - entirely fictional. Generated from public_* views by scripts/export-sample-fixture.sql.",
+    "leaders": [
+        {
+            "role": "local_lead",
+            "since": "2026-01-15",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "role_title": "Local project lead",
+            "display_name": "Pastor Samuel O."
+        },
+        {
+            "role": "treasurer",
+            "since": "2026-01-15",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "role_title": null,
+            "display_name": null
+        }
+    ],
+    "lessons": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000a7",
+            "lesson": "Check roofing sheet gauge on delivery, before paying.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "recorded_on": "2026-05-12"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000a8",
+            "lesson": "Buy cement before the rainy season, when prices rise.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "recorded_on": "2026-06-30"
+        }
+    ],
+    "project": {
+        "id": "00000000-5a3e-4000-8000-0000000000a1",
+        "slug": "sample-kibira-classroom-block",
+        "title": "SAMPLE: Kibira Village Primary School classroom block",
+        "region": "Eastern Region (fictional)",
+        "status": "active",
+        "country": "UG",
+        "end_date": "2026-11-30",
+        "created_at": "2026-10-30T20:54:20.057056+00:00",
+        "objectives": [
+            "Build a two-classroom block with a durable iron-sheet roof",
+            "Furnish both rooms with desks for 80 pupils",
+            "Hand maintenance to the parents' committee"
+        ],
+        "start_date": "2026-02-01",
+        "base_currency": "USD",
+        "need_statement": "The fictional Kibira village primary school teaches 180 pupils in two rooms and under a tree. In the rainy season outdoor classes stop.",
+        "organization_id": "00000000-5a3e-4000-8000-000000000001"
+    },
+    "evidence": [
+        {
+            "id": "00000000-5a3e-4000-8000-000000000081",
+            "kind": "photo",
+            "caption": "Completed roof of the two-classroom block, seen from the school yard (SAMPLE)",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "captured_on": "2026-06-28",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b5",
+            "storage_path": "sample/roof-complete.jpg",
+            "location_label": "Kibira village (fictional)"
+        }
+    ],
+    "outcomes": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000a5",
+            "target": "120 pupils",
+            "measure": "pupils",
+            "achieved": "120 pupils (claimed)",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "description": "Pupils taught indoors",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b6"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000a6",
+            "target": "2 rooms",
+            "measure": "rooms",
+            "achieved": "2 rooms roofed",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "description": "Classroom block with durable roof",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b5"
+        }
+    ],
+    "payments": [
+        {
+            "id": "00000000-5a3e-4000-8000-000000000071",
+            "amount": 1110000.00,
+            "method": "mobile_money",
+            "paid_on": "2026-03-04",
+            "currency": "UGX",
+            "rate_date": "2026-03-04",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 299.70,
+            "purchase_id": "00000000-5a3e-4000-8000-000000000061",
+            "rate_source": "mobile_money",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b3",
+            "exchange_rate": 0.00027000
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-000000000073",
+            "amount": 1400.00,
+            "method": "cash",
+            "paid_on": "2026-04-01",
+            "currency": "USD",
+            "rate_date": "2026-04-01",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 1400.00,
+            "purchase_id": "00000000-5a3e-4000-8000-000000000063",
+            "rate_source": "same_currency",
+            "assertion_id": null,
+            "exchange_rate": 1.00000000
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-000000000072",
+            "amount": 1800.00,
+            "method": "bank_transfer",
+            "paid_on": "2026-05-11",
+            "currency": "USD",
+            "rate_date": "2026-05-11",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 1800.00,
+            "purchase_id": "00000000-5a3e-4000-8000-000000000062",
+            "rate_source": "same_currency",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b4",
+            "exchange_rate": 1.00000000
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-000000000074",
+            "amount": 1400.00,
+            "method": "cash",
+            "paid_on": "2026-07-01",
+            "currency": "USD",
+            "rate_date": "2026-07-01",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 1400.00,
+            "purchase_id": "00000000-5a3e-4000-8000-000000000063",
+            "rate_source": "same_currency",
+            "assertion_id": null,
+            "exchange_rate": 1.00000000
+        }
+    ],
+    "documents": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000d1",
+            "kind": "report",
+            "title": "Board minutes approving the budget (SAMPLE)",
+            "issued_on": "2026-01-20",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
+            "storage_path": "sample/board-minutes.pdf",
+            "contains_personal_data": false
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000d2",
+            "kind": "bank_statement",
+            "title": "Bank statement, February 2026 (SAMPLE)",
+            "issued_on": "2026-02-28",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b2",
+            "storage_path": null,
+            "contains_personal_data": true
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000d3",
+            "kind": "receipt",
+            "title": "Cement receipt (SAMPLE)",
+            "issued_on": "2026-03-04",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b3",
+            "storage_path": "sample/cement-receipt.jpg",
+            "contains_personal_data": false
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000d4",
+            "kind": "invoice",
+            "title": "Roofing sheets invoice (SAMPLE)",
+            "issued_on": "2026-05-10",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b4",
+            "storage_path": null,
+            "contains_personal_data": true
+        }
+    ],
+    "purchases": [
+        {
+            "id": "00000000-5a3e-4000-8000-000000000061",
+            "unit": "bags",
+            "amount": 1110000.00,
+            "currency": "UGX",
+            "quantity": 40.000,
+            "rate_date": "2026-03-04",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 299.70,
+            "description": "Cement, 50 kg bags",
+            "rate_source": "bank",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b3",
+            "purchased_on": "2026-03-04",
+            "exchange_rate": 0.00027000,
+            "supplier_kind": "business",
+            "supplier_name": "Fictional Town Hardware (SAMPLE)",
+            "budget_line_id": "00000000-5a3e-4000-8000-0000000000e1",
+            "supplier_region": "Eastern Region (fictional)",
+            "supplier_country": "UG"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-000000000063",
+            "unit": null,
+            "amount": 2800.00,
+            "currency": "USD",
+            "quantity": null,
+            "rate_date": "2026-03-15",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 2800.00,
+            "description": "Construction labour, walls and roof",
+            "rate_source": "same_currency",
+            "assertion_id": null,
+            "purchased_on": "2026-03-15",
+            "exchange_rate": 1.00000000,
+            "supplier_kind": "cooperative",
+            "supplier_name": "Kibira Builders Cooperative (SAMPLE)",
+            "budget_line_id": "00000000-5a3e-4000-8000-0000000000e2",
+            "supplier_region": "Eastern Region (fictional)",
+            "supplier_country": "UG"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-000000000062",
+            "unit": "sheets",
+            "amount": 1800.00,
+            "currency": "USD",
+            "quantity": 60.000,
+            "rate_date": "2026-05-10",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 1800.00,
+            "description": "Iron roofing sheets, 28 gauge (replacement batch)",
+            "rate_source": "same_currency",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b4",
+            "purchased_on": "2026-05-10",
+            "exchange_rate": 1.00000000,
+            "supplier_kind": "business",
+            "supplier_name": "Fictional Town Hardware (SAMPLE)",
+            "budget_line_id": "00000000-5a3e-4000-8000-0000000000e1",
+            "supplier_region": "Eastern Region (fictional)",
+            "supplier_country": "UG"
+        }
+    ],
+    "assertions": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b1",
+            "status": "documented",
+            "statement": "The board approved a budget of USD 10,000 for the classroom block.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "asserted_on": "2026-01-20",
+            "asserted_by_name": "Pastor Samuel O."
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b2",
+            "status": "documented",
+            "statement": "The project received USD 5,000 and UGX 3,700,000 in gifts.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "asserted_on": "2026-02-10",
+            "asserted_by_name": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b3",
+            "status": "documented",
+            "statement": "40 bags of cement were bought and paid for.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "asserted_on": "2026-03-05",
+            "asserted_by_name": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b4",
+            "status": "documented",
+            "statement": "60 iron roofing sheets were bought and paid for.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "asserted_on": "2026-05-12",
+            "asserted_by_name": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b5",
+            "status": "verified",
+            "statement": "The roof of the two-classroom block is complete.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "asserted_on": "2026-06-30",
+            "asserted_by_name": "Pastor Samuel O."
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b6",
+            "status": "documented",
+            "statement": "120 pupils are now taught indoors in the new block.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "asserted_on": "2026-09-15",
+            "asserted_by_name": "Pastor Samuel O."
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b7",
+            "status": "claim",
+            "statement": "The parents' committee has taken on maintenance of the block.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "asserted_on": "2026-10-01",
+            "asserted_by_name": "Pastor Samuel O."
+        }
+    ],
+    "budgetLines": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000e3",
+            "category": "Furniture",
+            "currency": "USD",
+            "rate_date": "2026-01-20",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "approved_on": "2026-01-20",
+            "description": "Desks for 80 pupils",
+            "rate_source": "same_currency",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
+            "exchange_rate": 1.00000000,
+            "approved_amount": 1000.00,
+            "approved_amount_base": 1000.00
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000e2",
+            "category": "Labour",
+            "currency": "USD",
+            "rate_date": "2026-01-20",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "approved_on": "2026-01-20",
+            "description": "Local builders cooperative",
+            "rate_source": "same_currency",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
+            "exchange_rate": 1.00000000,
+            "approved_amount": 3000.00,
+            "approved_amount_base": 3000.00
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000e1",
+            "category": "Materials",
+            "currency": "USD",
+            "rate_date": "2026-01-20",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "approved_on": "2026-01-20",
+            "description": "Cement, sand, bricks, roofing",
+            "rate_source": "same_currency",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
+            "exchange_rate": 1.00000000,
+            "approved_amount": 6000.00,
+            "approved_amount_base": 6000.00
+        }
+    ],
+    "organization": {
+        "id": "00000000-5a3e-4000-8000-000000000001",
+        "name": "Hillside Hope Fellowship (SAMPLE)",
+        "region": "Eastern Region (fictional)",
+        "country": "UG",
+        "website": null,
+        "description": "Fictional local church network used as sample data."
+    },
+    "fundsReceived": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000f1",
+            "amount": 5000.00,
+            "currency": "USD",
+            "rate_date": "2026-02-03",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 5000.00,
+            "rate_source": "same_currency",
+            "received_on": "2026-02-03",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b2",
+            "exchange_rate": 1.00000000,
+            "source_category": "church"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000f2",
+            "amount": 3700000.00,
+            "currency": "UGX",
+            "rate_date": "2026-02-09",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "amount_base": 999.00,
+            "rate_source": "bank",
+            "received_on": "2026-02-09",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b2",
+            "exchange_rate": 0.00027000,
+            "source_category": "individual"
+        }
+    ],
+    "verifications": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000cd",
+            "method": "site_visit",
+            "finding": "confirmed",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "tie_flagged": false,
+            "verified_on": "2026-07-08",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b5",
+            "verifier_name": "Ruth N.",
+            "independence_declared_on": "2026-07-08"
+        }
+    ],
+    "budgetVsActual": [
+        {
+            "category": "Furniture",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "spent_base": 0,
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
+            "budget_line_id": "00000000-5a3e-4000-8000-0000000000e3",
+            "remaining_base": 1000.00,
+            "approved_amount_base": 1000.00
+        },
+        {
+            "category": "Labour",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "spent_base": 2800.00,
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
+            "budget_line_id": "00000000-5a3e-4000-8000-0000000000e2",
+            "remaining_base": 200.00,
+            "approved_amount_base": 3000.00
+        },
+        {
+            "category": "Materials",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "spent_base": 2099.70,
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
+            "budget_line_id": "00000000-5a3e-4000-8000-0000000000e1",
+            "remaining_base": 3900.30,
+            "approved_amount_base": 6000.00
+        }
+    ],
+    "progressReports": [
+        {
+            "id": "00000000-5a3e-4000-8000-000000000091",
+            "summary": "Foundations, walls, and roof completed. Labour paid in two instalments.",
+            "setbacks": "The first batch of roofing sheets was thinner than ordered and was returned; the supplier replaced it, delaying the roof by three weeks.",
+            "period_end": "2026-06-30",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "author_name": "Pastor Samuel O.",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b5",
+            "period_start": "2026-02-01"
+        }
+    ],
+    "kingdomReturnLinks": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000c7",
+            "entry_id": "00000000-5a3e-4000-8000-0000000000b9",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b6",
+            "evidence_item_id": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000c8",
+            "entry_id": "00000000-5a3e-4000-8000-0000000000ba",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b3",
+            "evidence_item_id": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000c9",
+            "entry_id": "00000000-5a3e-4000-8000-0000000000ba",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b4",
+            "evidence_item_id": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000ca",
+            "entry_id": "00000000-5a3e-4000-8000-0000000000bb",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b7",
+            "evidence_item_id": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000cb",
+            "entry_id": "00000000-5a3e-4000-8000-0000000000bc",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": "00000000-5a3e-4000-8000-0000000000b4",
+            "evidence_item_id": null
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000cc",
+            "entry_id": "00000000-5a3e-4000-8000-0000000000bc",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "assertion_id": null,
+            "evidence_item_id": "00000000-5a3e-4000-8000-000000000081"
+        }
+    ],
+    "sustainabilityPlans": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000a9",
+            "plan": "The parents' committee inspects the roof after each rainy season and repairs gutters.",
+            "review_on": "2027-04-30",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "local_owner": "Kibira P.S. parents' committee (fictional)",
+            "funding_after_grant": "A small termly maintenance contribution set by the parents' committee."
+        }
+    ],
+    "kingdomReturnEntries": [
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b8",
+            "dimension": "multiplication",
+            "narrative": "Two young members of the builders cooperative learned roofing on this project and have since been hired for a clinic roof in a neighbouring village.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "author_name": "Pastor Samuel O.",
+            "recorded_on": "2026-10-01"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000b9",
+            "dimension": "subtraction",
+            "narrative": "Classes no longer stop in the rainy season for the 120 pupils now taught indoors.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "author_name": "Pastor Samuel O.",
+            "recorded_on": "2026-10-01"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000ba",
+            "dimension": "stewardship",
+            "narrative": "Materials and labour were bought locally; all spending so far is within the approved budget lines.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "author_name": "Pastor Samuel O.",
+            "recorded_on": "2026-10-01"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000bb",
+            "dimension": "sustainability",
+            "narrative": "The parents' committee has agreed to maintain the block (not yet documented).",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "author_name": "Pastor Samuel O.",
+            "recorded_on": "2026-10-01"
+        },
+        {
+            "id": "00000000-5a3e-4000-8000-0000000000bc",
+            "dimension": "restoration",
+            "narrative": "Under-gauge roofing sheets were caught, reported openly, returned, and replaced at the supplier's cost.",
+            "project_id": "00000000-5a3e-4000-8000-0000000000a1",
+            "author_name": "Pastor Samuel O.",
+            "recorded_on": "2026-10-01"
+        }
+    ]
+}

@@ -55,6 +55,11 @@ demos. After migrating, run
 `supabase/checks/public_views_no_private_columns.sql` to confirm no private
 column is exposed by a public view.
 
+Without Supabase configured, the app serves the same sample from
+`lib/sample/passport.json` (public fields only). Regenerate it after editing
+the seed with `scripts/export-sample-fixture.sql`, and run
+`npm run check:fixture` to confirm it holds no private fields.
+
 ## Working notes
 
 - [`BACKLOG.md`](BACKLOG.md) — ordered checklist of small, one-night items.

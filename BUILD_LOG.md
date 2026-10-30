@@ -561,3 +561,35 @@ typecheck, build pass.
 
 **Next:** Item 11: JSON fixture of the same sample for when Supabase isn't
 configured.
+
+## 2026-10-30 — Run 17 (same session): Local sample fallback (backlog item 11)
+
+**Built:**
+- `scripts/export-sample-fixture.sql`: exports the sample project as JSON by
+  reading only the `public_*` views **as the anon role**, so private data
+  can't end up in the fixture.
+- `lib/sample/passport.json`: the generated fixture (fictional, public
+  fields only).
+- `lib/passport.ts`: a `Passport` type and `getPassport(slug)`. With Supabase
+  configured it reads the public views; without it, it returns the sample
+  for slug `sample-kibira-classroom-block` and null for anything else.
+- `scripts/check-sample-fixture.mjs` + `npm run check:fixture`: fails if the
+  fixture contains any private-looking field (GPS, donor, contact, reference
+  number, author/uploader ids, etc.).
+- README: how to regenerate and check the fixture.
+
+**Files:** `lib/passport.ts`, `lib/sample/passport.json`,
+`scripts/export-sample-fixture.sql`, `scripts/check-sample-fixture.mjs` (all
+new), `package.json` (script), `README.md`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~100 lines TS, ~35 lines SQL, ~35 lines JS, ~530-line generated
+JSON.
+
+**Checks:** Fixture generated from the seeded local database; the check
+passes on it and fails when a `gps_lat` field is added by hand (then
+reverted). Lint, typecheck, build pass. The Supabase path isn't exercised
+yet (no project configured); item 12 will use `getPassport`.
+
+**Next:** Item 11b (editor access for Travis and John) is next in order. It
+needs Supabase Auth user ids for Travis and John when it's applied, but the
+migration can be written without them.
