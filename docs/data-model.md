@@ -215,6 +215,16 @@ reduced to a number.
   name/kind/place only), `public_payments` (no reference number),
   `public_budget_vs_actual`. Views run as owner with `security_barrier`;
   `anon`/`authenticated` get select on the views only.
+- Also (`20261030000010_public_views_proof_results.sql`): `public_documents`
+  (storage path hidden when `contains_personal_data`), `public_verifications`
+  (no notes; verifier name only with public profile), `public_evidence` (no
+  GPS; items showing identifiable people excluded), `public_progress_reports`,
+  `public_outcomes`, `public_lessons`, `public_sustainability_plans`,
+  `public_kingdom_return_entries`, `public_kingdom_return_links` (links to
+  hidden evidence excluded).
+- `supabase/checks/public_views_no_private_columns.sql` fails if any
+  `public_*` view reads a column commented `PRIVATE`. Run it after every
+  migration that touches views.
 
 ## 4. Review flags (backlog item 19)
 

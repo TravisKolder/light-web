@@ -425,3 +425,38 @@ just you and John, or people from the ministry too? That decides whether
 `organization_members` needs roles (e.g. editor vs. viewer) now.
 
 **Next:** Item 8b: remaining public views + an automated leak check.
+
+## 2026-10-30 — Run 13 (same extra session): Public views, proof + results; leak check (backlog item 8b)
+
+**Built:** `supabase/migrations/20261030000010_public_views_proof_results.sql`:
+nine more `public_*` views (documents, verifications, evidence, progress
+reports, outcomes, lessons, sustainability plans, Kingdom Return entries and
+links), same pattern as 8a. Document storage paths are hidden when marked
+personal; verification notes are never shown; evidence never shows GPS and
+items showing identifiable people are left out (and so are KR links to
+them); people's names appear only with a public profile.
+`supabase/checks/public_views_no_private_columns.sql`: fails if any
+`public_*` view reads a column commented `PRIVATE`.
+
+**Files:** the new migration, `supabase/checks/public_views_no_private_columns.sql`
+(new), `docs/data-model.md` (§3), `BACKLOG.md` (check 8b), `BUILD_LOG.md`.
+
+**Size:** ~110-line SQL migration, ~35-line check script, ~12 lines of docs.
+
+**Checks:** On a throwaway local Postgres 16 with Supabase-like roles: the
+leak check passes on the real views and correctly fails on a deliberately
+leaky test view (then dropped). As anon: personal-data document shows title
+but no path; private-profile verifier shows no name; the photo flagged as
+showing people is hidden, and so is its KR link; the private project's
+document is hidden; no secret marker strings or GPS values appear; base
+`documents` returns 0 rows. Lint, typecheck, and build pass.
+
+**Note:** Document titles are public. Editors should avoid putting personal
+names in titles (e.g. "Worker contract", not "Contract – <name>"). Item 19
+could flag titles that look like names.
+
+**Questions for Travis:** Run 12's question (who edits in the pilot) blocks
+item 8c.
+
+**Next:** Item 8c (editor access), once Travis answers; otherwise item 9
+(shared TypeScript types + status badge) can go first.
