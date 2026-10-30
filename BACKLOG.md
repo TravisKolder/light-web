@@ -12,7 +12,7 @@ unchecked item. Split anything that turns out larger.
 - [x] 5a. Migration 003a: `budget_lines` (approved amount, category) and `funds_received` (amount, date, source category; donor identity columns private). Currency rule columns + same-currency trigger; assertion must be in the same project.
 - [x] 5b. Migration 003b: `suppliers` (contact details private), `purchases` linked to budget lines, `payments` linked to purchases (reference number private). Extend the verifier-independence check to donors (`funds_received.donor_person_id`) and supplier contacts.
 - [x] 6a. Migration 004a: `evidence_items` (metadata, required link to assertion, private GPS, `shows_identifiable_people`) and `progress_reports`; independence check extended to report authors.
-- [ ] 6b. Migration 004b: `outcomes`, `lessons`, `sustainability_plans`.
+- [x] 6b. Migration 004b: `outcomes`, `lessons`, `sustainability_plans`.
 - [ ] 7. Migration 005: `kingdom_return_entries` — dimension enum (Multiplication, Subtraction, Stewardship, Sustainability, Restoration), narrative text, linked assertions/evidence. No numeric score column.
 - [ ] 8. Row Level Security: public (anon) can read only rows/columns flagged public; private fields (people contact info, donor details, beneficiary details) exposed only via a `public_*` view set. Document in `docs/data-model.md`.
 - [ ] 9. Shared TypeScript types for the data model (`lib/types.ts`) and a status badge component showing Claim / Documented / Verified distinctly.

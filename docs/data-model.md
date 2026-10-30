@@ -168,6 +168,8 @@ setbacks, author_id, assertion_id`
 
 **outcomes** — `id, project_id, description, measure, target, achieved,
 assertion_id`
+`target` and `achieved` are free text (e.g. "120 pupils enrolled"), not
+scores.
 
 **lessons** — `id, project_id, lesson, recorded_on`
 

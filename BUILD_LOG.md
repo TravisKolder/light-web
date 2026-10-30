@@ -338,3 +338,25 @@ count like a document and move a claim to "documented"? For now it doesn't:
 only items in `documents` do. If yes, it's a small trigger change.
 
 **Next:** Item 6b: outcomes, lessons, sustainability plans.
+
+## 2026-10-30 — Run 10 (same extra session): Outcomes, lessons, sustainability (backlog item 6b)
+
+**Built:** `supabase/migrations/20261030000007_outcomes_lessons_sustainability.sql`:
+`outcomes` (description, measure, free-text target/achieved, optional
+same-project assertion), `lessons` (text, date), `sustainability_plans`
+(plan, funding after grant, local owner, review date). RLS on, no policies.
+No personal-data columns.
+
+**Files:** the new migration, `docs/data-model.md` (one note on outcomes),
+`BACKLOG.md` (check 6b), `BUILD_LOG.md`.
+
+**Size:** ~70-line SQL file, 2 lines of doc changes.
+
+**Checks:** Applied migrations 001–007 to a throwaway local Postgres 16.
+Tested: valid rows accepted; an assertion from another project rejected; a
+blank lesson rejected; deleting the assertion clears the outcome's link;
+deleting the project removes all three. Lint, typecheck, and build pass.
+
+**Questions for Travis:** None new (see Run 9's evidence question).
+
+**Next:** Item 7: Migration 005 (Kingdom Return entries, no score).
