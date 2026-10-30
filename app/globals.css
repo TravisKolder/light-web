@@ -25,3 +25,29 @@ h1 { margin: 0 0 4px; }
 .tagline { color: var(--accent); margin: 0 0 24px; font-style: italic; }
 .muted { color: var(--muted); }
 code { font-size: 0.9em; }
+
+/* Assertion status badges: shape + label + color, never color alone */
+:root {
+  --claim-bg: #efede6;      --claim-fg: #5f5e58;
+  --documented-bg: #e6eef8; --documented-fg: #24548a;
+  --verified-bg: #e3f1e6;   --verified-fg: #1f6a36;
+  --review-bg: #fbeedd;     --review-fg: #8a4b0b;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --claim-bg: #2a2a27;      --claim-fg: #c4c2ba;
+    --documented-bg: #1b2a3c; --documented-fg: #9cc3f0;
+    --verified-bg: #18301f;   --verified-fg: #8fd6a3;
+    --review-bg: #3a2814;     --review-fg: #f2b77a;
+  }
+}
+.status-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor;
+  font-size: 0.8em; font-weight: 600; white-space: nowrap;
+}
+.status-claim      { background: var(--claim-bg);      color: var(--claim-fg); border-style: dashed; }
+.status-documented { background: var(--documented-bg); color: var(--documented-fg); }
+.status-verified   { background: var(--verified-bg);   color: var(--verified-fg); }
+.status-review     { background: var(--review-bg);     color: var(--review-fg); }
+.badge-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }

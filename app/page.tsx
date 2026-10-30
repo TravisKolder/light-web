@@ -1,4 +1,5 @@
 import { isSupabaseConfigured } from "@/lib/supabase/client";
+import { StatusBadge } from "@/app/components/StatusBadge";
 
 export default function Home() {
   const configured = isSupabaseConfigured();
@@ -18,6 +19,11 @@ export default function Home() {
         <em>claim</em>, a <em>supporting document</em>, or an{" "}
         <em>independently verified result</em>.
       </p>
+      <div className="badge-legend" aria-label="Assertion status legend">
+        <StatusBadge status="claim" />
+        <StatusBadge status="documented" />
+        <StatusBadge status="verified" />
+      </div>
       <p className="muted">
         Supabase: {configured ? "configured" : "not configured (see .env.example)"}
       </p>

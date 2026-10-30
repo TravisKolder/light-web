@@ -460,3 +460,36 @@ item 8c.
 
 **Next:** Item 8c (editor access), once Travis answers; otherwise item 9
 (shared TypeScript types + status badge) can go first.
+
+## 2026-10-30 — Run 14 (same extra session): Shared types + status badge (backlog item 9)
+
+**Backlog change:** Moved 8c (editor access) to after item 11 as **11b**,
+since it waits on Travis's answer about who edits in the pilot and nothing
+before item 12 depends on it. Item 9 went next.
+
+**Built:**
+- `lib/types.ts`: enums for every database enum, the five Kingdom Return
+  dimensions with their guiding questions (no score), a `RecordedAmount`
+  shape for the currency rule, and one interface per `public_*` view. These
+  types contain no private fields, so pages built on them can't render one.
+- `app/components/StatusBadge.tsx`: `StatusBadge` (Claim ○ dashed /
+  Documented ◐ blue / Verified ● green, distinct by icon, label, border and
+  color) and `NeedsReviewBadge` (⚑, for tie-flagged verifications; a prompt
+  for review, not a verdict).
+- Badge styles in `app/globals.css` (light + dark), and a status legend on
+  the home page.
+
+**Files:** `lib/types.ts` (new), `app/components/StatusBadge.tsx` (new),
+`app/globals.css`, `app/page.tsx`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~250 lines of TS (mostly type declarations), ~30 lines CSS.
+
+**Checks:** Lint, typecheck, and build pass. Screenshot of the home page at
+phone width shows the three badges distinct. The ◐ glyph renders small in
+the default font; worth swapping for a clearer shape when the record page
+is styled (item 12).
+
+**Questions for Travis:** Still open: who edits in the pilot (blocks 11b);
+should evidence count toward "documented" (Run 9).
+
+**Next:** Item 10: seed data for one fictional sample project.
