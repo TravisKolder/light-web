@@ -394,3 +394,34 @@ project.
 privacy-critical step; it will likely be split (e.g. 8a views for project /
 organization / leaders / ledger, 8b evidence / reports / KR + a check that no
 PRIVATE column leaks).
+
+## 2026-10-30 — Run 12 (same extra session): Public views, core + ledger (backlog item 8a)
+
+**Built:** Item 8 split into 8a/8b/8c.
+`supabase/migrations/20261030000009_public_views_core_ledger.sql`:
+nine `public_*` views (projects, organizations, project leaders, assertions,
+budget lines, funds received, purchases, payments, budget-vs-actual). Each
+selects only non-private columns and only rows from projects with
+`visibility = 'public'`. They run as the view owner with `security_barrier`,
+and `anon`/`authenticated` are granted select on the views only. Base tables
+keep RLS on with no policies.
+
+**Files:** the new migration, `docs/data-model.md` (§3 privacy model),
+`BACKLOG.md` (split 8, check 8a), `BUILD_LOG.md`.
+
+**Size:** ~150-line SQL file, ~12 lines of doc changes.
+
+**Checks:** On a throwaway local Postgres 16 with Supabase-like `anon` and
+`authenticated` roles (default select grants on all tables, like Supabase):
+anon sees 0 rows in base `projects`, `people`, `funds_received`; the views
+show only the public project and its org; the leader without a public
+profile shows role but no name; budget-vs-actual gives 1000 / 250 / 750;
+no donor name or id, supplier phone, payment reference, or org email
+appears in any view row. Lint, typecheck, and build pass. Nothing applied
+to the real Supabase project.
+
+**Questions for Travis:** For 8c, who edits a project record in the pilot,
+just you and John, or people from the ministry too? That decides whether
+`organization_members` needs roles (e.g. editor vs. viewer) now.
+
+**Next:** Item 8b: remaining public views + an automated leak check.

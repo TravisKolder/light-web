@@ -205,7 +205,16 @@ reduced to a number.
   only rows whose project has `visibility = 'public'`.
 - Donor, worker, and beneficiary personal details never appear in any
   `public_*` view. Item 17 adds an automated check for this.
-- Authenticated editors are scoped to their own organization's projects.
+- Authenticated editors are scoped to their own organization's projects
+  (item 8c; needs an editor/organization membership table).
+- Implemented so far (`20261030000009_public_views_core_ledger.sql`):
+  `public_projects`, `public_organizations` (only orgs with a public
+  project), `public_project_leaders` (role always; name/title only with
+  `public_profile`), `public_assertions`, `public_budget_lines`,
+  `public_funds_received` (no donor identity), `public_purchases` (supplier
+  name/kind/place only), `public_payments` (no reference number),
+  `public_budget_vs_actual`. Views run as owner with `security_barrier`;
+  `anon`/`authenticated` get select on the views only.
 
 ## 4. Review flags (backlog item 19)
 

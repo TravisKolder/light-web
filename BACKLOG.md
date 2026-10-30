@@ -14,7 +14,9 @@ unchecked item. Split anything that turns out larger.
 - [x] 6a. Migration 004a: `evidence_items` (metadata, required link to assertion, private GPS, `shows_identifiable_people`) and `progress_reports`; independence check extended to report authors.
 - [x] 6b. Migration 004b: `outcomes`, `lessons`, `sustainability_plans`.
 - [x] 7. Migration 005: `kingdom_return_entries` — dimension enum (Multiplication, Subtraction, Stewardship, Sustainability, Restoration), narrative text, linked assertions/evidence. No numeric score column.
-- [ ] 8. Row Level Security: public (anon) can read only rows/columns flagged public; private fields (people contact info, donor details, beneficiary details) exposed only via a `public_*` view set. Document in `docs/data-model.md`.
+- [x] 8a. Public views for projects, organizations, leaders, assertions, and the ledger (budget lines, funds received, purchases, payments, budget-vs-actual). Base tables stay unreadable to anon.
+- [ ] 8b. Public views for documents (kind/title; no personal-data paths), verifications (finding/method/date; verifier name only with public profile), evidence (no GPS, nothing showing identifiable people), progress reports, outcomes, lessons, sustainability, Kingdom Return + links. Add a SQL check script that fails if any PRIVATE-commented column appears in a public_* view.
+- [ ] 8c. Editor access: an `organization_members` table linking Supabase auth users to organizations, and RLS policies letting members read/write their own organization's project rows. Document in `docs/data-model.md`.
 - [ ] 9. Shared TypeScript types for the data model (`lib/types.ts`) and a status badge component showing Claim / Documented / Verified distinctly.
 - [ ] 10. Seed data: one fictional sample project (e.g. a fictional village school build) with leaders, budget, a few purchases, evidence, one verification, and Kingdom Return entries. All fictional; mark clearly.
 - [ ] 11. Local fallback: load the seed data from a JSON fixture when Supabase isn't configured, so pages render in dev/preview.
