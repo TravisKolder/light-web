@@ -530,3 +530,34 @@ by material not shown publicly" in that case (item 17).
 **Questions for Travis:** None open.
 
 **Next:** Item 10: seed data for one fictional sample project.
+
+## 2026-10-30 — Run 16 (20-minute session requested by Travis): Sample project seed data (backlog item 10)
+
+**Built:** `supabase/seed.sql`: one entirely fictional project, "SAMPLE:
+Kibira Village Primary School classroom block", run by the fictional
+"Hillside Hope Fellowship". All names, places, and contacts are invented;
+phones use 555 numbers and e-mails use `.example`. It has two leaders (one
+with a public profile), a 3-line USD budget, a USD gift and a UGX gift with
+an exchange rate, two suppliers, three purchases, four payments, four
+documents (two marked as containing personal data), two evidence photos
+(one showing children, so private), one independent site-visit
+verification, a progress report that records a setback openly, two
+outcomes, two lessons, a sustainability plan, and Kingdom Return entries for
+all five dimensions with links. Fixed UUIDs (`00000000-5a3e-…`). README
+gains a short "Database" section.
+
+**Files:** `supabase/seed.sql` (new), `README.md`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~330-line SQL seed, ~8 lines README.
+
+**Checks:** Migrations + seed load cleanly on a throwaway Postgres 16.
+Statuses derived by the triggers come out as intended: one verified (roof),
+five documented, one claim (parents' committee). Budget vs. actual:
+Materials 6000 / 2099.70 / 3900.30, Labour 3000 / 2800 / 200, Furniture
+1000 / 0 / 1000; funds received 5999.00 USD. As anon, the private photo,
+treasurer's name, donor identity, supplier contacts, payment references, and
+personal-data document paths don't appear in any public view. Lint,
+typecheck, build pass.
+
+**Next:** Item 11: JSON fixture of the same sample for when Supabase isn't
+configured.

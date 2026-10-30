@@ -47,6 +47,14 @@ light up once the env vars are set.
 
 Scripts: `npm run dev`, `npm run build`, `npm run typecheck`.
 
+## Database
+
+Migrations live in `supabase/migrations/`. `supabase/seed.sql` loads one
+**entirely fictional** sample project (a village classroom block) for
+demos. After migrating, run
+`supabase/checks/public_views_no_private_columns.sql` to confirm no private
+column is exposed by a public view.
+
 ## Working notes
 
 - [`BACKLOG.md`](BACKLOG.md) — ordered checklist of small, one-night items.
