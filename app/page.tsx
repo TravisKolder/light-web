@@ -1,4 +1,5 @@
 import { isSupabaseConfigured } from "@/lib/supabase/client";
+import Link from "next/link";
 import { StatusBadge } from "@/app/components/StatusBadge";
 
 export default function Home() {
@@ -24,6 +25,12 @@ export default function Home() {
         <StatusBadge status="documented" />
         <StatusBadge status="verified" />
       </div>
+      <p>
+        <Link href="/projects/sample-kibira-classroom-block">
+          View the sample Project Passport
+        </Link>{" "}
+        <span className="muted">(fictional)</span>
+      </p>
       <p className="muted">
         Supabase: {configured ? "configured" : "not configured (see .env.example)"}
       </p>

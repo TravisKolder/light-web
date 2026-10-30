@@ -51,3 +51,23 @@ code { font-size: 0.9em; }
 .status-verified   { background: var(--verified-bg);   color: var(--verified-fg); }
 .status-review     { background: var(--review-bg);     color: var(--review-fg); }
 .badge-legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 24px; }
+
+/* Project Passport page */
+a { color: var(--accent); }
+.crumbs { font-size: 0.9em; color: var(--muted); margin: 0 0 16px; }
+.sample-banner {
+  border: 1px dashed var(--accent); border-radius: 8px;
+  padding: 8px 12px; margin: 0 0 20px; font-size: 0.9em;
+}
+.passport h1 { line-height: 1.2; margin-bottom: 12px; }
+.passport section { margin-top: 32px; }
+.passport h2 { font-size: 1.15em; margin: 0 0 8px; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; }
+.facts div { min-width: 0; }
+.facts dt { font-size: 0.8em; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 600; }
+.org-name { font-weight: 600; margin: 0 0 4px; }
+.leaders { list-style: none; padding: 0; margin: 0; }
+.leaders li { display: flex; gap: 12px; padding: 6px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
+.leader-role { min-width: 90px; color: var(--muted); font-size: 0.9em; }
+.objectives { padding-left: 20px; margin: 0; }

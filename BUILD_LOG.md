@@ -622,3 +622,25 @@ pass. Nothing applied to the real Supabase project.
 John sign up, then run the insert from the README.
 
 **Next:** Item 12: project record page `/projects/[slug]`.
+
+## 2026-10-30 — Run 19 (same session): Project record page (backlog item 12)
+
+**Built:** `app/projects/[slug]/page.tsx`, a server-rendered page using
+`getPassport()`: breadcrumb, a "sample data — entirely fictional" banner when
+served from the fixture, title, status / location / dates / reporting
+currency, responsible organization, local leaders (role always; name only
+with a public profile, otherwise "Name not shown publicly"), need, and
+objectives. Unknown slugs return 404. Home page links to the sample. Page
+styles added to `app/globals.css`.
+
+**Files:** `app/projects/[slug]/page.tsx` (new), `app/page.tsx`,
+`app/globals.css`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~130 lines TSX, ~20 lines CSS.
+
+**Checks:** Lint, typecheck, build pass. Ran the production build locally:
+the sample page renders in light (phone width) and dark (desktop)
+screenshots; `/projects/nope` returns 404; the page HTML contains no
+private sample names, phone numbers, or `.example` e-mails.
+
+**Next:** Item 13: budget-vs-actual ledger section.
