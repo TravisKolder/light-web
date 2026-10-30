@@ -6,6 +6,7 @@ import { Ledger } from "./Ledger";
 import { EvidenceList } from "./Evidence";
 import { Results } from "./Results";
 import { KingdomReturn } from "./KingdomReturn";
+import { ReviewFlags } from "./ReviewFlags";
 
 // The full Project Passport, rendered from public data only (items 12-17).
 // Used by /projects/[slug] and the public read-only /p/[slug].
@@ -111,6 +112,8 @@ export function PassportView({ passport, publicView = false }: { passport: Passp
           <p className="muted">Not recorded yet.</p>
         )}
       </section>
+
+      <ReviewFlags passport={passport} />
 
       <Ledger passport={passport} />
 

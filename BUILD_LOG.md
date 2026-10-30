@@ -807,3 +807,36 @@ screenshot shows the sample with 1 verified / 5 documented / 1 claim.
 
 **Next:** Item 19: simple consistency flags ("needs review", never
 verdicts). Then item 20, the pilot readiness pass.
+
+## 2026-10-30 — Run 26 (same session): Consistency flags (backlog item 19)
+
+**Built:**
+- `lib/flags.ts`: `computeFlags(passport)`, rule-based (no AI), from public
+  data only. Flags: spending over a budget line's approved amount; total
+  payments over funds received; a purchase paid more than its cost;
+  payments with no receipt or other supporting document; claims with no
+  support for over 60 days; verifications that were tie-flagged or did not
+  confirm. Every message is neutral ("someone should take a look").
+- `app/components/passport/ReviewFlags.tsx`: a "Needs review" section near
+  the top of the Passport, stating that a flag is not a finding of
+  wrongdoing.
+
+**Files:** `lib/flags.ts`, `app/components/passport/ReviewFlags.tsx` (new),
+`app/components/passport/PassportView.tsx`, `app/globals.css`,
+`BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~110 lines TS, ~30 lines TSX.
+
+**Checks:** Lint, typecheck, build, public-page leak check pass. On the
+sample, exactly one flag shows (labour payments with no receipt), as
+expected. A scratch test on a modified copy of the sample fired all seven
+rules.
+
+**Not yet covered** (from `docs/data-model.md` §4): an exchange rate far from
+others for the same currency and dates; a verifier who *later* gains a role
+in the project (needs a database check, not just the public data); a
+project's base currency changed after money rows exist; document titles that
+look like personal names. Good candidates for after the pilot review.
+
+**Next:** Item 20: pilot readiness pass (README walkthrough, screenshots,
+open questions for Travis and John).

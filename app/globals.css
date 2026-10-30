@@ -120,3 +120,7 @@ a { color: var(--accent); }
 .project-title { font-weight: 700; font-size: 1.05em; }
 .project-list p { margin: 4px 0 0; }
 .status-counts { display: flex; flex-wrap: wrap; gap: 6px 16px; font-variant-numeric: tabular-nums; }
+
+/* Review flags */
+.flags { list-style: none; padding: 0; margin: 8px 0 0; }
+.flags li { padding: 6px 0; }
