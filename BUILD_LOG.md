@@ -217,3 +217,46 @@ stands.
 
 **Next:** Item 5: Migration 003 (budget lines, funds received, suppliers,
 purchases/payments). Likely to need splitting.
+
+## 2026-10-30 — Run 7: Budget lines + funds received (backlog item 5a)
+
+**Built:** Item 5 was too large for one night, so it was split into 5a and 5b.
+`supabase/migrations/20261030000004_budget_funds.sql` (item 5a):
+- `budget_lines` and `funds_received`, both using the currency rule: original
+  amount + currency + exchange rate + rate date + rate source, with a
+  generated base-currency amount (`approved_amount_base` / `amount_base`).
+- New `rate_source` enum, including `same_currency`. A trigger requires
+  rate = 1 and `same_currency` when the row's currency equals the project's
+  base currency, and a real source when it doesn't.
+- `funds_received.source_category` is public; donor identity columns
+  (`donor_person_id`, `donor_name`, `donor_contact`, `donor_reference`) are
+  marked PRIVATE.
+- A unique `(id, project_id)` on `assertions` plus composite foreign keys, so
+  a money row can only link to an assertion in its own project. Deleting the
+  assertion clears the link and keeps the money row.
+- RLS on, no policies (public views come in item 8). Money is only recorded.
+
+**Files:** `supabase/migrations/20261030000004_budget_funds.sql` (new),
+`docs/data-model.md` (currency rule paragraph), `BACKLOG.md` (split 5 into
+5a/5b, check 5a), `BUILD_LOG.md`.
+
+**Size:** ~125-line SQL file, ~6 lines of doc changes.
+
+**Checks:** Applied migrations 001–004 to a throwaway local Postgres 16.
+Tested: a USD line in a USD project is accepted; a UGX gift converts
+correctly (3,700,000 × 0.00027 = 999.00); USD with rate 1.1 is rejected;
+UGX marked `same_currency` is rejected; an assertion from another project is
+rejected; a zero amount is rejected; deleting a linked assertion sets the
+link to null. Lint, typecheck, and build pass. Nothing applied to the real
+Supabase project.
+
+**Problems:** None.
+
+**Note:** If a project's `base_currency` is changed after money rows exist,
+those rows aren't rechecked. Item 19 (consistency flags) can surface that.
+
+**Questions for Travis:** None new. Run 1's Supabase-project question still
+stands.
+
+**Next:** Item 5b: suppliers, purchases, payments, and extending the
+independence check to donors and supplier contacts.

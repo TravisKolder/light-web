@@ -109,9 +109,12 @@ not a verification. Their input can be recorded as a document instead.
 the amount **in its original currency** plus the exchange rate used to
 convert it to the project's `base_currency`. Each money row has:
 `amount, currency (ISO 4217), exchange_rate (base units per 1 original
-unit), rate_date, rate_source ('bank' | 'central_bank' | 'mobile_money' |
-'manual' | ...)`, and a generated `amount_base = amount * exchange_rate`.
-When `currency = base_currency`, `exchange_rate = 1`. The original amount is
+unit), rate_date, rate_source ('same_currency' | 'bank' | 'central_bank' |
+'mobile_money' | 'manual')`, and a generated `amount_base = amount *
+exchange_rate` (rounded to 2 places). When `currency = base_currency`,
+`exchange_rate = 1` and `rate_source = 'same_currency'`; otherwise a real
+source is required (trigger). A money row's `assertion_id` must belong to
+the same project (composite foreign key). The original amount is
 never overwritten; totals and budget-vs-actual use `amount_base`. The rate
 and its source are part of the record so a reviewer can check it.
 
