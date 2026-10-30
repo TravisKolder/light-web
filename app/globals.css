@@ -99,3 +99,10 @@ a { color: var(--accent); }
 .support { margin: 0; padding-left: 18px; }
 .support li { margin: 2px 0; }
 .kind { font-size: 0.8em; font-weight: 600; color: var(--muted); }
+
+/* Results */
+.card { padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
+.card p { margin: 6px 0 0; }
+.plan { margin: 0; }
+.plan dt { font-size: 0.8em; color: var(--muted); margin-top: 8px; }
+.plan dd { margin: 0; }

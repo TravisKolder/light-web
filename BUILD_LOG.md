@@ -707,3 +707,30 @@ claim. No private file paths, references, or contact details in the HTML.
 
 **Next:** Item 15: progress reports, outcomes, lessons, sustainability
 sections.
+
+## 2026-10-30 — Run 22 (same session): Progress, outcomes, lessons, sustainability (backlog item 15)
+
+**Built:** `app/projects/[slug]/Results.tsx`, four sections below the
+evidence list:
+- **Progress reports**: period, summary, setbacks shown openly, author name
+  only with a public profile, and the linked claim's status badge (labelled
+  "linked claim" so the badge isn't read as verifying the whole report).
+- **Outcomes**: description, target, achieved, status badge.
+- **Lessons learned**: lesson and date.
+- **Sustainability**: plan, local owner, funding after the grant, next
+  review date.
+Each shows a plain "not recorded yet" line when empty.
+
+Also changed the sample outcome text "120 pupils (claimed)" to "120 pupils"
+in `supabase/seed.sql` and the fixture, since the badge already shows its
+status.
+
+**Files:** `app/projects/[slug]/Results.tsx` (new),
+`app/projects/[slug]/page.tsx`, `app/globals.css`, `supabase/seed.sql`,
+`lib/sample/passport.json`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~110 lines TSX, ~8 lines CSS.
+
+**Checks:** Lint, typecheck, build, fixture check pass; screenshot reviewed.
+
+**Next:** Item 16: Kingdom Return section.

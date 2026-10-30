@@ -236,7 +236,7 @@ values
 
 insert into public.outcomes (id, project_id, description, measure, target, achieved, assertion_id) values
   ('00000000-5a3e-4000-8000-0000000000a5', '00000000-5a3e-4000-8000-0000000000a1',
-   'Pupils taught indoors', 'pupils', '120 pupils', '120 pupils (claimed)',
+   'Pupils taught indoors', 'pupils', '120 pupils', '120 pupils',
    '00000000-5a3e-4000-8000-0000000000b6'),
   ('00000000-5a3e-4000-8000-0000000000a6', '00000000-5a3e-4000-8000-0000000000a1',
    'Classroom block with durable roof', 'rooms', '2 rooms', '2 rooms roofed',

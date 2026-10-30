@@ -23,7 +23,7 @@ unchecked item. Split anything that turns out larger.
 - [x] 12. Project record page `/projects/[slug]`: header, organization, local leaders (public fields only), need, objectives.
 - [x] 13. Budget-vs-actual ledger section: per budget line approved vs. spent vs. remaining, totals, funds received; each line shows its assertion status.
 - [x] 14. Evidence list section: evidence items grouped by assertion, with status badges and verification details.
-- [ ] 15. Progress reports, outcomes, lessons learned, and sustainability sections.
+- [x] 15. Progress reports, outcomes, lessons learned, and sustainability sections.
 - [ ] 16. Kingdom Return section: five dimensions as narrative + linked evidence, explicitly no score.
 - [ ] 17. Public read-only view `/p/[slug]` using only the public views; add a test/check that private fields never appear in its output.
 - [ ] 18. Projects index page listing projects with status summary.

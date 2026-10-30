@@ -6,6 +6,7 @@ import type { LeaderRole, ProjectStatus } from "@/lib/types";
 import { formatDate } from "@/lib/format";
 import { Ledger } from "./Ledger";
 import { EvidenceList } from "./Evidence";
+import { Results } from "./Results";
 
 // Project record page (backlog item 12): header, organization, local
 // leaders (public fields only), need, objectives. Later items add the
@@ -125,6 +126,8 @@ export default async function ProjectPage({ params }: Props) {
       <Ledger passport={passport} />
 
       <EvidenceList passport={passport} />
+
+      <Results passport={passport} />
     </main>
   );
 }
