@@ -260,3 +260,48 @@ stands.
 
 **Next:** Item 5b: suppliers, purchases, payments, and extending the
 independence check to donors and supplier contacts.
+
+## 2026-10-30 — Run 8 (extra session requested by Travis): Suppliers, purchases, payments (backlog item 5b)
+
+**Built:** `supabase/migrations/20261030000005_suppliers_purchases_payments.sql`:
+- `suppliers` (shared across projects; contact person/name/phone/email and
+  bank details note marked PRIVATE).
+- `purchases` linked to a budget line and supplier, and `payments` linked to
+  a purchase (`reference_number` PRIVATE). Both use the currency rule and the
+  same-currency trigger from 003a.
+- Composite foreign keys: a purchase's budget line and a payment's purchase
+  must be in the same project; assertions too. `payments` carries
+  `project_id` for this (added to the data model doc).
+- A budget line with purchases can't be deleted; deleting a purchase removes
+  its payments; deleting a project cascades cleanly.
+- Verifier independence now also rejects the project's donors
+  (`funds_received.donor_person_id`) and contacts of suppliers the project
+  bought from.
+
+**Files:** `supabase/migrations/20261030000005_suppliers_purchases_payments.sql`
+(new), `docs/data-model.md` (suppliers kind, payments project_id, same-project
+note), `BACKLOG.md` (check 5b), `BUILD_LOG.md`.
+
+**Size:** ~180-line SQL file (about 50 of it the re-created independence
+function), ~6 lines of doc changes.
+
+**Checks:** Applied migrations 001–005 to a throwaway local Postgres 16.
+Tested: UGX purchase and payment convert correctly (1,110,000 × 0.00027 =
+299.70); budget line from another project rejected; payment pointing at
+another project's purchase rejected; USD payment with rate 2 rejected;
+deleting a budget line with purchases rejected; donor and supplier-contact
+verifiers rejected; an independent verifier accepted and the assertion
+becomes `verified`; deleting a purchase removes its payments; deleting a
+project cascades. Lint, typecheck, and build pass. Nothing applied to the
+real Supabase project.
+
+**Problems:** None.
+
+**Note:** Like the earlier checks, independence is tested when the
+verification is written; a person who becomes a donor or supplier contact
+afterwards isn't flagged automatically (item 19).
+
+**Questions for Travis:** None new.
+
+**Next:** Item 6: Migration 004 (evidence items, progress reports, outcomes,
+lessons, sustainability plans). Likely to need splitting.

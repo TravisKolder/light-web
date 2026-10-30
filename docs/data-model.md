@@ -129,7 +129,8 @@ assertion_id`
 P: `donor_person_id, donor_name, donor_contact, donor_reference`. Public views show amount,
 date, and source category only — never donor identity.
 
-**suppliers** — `id, name, kind, country, region`
+**suppliers** — `id, name, kind ('business' | 'individual' | 'cooperative' |
+'government' | 'other'), country, region` (shared across projects)
 P: `contact_person_id, contact_name, contact_phone, contact_email,
 bank_details_note`
 
@@ -137,10 +138,13 @@ bank_details_note`
 quantity, unit, amount, currency, exchange_rate, rate_date, rate_source,
 amount_base, purchased_on, assertion_id`
 
-**payments** — `id, purchase_id, amount, currency, exchange_rate,
+**payments** — `id, project_id, purchase_id, amount, currency, exchange_rate,
 rate_date, rate_source, amount_base, paid_on, method ('bank_transfer' |
 'mobile_money' | 'cash' | 'check'), assertion_id`
 P: `reference_number` (transaction IDs).
+A purchase's budget line and a payment's purchase must belong to the same
+project (composite foreign keys). A budget line with purchases can't be
+deleted.
 
 Budget-vs-actual is computed: spent per line = sum of payments on that line's
 purchases (`amount_base`); remaining = approved − spent, all in
