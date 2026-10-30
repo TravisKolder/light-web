@@ -106,3 +106,10 @@ a { color: var(--accent); }
 .plan { margin: 0; }
 .plan dt { font-size: 0.8em; color: var(--muted); margin-top: 8px; }
 .plan dd { margin: 0; }
+
+/* Kingdom Return */
+.kr-dim { padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
+.passport .kr-dim h3 { margin: 0; font-size: 1.05em; color: var(--accent); }
+.kr-q { margin: 2px 0 6px; font-style: italic; }
+.kr-entry p { margin: 4px 0; }
+.kr-entry .support li { margin: 4px 0; }

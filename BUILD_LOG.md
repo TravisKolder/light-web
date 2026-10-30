@@ -734,3 +734,27 @@ status.
 **Checks:** Lint, typecheck, build, fixture check pass; screenshot reviewed.
 
 **Next:** Item 16: Kingdom Return section.
+
+## 2026-10-30 — Run 23 (same session): Kingdom Return section (backlog item 16)
+
+**Built:** `app/projects/[slug]/KingdomReturn.tsx`: all five dimensions in
+order (Multiplication, Subtraction, Stewardship, Sustainability,
+Restoration), each with its guiding question, the narrative entries (date,
+author only with a public profile), and the linked claims (with status
+badges) or evidence captions. Empty dimensions say "Nothing recorded yet";
+unlinked entries say "Not yet linked to any evidence". No score, rating,
+meter, or progress bar anywhere, and the intro says so.
+
+**Files:** `app/projects/[slug]/KingdomReturn.tsx` (new),
+`app/projects/[slug]/page.tsx`, `app/globals.css`, `BACKLOG.md`,
+`BUILD_LOG.md`.
+
+**Size:** ~80 lines TSX, ~6 lines CSS.
+
+**Checks:** Lint, typecheck, build pass. Dark-mode screenshot reviewed; the
+private photo of pupils is not shown anywhere on the page.
+
+**Next:** Item 17: public read-only view `/p/[slug]` and an automated check
+that private fields never appear in its output. (The `/projects/[slug]` page
+already reads only public data; item 17 decides how the two routes differ,
+likely `/projects` becomes the editor view once editing exists.)
