@@ -305,3 +305,36 @@ afterwards isn't flagged automatically (item 19).
 
 **Next:** Item 6: Migration 004 (evidence items, progress reports, outcomes,
 lessons, sustainability plans). Likely to need splitting.
+
+## 2026-10-30 — Run 9 (same extra session): Evidence items + progress reports (backlog item 6a)
+
+**Built:** Item 6 split into 6a/6b.
+`supabase/migrations/20261030000006_evidence_reports.sql` (item 6a):
+- `evidence_items`: kind, caption, capture date, location label, storage
+  path, `shows_identifiable_people`; precise GPS PRIVATE (both or neither).
+  Must link to an assertion in the same project; deleted with it.
+- `progress_reports`: period (start ≤ end), summary, setbacks, author,
+  optional same-project assertion.
+- Evidence items do not change an assertion's status; only documents and
+  independent verifications do.
+- Verifier independence now also rejects progress report authors.
+
+**Files:** `supabase/migrations/20261030000006_evidence_reports.sql` (new),
+`docs/data-model.md` (evidence_items paragraph), `BACKLOG.md` (split 6,
+check 6a), `BUILD_LOG.md`.
+
+**Size:** ~140-line SQL file (about 55 of it the re-created independence
+function), ~6 lines of doc changes.
+
+**Checks:** Applied migrations 001–006 to a throwaway local Postgres 16.
+Tested: evidence leaves status at `claim`; another project's assertion is
+rejected; half a GPS pair is rejected; reversed report period is rejected;
+a report author as verifier is rejected; an independent verifier is
+accepted; deleting the assertion removes its evidence. Lint, typecheck, and
+build pass. Nothing applied to the real Supabase project.
+
+**Questions for Travis:** Should a piece of evidence (e.g. a site photo)
+count like a document and move a claim to "documented"? For now it doesn't:
+only items in `documents` do. If yes, it's a small trigger change.
+
+**Next:** Item 6b: outcomes, lessons, sustainability plans.

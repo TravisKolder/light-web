@@ -154,9 +154,14 @@ purchases (`amount_base`); remaining = approved − spent, all in
 
 **evidence_items** — physical-world proof of delivery.
 `id, project_id, assertion_id, kind ('photo' | 'video' | 'receipt' |
-'site_report' | 'other'), caption, captured_on, location_label, storage_path`
+'site_report' | 'other'), caption, captured_on, location_label, storage_path,
+shows_identifiable_people`
 P: `gps_lat, gps_lng` (precise location can endanger people; public shows
-`location_label` only), and any photo flagged `shows_identifiable_people`.
+`location_label` only), and any item flagged `shows_identifiable_people`
+(excluded from public views entirely).
+`assertion_id` is required and must be in the same project. An evidence item
+does **not** change the assertion's status by itself; only documents and
+independent verifications do.
 
 **progress_reports** — `id, project_id, period_start, period_end, summary,
 setbacks, author_id, assertion_id`
