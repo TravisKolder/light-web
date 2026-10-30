@@ -644,3 +644,36 @@ screenshots; `/projects/nope` returns 404; the page HTML contains no
 private sample names, phone numbers, or `.example` e-mails.
 
 **Next:** Item 13: budget-vs-actual ledger section.
+
+## 2026-10-30 — Run 20 (same session): Budget-vs-actual ledger (backlog item 13)
+
+**Built:** `app/projects/[slug]/Ledger.tsx`, added below the record:
+- Budget lines: approved / spent / remaining in the reporting currency, with
+  totals, an "Over budget" marker when remaining goes negative, and each
+  line's Claim / Documented / Verified badge.
+- Funds received: date, source category only (no giver identity), base
+  amount, and for foreign-currency gifts the original amount, rate, rate
+  source and date; total received.
+- Summary: received, spent, recorded balance.
+- Purchases: date, quantity + description, supplier name and budget line,
+  cost (with original currency when different), amount paid, status badge.
+- `lib/format.ts`: shared money/date formatting (moved `formatDate` out of
+  the page).
+
+**Files:** `app/projects/[slug]/Ledger.tsx`, `lib/format.ts` (new),
+`app/projects/[slug]/page.tsx`, `app/globals.css`, `BACKLOG.md`,
+`BUILD_LOG.md`.
+
+**Size:** ~170 lines TSX, ~25 lines TS, ~20 lines CSS.
+
+**Checks:** Lint, typecheck, build pass. Screenshots at desktop and phone
+width: figures match the seed (10,000 / 4,899.70 / 5,100.30; received
+5,999.00; balance 1,099.30). On phones the tables scroll sideways inside
+their own box; the page itself doesn't. No private sample data (giver
+names, payment references, contact details) in the page HTML.
+
+**Note:** The labour purchase has no assertion in the seed, so it shows "No
+assertion". That's a good candidate for item 19's "needs review" flags
+(payment without receipt).
+
+**Next:** Item 14: evidence list section.

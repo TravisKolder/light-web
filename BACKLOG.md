@@ -21,7 +21,7 @@ unchecked item. Split anything that turns out larger.
 - [x] 11. Local fallback: load the seed data from a JSON fixture when Supabase isn't configured, so pages render in dev/preview.
 - [x] 11b. Editor access, pilot version (Travis, 2026-10-30: start with just Travis and John, widen later): an `editors` table of Supabase auth user ids with RLS policies giving editors read/write on all base tables. Designed so it can later gain an `organization_id` and role to scope ministry staff. Document in `docs/data-model.md`.
 - [x] 12. Project record page `/projects/[slug]`: header, organization, local leaders (public fields only), need, objectives.
-- [ ] 13. Budget-vs-actual ledger section: per budget line approved vs. spent vs. remaining, totals, funds received; each line shows its assertion status.
+- [x] 13. Budget-vs-actual ledger section: per budget line approved vs. spent vs. remaining, totals, funds received; each line shows its assertion status.
 - [ ] 14. Evidence list section: evidence items grouped by assertion, with status badges and verification details.
 - [ ] 15. Progress reports, outcomes, lessons learned, and sustainability sections.
 - [ ] 16. Kingdom Return section: five dimensions as narrative + linked evidence, explicitly no score.

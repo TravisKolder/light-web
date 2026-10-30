@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPassport } from "@/lib/passport";
 import type { LeaderRole, ProjectStatus } from "@/lib/types";
+import { formatDate } from "@/lib/format";
+import { Ledger } from "./Ledger";
 
 // Project record page (backlog item 12): header, organization, local
 // leaders (public fields only), need, objectives. Later items add the
@@ -22,13 +24,6 @@ const ROLE_LABEL: Record<LeaderRole, string> = {
   staff: "Staff",
   other: "Other",
 };
-
-function formatDate(d: string | null) {
-  if (!d) return null;
-  return new Date(`${d}T00:00:00Z`).toLocaleDateString("en-US", {
-    year: "numeric", month: "short", day: "numeric", timeZone: "UTC",
-  });
-}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -125,6 +120,8 @@ export default async function ProjectPage({ params }: Props) {
           <p className="muted">Not recorded yet.</p>
         )}
       </section>
+
+      <Ledger passport={passport} />
     </main>
   );
 }
