@@ -493,3 +493,40 @@ is styled (item 12).
 should evidence count toward "documented" (Run 9).
 
 **Next:** Item 10: seed data for one fictional sample project.
+
+## 2026-10-30 — Decisions from Travis + Run 15: Evidence counts as a document
+
+**Decisions (Travis, 2026-10-30):**
+1. Evidence counts like a document: an evidence item moves a claim to
+   "documented" (never to "verified").
+2. Editor access starts with just Travis and John; widen to ministry staff
+   later. Backlog item 11b reworded to a simple `editors` table.
+
+**Built:** `supabase/migrations/20261030000011_evidence_counts_as_document.sql`:
+- `compute_assertion_status()` now counts evidence items as well as
+  documents for `documented`.
+- A trigger on `evidence_items` re-derives status on insert, update, or
+  delete, so it drops back when evidence is removed.
+- New `evidence_items.uploaded_by` (not in any public view), and the
+  independence check rejects whoever supplied evidence for the project.
+
+**Files:** the new migration, `docs/data-model.md` (§1 rule, evidence
+paragraph, §3 editors), `BACKLOG.md` (11b reworded), `BUILD_LOG.md`.
+
+**Size:** ~120-line SQL file (most of it the re-created independence
+function), ~10 lines of doc changes.
+
+**Checks:** Applied migrations 001–011 to a throwaway local Postgres 16.
+Tested: claim → documented after adding evidence; the evidence uploader is
+rejected as verifier; an independent verifier gives verified; removing the
+verification drops to documented; removing the evidence drops to claim.
+The private-column leak check still passes. Lint, typecheck, and build pass.
+
+**Note:** An evidence item that shows identifiable people is hidden from the
+public view but still counts toward "documented", just like a document
+marked as containing personal data. The public page should say "supported
+by material not shown publicly" in that case (item 17).
+
+**Questions for Travis:** None open.
+
+**Next:** Item 10: seed data for one fictional sample project.

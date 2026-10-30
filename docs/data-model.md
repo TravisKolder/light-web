@@ -23,7 +23,8 @@ Rules:
 - The three states are never merged. A document is not a verification; a
   verification always names who checked, when, and how.
 - Status is stored on `assertions.status` but **enforced by a trigger**: it
-  cannot be set to `documented` without a document, or to `verified` without
+  cannot be set to `documented` without a document or evidence item
+  (evidence counts, decided by Travis 2026-10-30), or to `verified` without
   a confirmed independent verification. Removing the supporting row drops the
   status back down.
   (Implemented in `supabase/migrations/20261029000003_assertion_triggers.sql`:
@@ -160,8 +161,9 @@ P: `gps_lat, gps_lng` (precise location can endanger people; public shows
 `location_label` only), and any item flagged `shows_identifiable_people`
 (excluded from public views entirely).
 `assertion_id` is required and must be in the same project. An evidence item
-does **not** change the assertion's status by itself; only documents and
-independent verifications do.
+counts like a document: it moves a claim to **documented** (never to
+verified). `uploaded_by` (not public) means the supplier of the evidence
+can't verify the project.
 
 **progress_reports** — `id, project_id, period_start, period_end, summary,
 setbacks, author_id, assertion_id`
@@ -205,8 +207,9 @@ reduced to a number.
   only rows whose project has `visibility = 'public'`.
 - Donor, worker, and beneficiary personal details never appear in any
   `public_*` view. Item 17 adds an automated check for this.
-- Authenticated editors are scoped to their own organization's projects
-  (item 8c; needs an editor/organization membership table).
+- Editors (item 11b): for the pilot, only Travis and John, listed in an
+  `editors` table with read/write on everything. Scoping ministry staff to
+  their own organization's projects comes later.
 - Implemented so far (`20261030000009_public_views_core_ledger.sql`):
   `public_projects`, `public_organizations` (only orgs with a public
   project), `public_project_leaders` (role always; name/title only with
