@@ -99,3 +99,47 @@ export async function getPassport(slug: string): Promise<Passport | null> {
     source: "supabase",
   };
 }
+
+export interface ProjectSummary {
+  project: PublicProject;
+  organizationName: string | null;
+  statusCounts: Record<"claim" | "documented" | "verified", number>;
+  source: "supabase" | "sample";
+}
+
+function countStatuses(assertions: Pick<PublicAssertion, "status">[]) {
+  const c = { claim: 0, documented: 0, verified: 0 };
+  for (const a of assertions) c[a.status] += 1;
+  return c;
+}
+
+/** All public projects with a count of claims by status. */
+export async function listProjects(): Promise<ProjectSummary[]> {
+  const supabase = getSupabaseClient();
+  if (!supabase) {
+    return [{
+      project: SAMPLE_PASSPORT.project,
+      organizationName: SAMPLE_PASSPORT.organization?.name ?? null,
+      statusCounts: countStatuses(SAMPLE_PASSPORT.assertions),
+      source: "sample",
+    }];
+  }
+
+  const [projects, orgs, assertions] = await Promise.all([
+    supabase.from("public_projects").select("*").order("title"),
+    supabase.from("public_organizations").select("id, name"),
+    supabase.from("public_assertions").select("project_id, status"),
+  ]);
+  for (const r of [projects, orgs, assertions]) {
+    if (r.error) throw new Error(`Loading projects failed: ${r.error.message}`);
+  }
+  const orgName = new Map((orgs.data ?? []).map((o: { id: string; name: string }) => [o.id, o.name]));
+  const rows = (assertions.data ?? []) as Pick<PublicAssertion, "project_id" | "status">[];
+
+  return ((projects.data ?? []) as PublicProject[]).map((p) => ({
+    project: p,
+    organizationName: orgName.get(p.organization_id) ?? null,
+    statusCounts: countStatuses(rows.filter((a) => a.project_id === p.id)),
+    source: "supabase" as const,
+  }));
+}

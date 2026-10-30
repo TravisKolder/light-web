@@ -787,3 +787,23 @@ build and **fails** when the treasurer's private name is planted in the
 fixture (then reverted and re-checked clean).
 
 **Next:** Item 18: projects index page.
+
+## 2026-10-30 — Run 25 (same session): Projects index (backlog item 18)
+
+**Built:** `app/p/page.tsx`, the public projects list: each public project's
+title (linking to `/p/<slug>`), organization, region, project status, and
+how many of its claims are Verified / Documented / Claim (badges with
+counts: context, not a rating). Sample banner when serving the fixture.
+`listProjects()` added to `lib/passport.ts` (public views, or the sample
+when Supabase isn't configured). Home page links to `/p`.
+
+**Files:** `app/p/page.tsx` (new), `lib/passport.ts`, `app/page.tsx`,
+`app/globals.css`, `BACKLOG.md`, `BUILD_LOG.md`.
+
+**Size:** ~55 lines TSX, ~45 lines TS, ~6 lines CSS.
+
+**Checks:** Lint, typecheck, build, public-page leak check pass. Phone-width
+screenshot shows the sample with 1 verified / 5 documented / 1 claim.
+
+**Next:** Item 19: simple consistency flags ("needs review", never
+verdicts). Then item 20, the pilot readiness pass.

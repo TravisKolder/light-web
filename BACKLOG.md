@@ -26,6 +26,6 @@ unchecked item. Split anything that turns out larger.
 - [x] 15. Progress reports, outcomes, lessons learned, and sustainability sections.
 - [x] 16. Kingdom Return section: five dimensions as narrative + linked evidence, explicitly no score.
 - [x] 17. Public read-only view `/p/[slug]` using only the public views; add a test/check that private fields never appear in its output.
-- [ ] 18. Projects index page listing projects with status summary.
+- [x] 18. Projects index page listing projects with status summary.
 - [ ] 19. Simple consistency flags (non-AI first): e.g. spent > approved, payment without receipt, claim with no document — shown as "needs review", never as verdicts.
 - [ ] 20. Pilot readiness pass: README walkthrough, screenshots, open questions for Travis and John.

@@ -26,10 +26,8 @@ export default function Home() {
         <StatusBadge status="verified" />
       </div>
       <p>
-        <Link href="/p/sample-kibira-classroom-block">
-          View the sample Project Passport
-        </Link>{" "}
-        <span className="muted">(fictional)</span>
+        <Link href="/p">Browse Project Passports</Link>{" "}
+        <span className="muted">(currently one fictional sample)</span>
       </p>
       <p className="muted">
         Supabase: {configured ? "configured" : "not configured (see .env.example)"}
