@@ -870,3 +870,17 @@ All items 0–20 are checked off. Proposed next, in order:
 
 See the open questions in `docs/pilot-readiness.md`; the answers may change
 this order.
+
+## 2026-10-31 — Run 28: Backlog complete, awaiting approval
+
+**Built:** Nothing. All backlog items (0–20) are checked off, so per the
+nightly rules no new scope was started. The three proposed next items above
+(editor forms; Supabase Storage uploads with private/public buckets; database-
+side review flags) are still waiting for Travis's approval, along with the
+open questions in `docs/pilot-readiness.md`.
+
+**Files:** `BUILD_LOG.md` only. **Size:** this note.
+
+**Question for Travis:** Approve (or reorder) the three proposed items by
+adding them to `BACKLOG.md` as unchecked items; the next run will pick up
+the first one.
