@@ -897,3 +897,16 @@ questions in `docs/pilot-readiness.md` are still waiting on Travis.
 
 **Question for Travis:** Add the approved items to `BACKLOG.md` as
 unchecked entries (e.g. 21, 22, 23); the next run picks up the first one.
+
+## 2026-11-03 — Run 30: Backlog still complete, awaiting approval
+
+**Built:** Nothing. `BACKLOG.md` still has no unchecked items, so no new
+scope was started. The three proposed items (editor forms; Supabase Storage
+uploads with private/public buckets; database-side review flags) and the
+open questions in `docs/pilot-readiness.md` are still waiting on Travis.
+
+**Files:** `BUILD_LOG.md` only. **Size:** this note.
+
+**Question for Travis:** Add approved items to `BACKLOG.md` as unchecked
+entries (e.g. 21, 22, 23); the next run picks up the first one. Consider
+pausing the nightly task until then.
