@@ -924,3 +924,16 @@ on Travis.
 **Question for Travis:** Add approved items to `BACKLOG.md` as unchecked
 entries (e.g. 21, 22, 23), or pause the nightly task until you do; each idle
 run only adds a note like this one.
+
+## 2026-11-05 — Run 32: Backlog still complete, awaiting approval
+
+**Built:** Nothing. `BACKLOG.md` has no unchecked items (fifth idle run in a
+row), so no new scope was started. Proposed next items remain: editor forms;
+Supabase Storage uploads with private/public buckets; database-side review
+flags. Open questions are in `docs/pilot-readiness.md`.
+
+**Files:** `BUILD_LOG.md` only. **Size:** this note. Tracker dashboard not
+re-uploaded: its rows are unchanged since run 28.
+
+**Question for Travis:** Add approved items to `BACKLOG.md` as unchecked
+entries (21, 22, 23), or pause the nightly task until you do.
