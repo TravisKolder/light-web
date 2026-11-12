@@ -30,6 +30,10 @@ unchecked item. Split anything that turns out larger.
 - [x] 19. Simple consistency flags (non-AI first): e.g. spent > approved, payment without receipt, claim with no document — shown as "needs review", never as verdicts.
 - [x] 20. Pilot readiness pass: README walkthrough, screenshots, open questions for Travis and John.
 
+> **Waiting on Travis:** set up the test Supabase project and Vercel preview
+> (`docs/setup.md`, not started; he asked to be reminded). Nightly runs keep
+> building the next item meanwhile, and should mention this in their summary.
+
 ## Editor forms (Travis approved 2026-11-12)
 
 Signed-in editors only. Forms record data; the database still sets every claim/documented/verified status and runs the independence checks, so the forms never set a status by hand. No file uploads yet (that's a separate proposal).

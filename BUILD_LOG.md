@@ -1045,3 +1045,20 @@ added to `editors`. If you'd rather block that, turn off "Allow new users to
 sign up" in Supabase and invite you and John from the dashboard instead.
 
 **Next:** 21b, statements on `/edit/[slug]`.
+
+## 2026-11-12 — Setup prep (on request)
+
+**Built:** Migration 013 (explicit API grants: anon gets no base-table access;
+authenticated gets table privileges, still limited to editors by RLS). Tested
+all 13 migrations + seed on a local Postgres 16 with stub Supabase roles:
+anon reads public views only, a signed-in non-editor sees 0 projects, an editor
+sees the sample project, nobody can write `editors` via the API, and the
+private-column check passes. Added `docs/setup.md` (step-by-step Supabase +
+Vercel test setup) and `scripts/build-setup-sql.sh` (one-file SQL for the
+Supabase SQL Editor).
+
+**Status:** Travis postponed the setup to another night and asked to be
+reminded. A "Waiting on Travis" note is at the top of the editor-forms section
+in `BACKLOG.md`.
+
+**Next:** 21b, statements on `/edit/[slug]`.
