@@ -55,8 +55,12 @@ demos. After migrating, run
 `supabase/checks/public_views_no_private_columns.sql` to confirm no private
 column is exposed by a public view.
 
-**Editors.** For the pilot only Travis and John edit. After each has signed
-up through Supabase Auth, add them in the Supabase SQL editor:
+**Editors.** For the pilot only Travis and John edit. Each signs in at
+`/edit/sign-in` with an emailed one-time link (no password). In the Supabase
+dashboard, add `<your-site>/auth/callback` (and `http://localhost:3000/auth/callback`
+for local dev) under Authentication → URL Configuration → Redirect URLs.
+A first sign-in creates the auth user; `/edit` then shows "Not an editor yet"
+with the user id until they are added in the Supabase SQL editor:
 
 ```sql
 insert into public.editors (user_id, display_name)

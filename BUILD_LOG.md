@@ -1015,3 +1015,33 @@ re-uploaded: rows unchanged since run 28.
 
 **Question for Travis:** Add approved items to `BACKLOG.md` as unchecked
 entries (21, 22, 23), or pause the nightly task until you do.
+
+## 2026-11-12 — Run 39 (on request): Item 21a, editor sign-in
+
+**Built:** Editor sign-in and the `/edit` area. Editors request an emailed
+one-time link at `/edit/sign-in` (Supabase Auth, no password); `/auth/callback`
+exchanges the code for a session cookie; `proxy.ts` refreshes the session on
+`/edit` and `/auth` only. `/edit` shows one of four states: Supabase not
+configured (fallback mode, editing off), signed out (redirect to sign-in),
+signed in but not on `public.editors` (shows the user id to send to Travis),
+or editor (lists all projects with status and private/public visibility, plus
+sign out). The editor check reads `public.editors` under RLS, so the page and
+the database apply the same rule. No statuses can be set; nothing public changed.
+
+**Files:** `lib/supabase/server.ts`, `proxy.ts`, `app/auth/callback/route.ts`,
+`app/edit/actions.ts`, `app/edit/page.tsx`, `app/edit/sign-in/page.tsx`,
+`app/globals.css`, `README.md`, `package.json` / `package-lock.json`
+(added `@supabase/ssr`), `BACKLOG.md`. **Size:** about 300 lines.
+
+**Checks:** typecheck, lint, build pass; `check:public-page` passes; smoke test
+in fallback mode (`/edit` shows the not-configured note, sign-in redirects,
+bad callback code returns to sign-in with an error). Not tested against a live
+Supabase project, since none is configured here.
+
+**Questions for Travis:** (1) In Supabase, add the `/auth/callback` redirect
+URLs listed in the README, or the email links won't work. (2) Any email can
+request a link and create an auth user, but that user gets no access until
+added to `editors`. If you'd rather block that, turn off "Allow new users to
+sign up" in Supabase and invite you and John from the dashboard instead.
+
+**Next:** 21b, statements on `/edit/[slug]`.
