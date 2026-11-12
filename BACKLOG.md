@@ -29,3 +29,14 @@ unchecked item. Split anything that turns out larger.
 - [x] 18. Projects index page listing projects with status summary.
 - [x] 19. Simple consistency flags (non-AI first): e.g. spent > approved, payment without receipt, claim with no document — shown as "needs review", never as verdicts.
 - [x] 20. Pilot readiness pass: README walkthrough, screenshots, open questions for Travis and John.
+
+## Editor forms (Travis approved 2026-11-12)
+
+Signed-in editors only. Forms record data; the database still sets every claim/documented/verified status and runs the independence checks, so the forms never set a status by hand. No file uploads yet (that's a separate proposal).
+
+- [ ] 21a. Editor sign-in: Supabase Auth email magic link, session handling, and an `/edit` area that only opens for users in `public.editors`. Shows a clear "Supabase not configured" message in local fallback mode. Lists projects to edit.
+- [ ] 21b. `/edit/[slug]` statements: list the project's assertions with their status badges, plus a form to add a new assertion (statement, asserted by, date). Server action with validation; status is read-only.
+- [ ] 21c. Document and evidence metadata form linked to an assertion (title, kind, date, `contains_personal_data`, `shows_identifiable_people`, private GPS). Metadata only, no file upload.
+- [ ] 21d. Ledger forms, part 1: budget lines and funds received (source category; donor identity optional and private). Show the database's currency-rule errors in plain language.
+- [ ] 21e. Ledger forms, part 2: purchases (linked to a budget line) and payments (private reference number).
+- [ ] 21f. Verification form: record an independent verification with a required independence declaration; show the database's independence rejection in plain language.
