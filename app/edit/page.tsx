@@ -87,7 +87,7 @@ export default async function EditorHome() {
         <ul className="project-list">
           {projects.map((p) => (
             <li key={p.id}>
-              <span className="project-title">{p.title}</span>
+              <Link href={`/edit/${p.slug}`} className="project-title">{p.title}</Link>
               <p className="muted small">
                 {STATUS_LABEL[p.status]} · {p.visibility === "public" ? "Public" : "Private (not on the public site)"}
                 {p.visibility === "public" && <> · <Link href={`/p/${p.slug}`}>View public Passport</Link></>}

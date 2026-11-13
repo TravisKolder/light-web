@@ -1062,3 +1062,30 @@ reminded. A "Waiting on Travis" note is at the top of the editor-forms section
 in `BACKLOG.md`.
 
 **Next:** 21b, statements on `/edit/[slug]`.
+
+## 2026-11-13 — Run 40: Item 21b, statements editor
+
+**Built:** `/edit/[slug]` for signed-in editors. It lists the project's
+statements (assertions), newest first, each with its Claim / Documented /
+Verified badge, who made it and when. A form adds a new statement (text,
+"asserted by" from a dropdown of non-beneficiary people or "not recorded",
+date stated, defaulting to today). The server action re-checks editor access,
+validates input (non-empty, 2,000 characters max, real date, not in the future,
+person id shape) and inserts without any status field, so every new statement
+starts as a claim and only the database triggers can move it. The `/edit`
+project list now links to each project's page. Errors show in plain language;
+database error text goes to the server log, not the page.
+
+**Files:** `app/edit/[slug]/page.tsx` (new), `app/edit/[slug]/actions.ts`
+(new), `app/edit/page.tsx`, `app/globals.css`, `BACKLOG.md`. **Size:** about
+200 lines.
+
+**Checks:** typecheck, lint, build pass; `check:public-page` passes; in
+fallback mode `/edit/[slug]` redirects to `/edit` (editing off). Not tested
+against a live Supabase project (none configured yet).
+
+**Reminder for Travis:** the test Supabase project + Vercel preview
+(`docs/setup.md`) is still waiting on you; the editor forms can't be tried
+for real until it exists.
+
+**Next:** 21c, document and evidence metadata form.
