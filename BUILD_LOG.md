@@ -1089,3 +1089,32 @@ against a live Supabase project (none configured yet).
 for real until it exists.
 
 **Next:** 21c, document and evidence metadata form.
+
+## 2026-11-14 — Run 41: Item 21c1, document metadata form
+
+**Split:** 21c (documents + evidence) was two forms with different privacy
+rules, so it became 21c1 (documents, tonight) and 21c2 (evidence, next).
+
+**Built:** A "Attach a supporting document" form on `/edit/[slug]`. Editors
+pick one of the project's statements, a kind (receipt, invoice, photo, report,
+contract, bank statement, other), a title, an optional date issued, who
+supplied it, and whether it contains personal data. The server action
+re-checks editor access, validates every field, and confirms the statement
+belongs to this project (documents have no project column of their own) before
+inserting. It never sets a status or a file location; the existing trigger
+moves the statement from claim to documented. The statement list now shows a
+document count per statement. The form warns that a document's supplier can't
+later verify the project, and that kind/title/date are always public, so
+personal details stay out of titles.
+
+**Files:** `app/edit/[slug]/actions.ts`, `app/edit/[slug]/page.tsx`,
+`app/globals.css`, `BACKLOG.md`. **Size:** about 180 lines.
+
+**Checks:** typecheck, lint, build pass; `check:public-page` passes. Not
+tested against a live Supabase project (none configured yet).
+
+**Reminder for Travis:** the test Supabase project + Vercel preview
+(`docs/setup.md`) is still waiting on you; the editor forms can't be tried
+for real until it exists.
+
+**Next:** 21c2, evidence metadata form.

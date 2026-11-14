@@ -137,6 +137,8 @@ a { color: var(--accent); }
   font: inherit; font-weight: 600; padding: 9px 14px; border-radius: 6px; border: none;
   background: var(--accent); color: #fff; cursor: pointer; align-self: flex-start;
 }
+.editor-form label.checkbox { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
+.editor-form label.checkbox input { margin-top: 3px; padding: 0; }
 .form-error { color: var(--review-fg); font-weight: 600; }
 .inline-form { display: inline; }
 .statement-list { list-style: none; padding: 0; margin: 8px 0; }
