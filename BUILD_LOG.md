@@ -1118,3 +1118,30 @@ tested against a live Supabase project (none configured yet).
 for real until it exists.
 
 **Next:** 21c2, evidence metadata form.
+
+## 2026-11-15 — Run 42: Item 21c2, evidence metadata form
+
+**Built:** A "Record evidence of delivery" form on `/edit/[slug]`. Editors pick
+one of the project's statements, a kind (photo, video, receipt, site report,
+other), a caption, an optional date captured, an optional public place name,
+who supplied it, an optional private GPS pair, and whether it shows people who
+could be identified. The server action re-checks editor access, validates every
+field (GPS both-or-neither, in range, up to 6 decimals, mirroring the table's
+constraints) and confirms the statement belongs to this project before
+inserting. It never sets a status or file location; the existing trigger counts
+evidence as a supporting document, so a claim can move to documented, never to
+verified. The form explains that GPS is never public, that items showing
+identifiable people are kept off public pages, and that captions/place names of
+other items are public. The statement list now also shows an evidence count.
+
+**Files:** `app/edit/[slug]/actions.ts`, `app/edit/[slug]/page.tsx`,
+`app/globals.css`, `BACKLOG.md`. **Size:** about 200 lines.
+
+**Checks:** typecheck, lint, build pass; `check:public-page` passes. Not
+tested against a live Supabase project (none configured yet).
+
+**Reminder for Travis:** the test Supabase project + Vercel preview
+(`docs/setup.md`) is still waiting on you; the editor forms can't be tried
+for real until it exists.
+
+**Next:** 21d, ledger forms part 1 (budget lines and funds received).

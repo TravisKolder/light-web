@@ -4,11 +4,11 @@ import { notFound, redirect } from "next/navigation";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server";
 import type { AssertionStatus } from "@/lib/types";
-import { addAssertion, addDocument } from "./actions";
+import { addAssertion, addDocument, addEvidence } from "./actions";
 
-// Editor: a project's statements (backlog items 21b, 21c1). Lists every
+// Editor: a project's statements (backlog items 21b, 21c1, 21c2). Lists every
 // assertion with its status badge and offers forms to add a new one and to
-// attach supporting document metadata to one. Status is
+// attach supporting document or evidence metadata to one. Status is
 // read-only here; the database sets it from documents and verifications.
 
 export const metadata: Metadata = { title: "Edit statements — Light Web" };
@@ -36,6 +36,29 @@ const DOC_ERRORS: Record<string, string> = {
   save: "The document couldn't be saved. Please try again; if it keeps failing, tell Travis.",
 };
 
+const EV_ERRORS: Record<string, string> = {
+  project: ERRORS.project,
+  assertion: DOC_ERRORS.assertion,
+  kind: "Please choose what kind of evidence it is.",
+  caption: "Please write a caption.",
+  long: "The caption is too long (500 characters at most).",
+  location: "The place name is too long (200 characters at most).",
+  person: ERRORS.person,
+  date: ERRORS.date,
+  future: ERRORS.future,
+  gpsPair: "Please give both latitude and longitude, or leave both empty.",
+  gps: "Latitude must be between -90 and 90 and longitude between -180 and 180, with up to 6 decimal places.",
+  save: "The evidence couldn't be saved. Please try again; if it keeps failing, tell Travis.",
+};
+
+const EVIDENCE_KINDS: { value: string; label: string }[] = [
+  { value: "photo", label: "Photo" },
+  { value: "video", label: "Video" },
+  { value: "receipt", label: "Receipt" },
+  { value: "site_report", label: "Site report" },
+  { value: "other", label: "Other" },
+];
+
 const DOCUMENT_KINDS: { value: string; label: string }[] = [
   { value: "receipt", label: "Receipt" },
   { value: "invoice", label: "Invoice" },
@@ -53,6 +76,7 @@ type AssertionRow = {
   status: AssertionStatus;
   asserted_by: { display_name: string } | null;
   documents: { count: number }[];
+  evidence_items: { count: number }[];
 };
 
 type PersonRow = { id: string; display_name: string; role_title: string | null };
@@ -67,6 +91,8 @@ export default async function EditProjectStatements({
     error?: string;
     docAdded?: string;
     docError?: string;
+    evAdded?: string;
+    evError?: string;
   }>;
 }) {
   const session = await getEditorSession();
@@ -74,7 +100,7 @@ export default async function EditProjectStatements({
   if (session.state === "signed-out") redirect("/edit/sign-in");
 
   const { slug } = await params;
-  const { added, error, docAdded, docError } = await searchParams;
+  const { added, error, docAdded, docError, evAdded, evError } = await searchParams;
   const supabase = (await getSupabaseServerClient())!;
 
   const { data: project } = await supabase
@@ -88,7 +114,7 @@ export default async function EditProjectStatements({
     supabase
       .from("assertions")
       .select(
-        "id, statement, asserted_on, status, asserted_by:people(display_name), documents(count)",
+        "id, statement, asserted_on, status, asserted_by:people(display_name), documents(count), evidence_items(count)",
       )
       .eq("project_id", project.id)
       .order("asserted_on", { ascending: false })
@@ -131,6 +157,8 @@ export default async function EditProjectStatements({
                 {a.asserted_by?.display_name ?? "Person not recorded"} · {a.asserted_on}
                 {" · "}
                 {docCount(a)} document{docCount(a) === 1 ? "" : "s"}
+                {" · "}
+                {evCount(a)} evidence item{evCount(a) === 1 ? "" : "s"}
               </p>
             </li>
           ))}
@@ -229,10 +257,98 @@ export default async function EditProjectStatements({
           <button type="submit">Record document</button>
         </form>
       )}
+
+      <h2 id="add-evidence">Record evidence of delivery</h2>
+      <p className="small muted">
+        Records the evidence&apos;s details only; file upload comes later. Like a
+        document, evidence can move a claim to <strong>documented</strong>, never to
+        verified.
+      </p>
+      {evAdded && <p className="sample-banner" role="status">Evidence recorded.</p>}
+      {evError && EV_ERRORS[evError] && (
+        <p className="form-error" role="alert">{EV_ERRORS[evError]}</p>
+      )}
+      {assertions.length === 0 ? (
+        <p className="muted">Add a statement first; every evidence item supports a statement.</p>
+      ) : (
+        <form action={addEvidence} className="editor-form">
+          <input type="hidden" name="slug" value={project.slug} />
+          <input type="hidden" name="project_id" value={project.id} />
+          <label htmlFor="ev_assertion_id">Supports which statement</label>
+          <select id="ev_assertion_id" name="assertion_id" required defaultValue="">
+            <option value="" disabled>Choose a statement…</option>
+            {assertions.map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.statement.length > 90 ? `${a.statement.slice(0, 90)}…` : a.statement}
+              </option>
+            ))}
+          </select>
+          <label htmlFor="ev_kind">Kind</label>
+          <select id="ev_kind" name="kind" required defaultValue="">
+            <option value="" disabled>Choose a kind…</option>
+            {EVIDENCE_KINDS.map((k) => (
+              <option key={k.value} value={k.value}>{k.label}</option>
+            ))}
+          </select>
+          <label htmlFor="caption">Caption</label>
+          <textarea
+            id="caption"
+            name="caption"
+            rows={2}
+            maxLength={500}
+            required
+            placeholder="e.g. Second classroom with roof sheets fitted"
+          />
+          <label htmlFor="captured_on">Date captured (optional)</label>
+          <input id="captured_on" name="captured_on" type="date" max={today} />
+          <label htmlFor="location_label">Place name (optional, public)</label>
+          <input
+            id="location_label"
+            name="location_label"
+            type="text"
+            maxLength={200}
+            placeholder="e.g. Village school site"
+          />
+          <label htmlFor="ev_uploaded_by">Supplied by</label>
+          <select id="ev_uploaded_by" name="uploaded_by" defaultValue="">
+            <option value="">Not recorded</option>
+            {people.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.display_name}{p.role_title ? ` (${p.role_title})` : ""}
+              </option>
+            ))}
+          </select>
+          <p className="small muted">
+            Whoever supplies evidence can&apos;t later verify this project.
+          </p>
+          <fieldset className="gps">
+            <legend>Exact location (optional, private)</legend>
+            <p className="small muted">
+              Never shown publicly. Precise locations can put people at risk, so only
+              record them when the review needs them.
+            </p>
+            <label htmlFor="gps_lat">Latitude</label>
+            <input id="gps_lat" name="gps_lat" type="text" inputMode="decimal" placeholder="e.g. -1.234567" />
+            <label htmlFor="gps_lng">Longitude</label>
+            <input id="gps_lng" name="gps_lng" type="text" inputMode="decimal" placeholder="e.g. 36.123456" />
+          </fieldset>
+          <label className="checkbox">
+            <input type="checkbox" name="shows_identifiable_people" /> Shows people who
+            could be identified. The whole item is then kept off public pages. The
+            caption, date and place name of other items are public, so keep names out
+            of them.
+          </label>
+          <button type="submit">Record evidence</button>
+        </form>
+      )}
     </main>
   );
 }
 
 function docCount(a: AssertionRow) {
   return a.documents?.[0]?.count ?? 0;
+}
+
+function evCount(a: AssertionRow) {
+  return a.evidence_items?.[0]?.count ?? 0;
 }

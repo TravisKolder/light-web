@@ -124,3 +124,84 @@ export async function addDocument(formData: FormData) {
   revalidatePath(`/edit/${slug}`);
   back("docAdded=1");
 }
+
+// Server action for recording evidence metadata against a statement (backlog
+// item 21c2). No file upload yet, so storage_path is never set. Evidence
+// counts as a supporting document, so the database trigger may move the
+// statement from claim to documented; this action never sets a status.
+// GPS is PRIVATE (never in a public view); items that show identifiable
+// people are left out of public views entirely.
+
+const EVIDENCE_KINDS = ["photo", "video", "receipt", "site_report", "other"] as const;
+const MAX_CAPTION_LENGTH = 500;
+const MAX_LOCATION_LENGTH = 200;
+const COORD = /^-?\d{1,3}(\.\d{1,6})?$/;
+
+export async function addEvidence(formData: FormData) {
+  const slug = String(formData.get("slug") ?? "");
+  const projectId = String(formData.get("project_id") ?? "");
+  const assertionId = String(formData.get("assertion_id") ?? "").trim();
+  const kind = String(formData.get("kind") ?? "").trim();
+  const caption = String(formData.get("caption") ?? "").trim();
+  const capturedOn = String(formData.get("captured_on") ?? "").trim();
+  const locationLabel = String(formData.get("location_label") ?? "").trim();
+  const uploadedBy = String(formData.get("uploaded_by") ?? "").trim();
+  const identifiable = formData.get("shows_identifiable_people") === "on";
+  const lat = String(formData.get("gps_lat") ?? "").trim();
+  const lng = String(formData.get("gps_lng") ?? "").trim();
+  const back = (q: string) => redirect(`/edit/${encodeURIComponent(slug)}?${q}#add-evidence`);
+
+  const session = await getEditorSession();
+  if (session.state !== "editor") redirect("/edit");
+
+  if (!UUID.test(projectId)) back("evError=project");
+  if (!UUID.test(assertionId)) back("evError=assertion");
+  if (!(EVIDENCE_KINDS as readonly string[]).includes(kind)) back("evError=kind");
+  if (caption.length === 0) back("evError=caption");
+  if (caption.length > MAX_CAPTION_LENGTH) back("evError=long");
+  if (locationLabel.length > MAX_LOCATION_LENGTH) back("evError=location");
+  if (uploadedBy && !UUID.test(uploadedBy)) back("evError=person");
+  if (capturedOn) {
+    if (!isValidDate(capturedOn)) back("evError=date");
+    if (capturedOn > new Date().toISOString().slice(0, 10)) back("evError=future");
+  }
+  // GPS: both or neither, within range (mirrors the table's constraints).
+  if (Boolean(lat) !== Boolean(lng)) back("evError=gpsPair");
+  if (lat) {
+    if (!COORD.test(lat) || !COORD.test(lng)) back("evError=gps");
+    const la = Number(lat);
+    const ln = Number(lng);
+    if (la < -90 || la > 90 || ln < -180 || ln > 180) back("evError=gps");
+  }
+
+  const supabase = await getSupabaseServerClient();
+  // The table's composite foreign key also enforces this; checking first
+  // gives a plain-language error instead of a database one.
+  const { data: assertion } = await supabase!
+    .from("assertions")
+    .select("id")
+    .eq("id", assertionId)
+    .eq("project_id", projectId)
+    .maybeSingle();
+  if (!assertion) back("evError=assertion");
+
+  const { error } = await supabase!.from("evidence_items").insert({
+    project_id: projectId,
+    assertion_id: assertionId,
+    kind,
+    caption,
+    captured_on: capturedOn || null,
+    location_label: locationLabel || null,
+    uploaded_by: uploadedBy || null,
+    shows_identifiable_people: identifiable,
+    gps_lat: lat ? Number(lat) : null,
+    gps_lng: lng ? Number(lng) : null,
+  });
+  if (error) {
+    console.error("addEvidence failed:", error.message);
+    back("evError=save");
+  }
+
+  revalidatePath(`/edit/${slug}`);
+  back("evAdded=1");
+}

@@ -139,6 +139,8 @@ a { color: var(--accent); }
 }
 .editor-form label.checkbox { display: flex; gap: 8px; align-items: flex-start; font-weight: 400; }
 .editor-form label.checkbox input { margin-top: 3px; padding: 0; }
+.editor-form fieldset.gps { display: flex; flex-direction: column; gap: 8px; border: 1px solid #ccc; border-radius: 6px; padding: 8px 12px; margin: 0; }
+.editor-form fieldset.gps legend { font-size: 0.9em; font-weight: 600; padding: 0 4px; }
 .form-error { color: var(--review-fg); font-weight: 600; }
 .inline-form { display: inline; }
 .statement-list { list-style: none; padding: 0; margin: 8px 0; }
