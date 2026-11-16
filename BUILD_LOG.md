@@ -1145,3 +1145,14 @@ tested against a live Supabase project (none configured yet).
 for real until it exists.
 
 **Next:** 21d, ledger forms part 1 (budget lines and funds received).
+
+## 2026-11-16 — Setup complete (on request)
+
+Travis set up the test Supabase project (`Light-web-test`) and the Vercel
+preview at https://light-web-theta.vercel.app, following `docs/setup.md`:
+loaded the database, set the sign-in redirect URLs, signed in, and added
+himself as an editor. Marked done in `docs/setup.md`; the "Waiting on Travis"
+reminder is removed from `BACKLOG.md`, so nightly summaries no longer need to
+mention it. Uses fictional sample data only.
+
+**Next:** 21d, ledger forms part 1 (budget lines and funds received).

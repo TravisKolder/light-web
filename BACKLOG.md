@@ -30,9 +30,9 @@ unchecked item. Split anything that turns out larger.
 - [x] 19. Simple consistency flags (non-AI first): e.g. spent > approved, payment without receipt, claim with no document — shown as "needs review", never as verdicts.
 - [x] 20. Pilot readiness pass: README walkthrough, screenshots, open questions for Travis and John.
 
-> **Waiting on Travis:** set up the test Supabase project and Vercel preview
-> (`docs/setup.md`, not started; he asked to be reminded). Nightly runs keep
-> building the next item meanwhile, and should mention this in their summary.
+> Test Supabase project and Vercel preview set up by Travis on 2026-11-16
+> (`docs/setup.md`). New editor forms can now be tried live at
+> https://light-web-theta.vercel.app/edit.
 
 ## Editor forms (Travis approved 2026-11-12)
 

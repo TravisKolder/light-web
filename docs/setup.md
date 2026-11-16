@@ -1,7 +1,8 @@
 # Setting up a test Supabase project and Vercel preview
 
-Status: **not started yet** (Travis postponed it on 2026-11-12). Pick up at
-Step 1. Uses only the fictional sample project; the real pilot project comes later.
+Status: **done** (Travis, 2026-11-16). Test project `Light-web-test` on
+Supabase, preview at https://light-web-theta.vercel.app. Uses only the
+fictional sample project; the real pilot project comes later.
 
 ## Step 1: Create the Supabase project (about 5 min)
 1. supabase.com/dashboard → **New project**, name it e.g. `light-web-test`.
