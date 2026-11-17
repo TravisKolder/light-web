@@ -19,7 +19,7 @@ editor area uses the signed-in user's session, so RLS applies to every query.
 
 ## Base tables
 
-All 20 tables have RLS enabled. `anon` has **no** privileges on any of them
+All 21 tables have RLS enabled. `anon` has **no** privileges on any of them
 (revoked explicitly in migration 013, since newer Supabase projects grant
 API roles access to new tables by default).
 
@@ -31,6 +31,7 @@ API roles access to new tables by default).
 | `evidence_items`, `progress_reports`, `outcomes`, `lessons`, `sustainability_plans` | none | 0 rows; writes rejected | select / insert / update / delete | Evidence holds private GPS and photos of identifiable people |
 | `kingdom_return_entries`, `kingdom_return_links` | none | 0 rows; writes rejected | select / insert / update / delete | Narrative only; no score column exists |
 | `editors` | none | 0 rows | **select only** | Editors can see who the editors are; nobody can change the list through the API (add/remove in the Supabase SQL editor) |
+| `audit_log` | none | 0 rows | **select only** | Append-only change history (migration 014). Written only by triggers; a guard trigger refuses update/delete/truncate for every role. Rows hold whole old/new rows including private columns, so it must never feed a public view |
 
 "Editor" means `public.is_editor()` is true: a `security definer` function
 with an empty `search_path` that checks `auth.uid()` against
@@ -52,7 +53,7 @@ nothing can insert, update or delete through a view.
 
 | View | Columns exposed | Deliberately left out |
 | --- | --- | --- |
-| `public_projects` | id, slug, title, organization_id, country, region, need_statement, objectives, status, start_date, end_date, base_currency, created_at | private projects; visibility |
+| `public_projects` | id, slug, title, organization_id, country, region, need_statement, objectives, status, start_date, end_date, base_currency, created_at, timezone | private projects; visibility |
 | `public_organizations` | id, name, country, region, description, website | registration_number, contact_email, contact_phone, address_line; orgs with no public project |
 | `public_project_leaders` | project_id, role, since, display_name\*, role_title\* | person id, full_name, email, phone, address, notes |
 | `public_assertions` | id, project_id, statement, status, asserted_on, asserted_by_name\* | asserted_by person id |
@@ -81,6 +82,8 @@ anything in `public` can be called at `/rest/v1/rpc/<name>`.
 | Function | Callable by anon? | Effect |
 | --- | --- | --- |
 | `is_editor()` | yes (granted on purpose) | Returns false for anon; true only for editors. Reveals nothing else |
+| `is_valid_timezone(text)`, `project_today(uuid)` | no (signed-in only) | Migration 015. `project_today` runs as the caller, so RLS still applies: non-editors get null |
+| `record_audit()`, `audit_log_is_append_only()`, `assertions_default_asserted_on()` | no | Trigger functions; execute revoked from API roles |
 | `compute_assertion_status(uuid)` | callable, but refused | Runs as the caller (not `security definer`), so anon gets "permission denied" on the base tables |
 | trigger functions (`*_derive_status`, `refresh_assertion_status`, `verifications_require_independence`, `money_rows_check_rate`, `project_leaders_reject_beneficiary`) | no | Return `trigger`, which the API can't call |
 

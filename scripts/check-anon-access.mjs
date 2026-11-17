@@ -50,13 +50,13 @@ const BASE_TABLES = [
   "budget_lines", "funds_received", "suppliers", "purchases", "payments",
   "evidence_items", "progress_reports", "outcomes", "lessons",
   "sustainability_plans", "kingdom_return_entries", "kingdom_return_links",
-  "editors",
+  "editors", "audit_log",
 ];
 
 // Every public view and its exact documented columns
 // (migrations 009 and 010; docs/security-policies.md).
 const PUBLIC_VIEWS = {
-  public_projects: ["id", "slug", "title", "organization_id", "country", "region", "need_statement", "objectives", "status", "start_date", "end_date", "base_currency", "created_at"],
+  public_projects: ["id", "slug", "title", "organization_id", "country", "region", "need_statement", "objectives", "status", "start_date", "end_date", "base_currency", "created_at", "timezone"],
   public_organizations: ["id", "name", "country", "region", "description", "website"],
   public_project_leaders: ["project_id", "role", "since", "display_name", "role_title"],
   public_assertions: ["id", "project_id", "statement", "status", "asserted_on", "asserted_by_name"],

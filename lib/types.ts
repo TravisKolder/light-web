@@ -90,6 +90,8 @@ export interface PublicProject {
   end_date: IsoDate | null;
   base_currency: string;
   created_at: string;
+  /** IANA time zone; the project's dates are local dates in this zone. Absent until migration 015 is applied. */
+  timezone?: string;
 }
 
 export interface PublicOrganization {

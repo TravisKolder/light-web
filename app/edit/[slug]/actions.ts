@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { todayInTimeZone } from "@/lib/format";
 import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server";
 
 // Server action for adding an assertion (backlog item 21b).
@@ -19,6 +20,20 @@ function isValidDate(s: string) {
   return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
 }
 
+type Supabase = NonNullable<Awaited<ReturnType<typeof getSupabaseServerClient>>>;
+
+// Today's date where the project is (backlog 22d). Read from the database,
+// never from the form. Falls back to UTC if the project has no time zone yet
+// (migration 015 not applied).
+async function projectToday(supabase: Supabase, projectId: string) {
+  const { data } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("id", projectId)
+    .maybeSingle<{ timezone?: string }>();
+  return todayInTimeZone(data?.timezone);
+}
+
 export async function addAssertion(formData: FormData) {
   const slug = String(formData.get("slug") ?? "");
   const projectId = String(formData.get("project_id") ?? "");
@@ -34,18 +49,18 @@ export async function addAssertion(formData: FormData) {
   if (statement.length === 0) back("error=statement");
   if (statement.length > MAX_STATEMENT_LENGTH) back("error=long");
   if (assertedBy && !UUID.test(assertedBy)) back("error=person");
-  if (assertedOn) {
-    if (!isValidDate(assertedOn)) back("error=date");
-    if (assertedOn > new Date().toISOString().slice(0, 10)) back("error=future");
-  }
+  if (assertedOn && !isValidDate(assertedOn)) back("error=date");
 
-  const supabase = await getSupabaseServerClient();
-  const { error } = await supabase!.from("assertions").insert({
+  const supabase = (await getSupabaseServerClient())!;
+  const today = await projectToday(supabase, projectId);
+  if (assertedOn > today) back("error=future");
+
+  const { error } = await supabase.from("assertions").insert({
     project_id: projectId,
     statement,
     asserted_by: assertedBy || null,
-    // Omitted → the database default (today).
-    ...(assertedOn ? { asserted_on: assertedOn } : {}),
+    // Empty → today where the project is.
+    asserted_on: assertedOn || today,
   });
   if (error) {
     console.error("addAssertion failed:", error.message);
@@ -92,12 +107,10 @@ export async function addDocument(formData: FormData) {
   if (title.length === 0) back("docError=title");
   if (title.length > MAX_TITLE_LENGTH) back("docError=long");
   if (uploadedBy && !UUID.test(uploadedBy)) back("docError=person");
-  if (issuedOn) {
-    if (!isValidDate(issuedOn)) back("docError=date");
-    if (issuedOn > new Date().toISOString().slice(0, 10)) back("docError=future");
-  }
+  if (issuedOn && !isValidDate(issuedOn)) back("docError=date");
 
   const supabase = await getSupabaseServerClient();
+  if (issuedOn > (await projectToday(supabase!, projectId))) back("docError=future");
   // documents has no project_id column, so confirm the statement belongs to
   // this project before attaching anything to it.
   const { data: assertion } = await supabase!
@@ -161,10 +174,7 @@ export async function addEvidence(formData: FormData) {
   if (caption.length > MAX_CAPTION_LENGTH) back("evError=long");
   if (locationLabel.length > MAX_LOCATION_LENGTH) back("evError=location");
   if (uploadedBy && !UUID.test(uploadedBy)) back("evError=person");
-  if (capturedOn) {
-    if (!isValidDate(capturedOn)) back("evError=date");
-    if (capturedOn > new Date().toISOString().slice(0, 10)) back("evError=future");
-  }
+  if (capturedOn && !isValidDate(capturedOn)) back("evError=date");
   // GPS: both or neither, within range (mirrors the table's constraints).
   if (Boolean(lat) !== Boolean(lng)) back("evError=gpsPair");
   if (lat) {
@@ -175,6 +185,7 @@ export async function addEvidence(formData: FormData) {
   }
 
   const supabase = await getSupabaseServerClient();
+  if (capturedOn > (await projectToday(supabase!, projectId))) back("evError=future");
   // The table's composite foreign key also enforces this; checking first
   // gives a plain-language error instead of a database one.
   const { data: assertion } = await supabase!

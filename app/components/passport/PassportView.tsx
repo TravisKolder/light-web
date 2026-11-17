@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Passport } from "@/lib/passport";
 import type { LeaderRole, ProjectStatus } from "@/lib/types";
-import { formatDate } from "@/lib/format";
+import { formatDate, timeZoneLabel } from "@/lib/format";
 import { Ledger } from "./Ledger";
 import { EvidenceList } from "./Evidence";
 import { Results } from "./Results";
@@ -56,6 +56,11 @@ export function PassportView({ passport, publicView = false }: { passport: Passp
           )}
           <div><dt>Reporting currency</dt><dd>{project.base_currency}</dd></div>
         </dl>
+        {project.timezone && (
+          <p className="muted small">
+            Dates are the project&apos;s local dates ({timeZoneLabel(project.timezone)}).
+          </p>
+        )}
       </header>
 
       <section aria-labelledby="org-h">

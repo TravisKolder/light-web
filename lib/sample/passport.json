@@ -47,7 +47,8 @@
         "start_date": "2026-02-01",
         "base_currency": "USD",
         "need_statement": "The fictional Kibira village primary school teaches 180 pupils in two rooms and under a tree. In the rainy season outdoor classes stop.",
-        "organization_id": "00000000-5a3e-4000-8000-000000000001"
+        "organization_id": "00000000-5a3e-4000-8000-000000000001",
+        "timezone": "Africa/Kampala"
     },
     "evidence": [
         {

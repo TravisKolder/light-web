@@ -50,3 +50,15 @@ Supabase → **Authentication → URL Configuration**:
    reports OK.
 
 When done, update the status line at the top of this file.
+
+## Later database changes
+
+The test database was loaded on 2026-11-16 with migrations up to 013. Newer
+migrations are applied by pasting one upgrade file into the SQL Editor, once:
+
+| File | Adds | Applied to the test project? |
+| --- | --- | --- |
+| `supabase/upgrades/20261117_014_015_audit_log_timezone.sql` | Audit log (014), project time zone (015) | not yet |
+
+The app keeps working before an upgrade is applied (it just lacks the new
+feature). A brand-new project needs only `scripts/build-setup-sql.sh`.

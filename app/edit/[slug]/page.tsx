@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server";
+import { timeZoneLabel, todayInTimeZone } from "@/lib/format";
 import type { AssertionStatus } from "@/lib/types";
 import { addAssertion, addDocument, addEvidence } from "./actions";
 
@@ -105,9 +106,11 @@ export default async function EditProjectStatements({
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id, slug, title")
+    // "*" rather than naming timezone, so the page still works on a database
+    // where migration 015 hasn't been applied yet.
+    .select("*")
     .eq("slug", slug)
-    .maybeSingle();
+    .maybeSingle<{ id: string; slug: string; title: string; timezone?: string }>();
   if (!project) notFound();
 
   const [assertionsRes, peopleRes] = await Promise.all([
@@ -128,7 +131,9 @@ export default async function EditProjectStatements({
   ]);
   const assertions = (assertionsRes.data ?? []) as unknown as AssertionRow[];
   const people = (peopleRes.data ?? []) as PersonRow[];
-  const today = new Date().toISOString().slice(0, 10);
+  // "Today" where the project is, not where the server or the editor is (22d).
+  const today = todayInTimeZone(project.timezone);
+  const zone = timeZoneLabel(project.timezone);
 
   return (
     <main className="passport">
@@ -142,6 +147,10 @@ export default async function EditProjectStatements({
         <strong>documented</strong> when a supporting document is attached, and{" "}
         <strong>verified</strong> only when an independent verifier confirms it. The
         database sets these; they can&apos;t be changed by hand.
+      </p>
+      <p className="small muted">
+        Dates on this page are the project&apos;s local dates ({zone}). Today there
+        is {today}.
       </p>
 
       {assertionsRes.error ? (

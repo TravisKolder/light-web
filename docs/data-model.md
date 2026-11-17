@@ -199,6 +199,23 @@ reduced to a number.
 | Sustainability | Can the work continue after the original funding ends? |
 | Restoration    | When mistakes or failures occurred, were they acknowledged and corrected? |
 
+### Audit log (migration 014)
+
+**audit_log** — append-only history of every insert, update and delete on
+every table above and on `editors`. Filled only by triggers.
+P (editors only): `id, occurred_at, actor_id, actor_role, table_name, action,
+row_id, project_id, old_row, new_row`
+Nobody can change or remove rows (a guard trigger refuses it for every role).
+Status changes made by the status trigger are logged, so each statement's
+claim → documented → verified history can be reconstructed.
+
+### Dates and time zone (migration 015)
+
+`projects.timezone` (public, IANA name, default `UTC`). Every date recorded
+for a project is a local calendar date in that zone. The editor forms use it
+for "today" and the not-in-the-future check; a new statement with no date gets
+the project's local date. Passport pages say which zone the dates are in.
+
 ## 3. Privacy model (detail in backlog item 8)
 
 - Base tables have RLS on; `anon` has **no** direct select on any base table.

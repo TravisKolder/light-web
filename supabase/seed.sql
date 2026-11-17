@@ -39,7 +39,7 @@ values
 
 insert into public.projects
   (id, slug, title, organization_id, country, region, need_statement,
-   objectives, status, start_date, end_date, base_currency, visibility)
+   objectives, status, start_date, end_date, base_currency, visibility, timezone)
 values
   ('00000000-5a3e-4000-8000-0000000000a1',
    'sample-kibira-classroom-block',
@@ -51,7 +51,7 @@ values
    array['Build a two-classroom block with a durable iron-sheet roof',
          'Furnish both rooms with desks for 80 pupils',
          'Hand maintenance to the parents'' committee'],
-   'active', '2026-02-01', '2026-11-30', 'USD', 'public');
+   'active', '2026-02-01', '2026-11-30', 'USD', 'public', 'Africa/Kampala');
 
 -- ---------------------------------------------------------------------------
 -- People (private by default; only display_name/role_title of public
