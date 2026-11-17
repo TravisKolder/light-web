@@ -1440,3 +1440,60 @@ editor, so it can only be tried on the live site).
 4. Still open: `npm run check:anon-access` against the test project.
 
 **Next:** 21e, purchases and payments forms.
+
+## 2026-11-17 — Session 47 (10-minute session requested by Travis): items 21e, 21f
+
+Travis confirmed he ran the 016 upgrade file and the earlier follow-ups.
+
+**21e — purchases and payments.** New page `/edit/[slug]/purchases`: lists
+each purchase with its payments and "paid so far", and two forms. A purchase
+is recorded against one of the project's budget lines, with optional quantity,
+unit, supplier (pick one, or add a new one by its public name only) and linked
+statement. A payment is for one of the project's purchases, with method and an
+optional private transaction reference. Same currency rule and plain-language
+errors as 21d. Shared pieces moved to `form-parts.tsx` and `action-helpers.ts`.
+Run as a signed-in editor on local Postgres: supplier + purchase + UGX payment
+saved with the right converted amount, all three logged in `audit_log`; the
+supplier name appears in the public view and the payment reference does not.
+
+**21f — verification.** New page `/edit/[slug]/verify`: lists recorded
+verifications and a form with the statement checked, the verifier (pick one,
+or add a new one by display name and role, name public only if ticked), the
+verifier's independence declaration with a required "they made this
+declaration themselves" tick, both dates, method, finding, private notes. The
+action never sets a status. Each of the database's nine independence refusals
+is translated into a plain sentence ("…because they are listed as one of its
+leaders"). On local Postgres: a new independent verifier's "confirmed" moved a
+documented statement to verified; "not confirmed" left statuses unchanged; a
+project leader was refused by the database.
+
+**Files:** `app/edit/[slug]/purchases/{page.tsx,actions.ts}`,
+`app/edit/[slug]/verify/{page.tsx,actions.ts}`, `app/edit/[slug]/form-parts.tsx`,
+`app/edit/[slug]/action-helpers.ts` (new); `app/edit/[slug]/ledger/*`,
+`app/edit/[slug]/page.tsx`, `app/globals.css`, `BACKLOG.md`. **Size:** about
+650 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers` pass.
+Not checked: either page in a browser (they need a signed-in editor, so only
+on the live site).
+
+## Backlog complete — proposed next three items (for Travis to approve)
+
+Every item through 24 and 21f is done. Proposals, in suggested order:
+
+1. **Forms for the rest of the passport.** Progress reports, outcomes, lessons
+   learned, sustainability plan and Kingdom Return entries (narrative + links
+   to statements/evidence, no score). These sections display today but can
+   only be filled in by SQL. About three nightly items.
+2. **Corrections and history.** Let editors correct or withdraw an entry
+   (with a required reason), and show each statement's history from
+   `audit_log` on the edit pages, so changes are visible rather than silent.
+   Also a small form for people, leaders and organization details. About
+   three nightly items.
+3. **File uploads for documents and evidence.** Private storage bucket,
+   short-lived signed links after an access check, type allowlist by content,
+   size cap, EXIF/GPS stripped from photos, random stored names; then
+   thumbnails and a viewer on the passport. Needs a storage bucket created in
+   Supabase (a settings change Travis would make). About four nightly items.
+
+Until Travis approves, nightly runs make no changes.

@@ -423,3 +423,5 @@ h2[id] { scroll-margin-top: 20px; }
 
 .payment-list { margin: 6px 0 0; padding-left: 18px; }
 .payment-list li { padding: 2px 0; border-bottom: none; }
+
+.button-row { display: flex; flex-wrap: wrap; gap: 10px; }
