@@ -1346,3 +1346,12 @@ editor pages against the live database.
    you'd rather the forms default to the editor's own date.
 
 **Next:** 23d, share previews (Open Graph image per passport).
+
+## 2026-11-17 — Decisions from Travis (after session 45)
+
+- Footer: no contact address. Closed; don't ask again.
+- Editor form dates: keep the project's local date (not the editor's own).
+- Travis ran `supabase/upgrades/20261117_014_015_audit_log_timezone.sql` in the
+  test project's SQL Editor (migrations 014 and 015). Not independently
+  checked from here; `npm run check:anon-access` against the test project is
+  still the open item that would confirm it.

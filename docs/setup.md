@@ -58,7 +58,7 @@ migrations are applied by pasting one upgrade file into the SQL Editor, once:
 
 | File | Adds | Applied to the test project? |
 | --- | --- | --- |
-| `supabase/upgrades/20261117_014_015_audit_log_timezone.sql` | Audit log (014), project time zone (015) | not yet |
+| `supabase/upgrades/20261117_014_015_audit_log_timezone.sql` | Audit log (014), project time zone (015) | yes, run by Travis 2026-11-17 (not yet confirmed by `check:anon-access`) |
 
 The app keeps working before an upgrade is applied (it just lacks the new
 feature). A brand-new project needs only `scripts/build-setup-sql.sh`.
