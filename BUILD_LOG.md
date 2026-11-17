@@ -1214,3 +1214,41 @@ scan of `/`, `/p`, passport, 404, `/edit` shows all headers and no
    server uses UTC (fixed in 22d). Delete it in Supabase if you don't want it.
 
 **Next:** 22b, live access audit and anon-key check.
+
+## 2026-11-17 — Run 44: Item 22b, access audit
+
+**Built:**
+- `docs/security-policies.md`: every role, all 20 base tables (anon / signed-in
+  non-editor / editor rights and why), all 18 `public_*` views with the exact
+  columns they expose and the private columns they leave out, functions
+  callable over `/rpc`, and rules for adding new tables, views and functions.
+- `npm run check:anon-access` (`scripts/check-anon-access.mjs`): read-only live
+  check with the anon key. Expects every base table to be refused, every view
+  readable with only documented columns, `compute_assertion_status` refused and
+  `is_editor()` false. Refuses to run with a service/secret key; prints SKIPPED
+  without env vars (so it can sit in CI later).
+- Payload check: `check:public-page` now also fetches the RSC payload
+  (`RSC: 1`) and scans it for private sample values. Confirmed all passport
+  components are Server Components (only `app/error.tsx` is a client file), so
+  view rows aren't serialized to the browser; unshown columns (ids,
+  `storage_path`) stay on the server.
+
+**Files:** `docs/security-policies.md` (new), `scripts/check-anon-access.mjs`
+(new), `scripts/check-public-page.mjs`, `package.json`, `README.md`,
+`BACKLOG.md`. **Size:** about 330 lines, mostly the doc.
+
+**Checks:** typecheck, lint, build pass; `check:public-page` passes (HTML +
+RSC). `check:anon-access` could not run live here: this nightly run has no
+Supabase env vars and can't reach the preview site.
+
+**Found while auditing (no change needed now):** Postgres lets anyone call
+public functions over `/rpc`; the only one that reads data,
+`compute_assertion_status`, runs as the caller so anon is refused. 22c must add
+`audit_log` to the anon revoke list and the check script's table list.
+
+**Questions for Travis:**
+1. Please run `npm run check:anon-access` once with the test project's URL and
+   anon key in `.env.local` and paste the output (or any FAILED lines) into the
+   next log entry or a note; that's the "live" half of 22b.
+
+**Next:** 22c, append-only audit log.

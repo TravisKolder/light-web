@@ -74,7 +74,12 @@ the seed with `scripts/export-sample-fixture.sql`, and run
 
 `npm run build && npm run check:public-page` serves the public page
 (`/p/sample-kibira-classroom-block`) and fails if any private sample value
-(names, contacts, donor or payment references, private files) appears in it.
+(names, contacts, donor or payment references, private files) appears in it
+or in its RSC payload.
+
+`npm run check:anon-access` checks the live Supabase project with the anon key:
+every base table refused, every `public_*` view showing only its documented
+columns. Who can read and write what is written up in `docs/security-policies.md`.
 
 ## Pilot walkthrough
 

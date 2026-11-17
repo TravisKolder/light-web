@@ -9,7 +9,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "check:fixture": "node scripts/check-sample-fixture.mjs",
-    "check:public-page": "node scripts/check-public-page.mjs"
+    "check:public-page": "node scripts/check-public-page.mjs",
+    "check:anon-access": "node scripts/check-anon-access.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

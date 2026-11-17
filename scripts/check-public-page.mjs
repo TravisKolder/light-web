@@ -1,6 +1,6 @@
 // Privacy check for the public Passport page (backlog item 17).
 // Starts the production build, fetches /p/<sample slug>, and fails if any
-// PRIVATE value from supabase/seed.sql appears in the HTML.
+// PRIVATE value from supabase/seed.sql appears in the HTML or the RSC payload.
 //
 // Usage: npm run build && npm run check:public-page
 import { spawn } from "node:child_process";
@@ -43,12 +43,19 @@ try {
   if (!html) throw new Error(`Could not load ${URL_}`);
   if (!html.includes("Kingdom Return")) throw new Error("Page loaded but looks incomplete");
 
+  // Also check the React Server Components payload a client navigation
+  // fetches (backlog 22b), not just the first HTML response.
+  const rscRes = await fetch(URL_, { headers: { RSC: "1" } });
+  const rsc = await rscRes.text();
+  if (!rsc.includes("Kingdom Return")) throw new Error("RSC payload looks incomplete");
+  html += "\n" + rsc;
+
   const leaks = PRIVATE_VALUES.filter((v) => html.includes(v));
   if (leaks.length) {
     console.error("PRIVATE values found on the public page:\n" + leaks.join("\n"));
     process.exitCode = 1;
   } else {
-    console.log(`OK: none of ${PRIVATE_VALUES.length} private sample values appear on ${URL_}`);
+    console.log(`OK: none of ${PRIVATE_VALUES.length} private sample values appear on ${URL_} (HTML + RSC payload)`);
   }
 } catch (e) {
   console.error(String(e));
