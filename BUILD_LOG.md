@@ -1497,3 +1497,37 @@ Every item through 24 and 21f is done. Proposals, in suggested order:
    Supabase (a settings change Travis would make). About four nightly items.
 
 Until Travis approves, nightly runs make no changes.
+
+## 2026-11-17 — Session 48 (on request): items 25a, 25b
+
+Travis approved proposals 1 and 2 from the "backlog complete" note (forms for
+the rest of the passport; corrections and history). They are backlog items
+25a–26c. File uploads (proposal 3) still wait for a separate go-ahead.
+
+**25a — reports and results.** New page `/edit/[slug]/results` with four
+lists and forms: progress reports (period, summary, setbacks recorded openly,
+author, linked statement), outcomes (description, measure, target, achieved,
+linked statement), lessons learned, and the sustainability plan (review date
+may be in the future). Notes that report authors can't later verify.
+
+**25b — Kingdom Return.** New page `/edit/[slug]/kingdom-return`: shows the
+five dimensions with their entries and what each rests on, and a form for one
+narrative entry tied to ticked statements and evidence (each must belong to
+the project). No score, rating or meter anywhere.
+
+Both reached from new buttons on the project's edit page. Shared page pieces
+(`loadEditorProject`, crumbs, messages, person select, status) moved to
+`page-helpers.tsx`; shared action start (`beginEdit`) to `action-helpers.ts`.
+
+**Files:** `app/edit/[slug]/results/{page.tsx,actions.ts}`,
+`app/edit/[slug]/kingdom-return/{page.tsx,actions.ts}`,
+`app/edit/[slug]/page-helpers.tsx` (new); `action-helpers.ts`,
+`app/edit/[slug]/page.tsx`, `app/globals.css`, `BACKLOG.md`. **Size:** about
+600 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers` pass.
+The same inserts were run as a signed-in editor on local Postgres (all six
+tables saved and were logged in `audit_log`). Not checked: either page in a
+browser (needs a signed-in editor, so only on the live site).
+
+**Next:** 26a, history page from `audit_log`.

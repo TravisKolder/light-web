@@ -144,7 +144,9 @@ export default async function EditProjectStatements({
       <p className="button-row">
         <Link href={`/edit/${project.slug}/ledger`} className="button">Budget and funds</Link>{" "}
         <Link href={`/edit/${project.slug}/purchases`} className="button">Purchases and payments</Link>{" "}
-        <Link href={`/edit/${project.slug}/verify`} className="button">Verification</Link>
+        <Link href={`/edit/${project.slug}/verify`} className="button">Verification</Link>{" "}
+        <Link href={`/edit/${project.slug}/results`} className="button">Reports and results</Link>{" "}
+        <Link href={`/edit/${project.slug}/kingdom-return`} className="button">Kingdom Return</Link>
       </p>
       <h2>Statements</h2>
       <p className="small muted">

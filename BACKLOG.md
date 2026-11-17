@@ -71,3 +71,14 @@ Signed-in editors only. Forms record data; the database still sets every claim/d
 - [x] 21d. Ledger forms, part 1: budget lines and funds received (source category; donor identity optional and private). Show the database's currency-rule errors in plain language.
 - [x] 21e. Ledger forms, part 2: purchases (linked to a budget line) and payments (private reference number).
 - [x] 21f. Verification form: record an independent verification with a required independence declaration; show the database's independence rejection in plain language.
+
+## Rest of the passport, corrections and history (Travis approved 2026-11-17)
+
+Proposals 1 and 2 from the "backlog complete" note. File uploads (proposal 3)
+wait for a separate go-ahead and a storage bucket.
+
+- [x] 25a. Results forms on `/edit/[slug]/results`: progress reports (period, summary, setbacks, author, linked statement), outcomes (description, measure, target, achieved, linked statement), lessons learned, sustainability plan.
+- [x] 25b. Kingdom Return form on `/edit/[slug]/kingdom-return`: one narrative entry per dimension at a time, linked to statements and evidence. No score, ever.
+- [ ] 26a. History: `/edit/[slug]/history` shows the project's change log from `audit_log` (who, when, what changed, old → new), filterable by kind of record.
+- [ ] 26b. Corrections: editors can correct a statement's wording or withdraw a statement, each with a required reason kept in the history; withdrawn statements stay visible as withdrawn rather than disappearing.
+- [ ] 26c. People, leaders and organization: add a person (display name, role, public or not; private contact details optional), list and add project leaders, edit the organization's public description and the project's need and objectives.
