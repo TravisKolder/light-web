@@ -10,6 +10,8 @@
     "lint": "eslint .",
     "check:fixture": "node scripts/check-sample-fixture.mjs",
     "check:public-page": "node scripts/check-public-page.mjs",
+    "check:headers": "node scripts/check-headers.mjs",
+    "check:build-output": "node scripts/check-build-output.mjs",
     "check:anon-access": "node scripts/check-anon-access.mjs"
   },
   "dependencies": {

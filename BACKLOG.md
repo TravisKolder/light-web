@@ -56,7 +56,7 @@ first. Item 22a was done in the same session as the review.
 - [x] 23j. Tables polish: hidden captions, wider description column, "No statement" as a neutral outlined pill, row hover, approved-vs-spent bars on budget lines.
 - [x] 23k. Mobile and dark-mode pass: screenshot every page at 360/390/768px and in dark mode, fix what breaks, stacked rows for tables under 520px; confirm the public pages ship no unnecessary client JavaScript.
 - [x] 23l. Print stylesheet for passports: hide navigation, avoid splitting table rows, print URL and date.
-- [ ] 24. CI guardrails: GitHub Actions running typecheck, lint, build, the public-page leak check, a header check, and a build-output scan that fails on `service_role`/`sb_secret_`/service JWTs; Dependabot for npm.
+- [x] 24. CI guardrails: GitHub Actions running typecheck, lint, build, the public-page leak check, a header check, and a build-output scan that fails on `service_role`/`sb_secret_`/service JWTs; Dependabot for npm.
 
 Later, with file uploads (separate proposal): content-sniffed type allowlist, size cap, strip EXIF/GPS from photos, random stored names, private bucket with short-lived signed URLs.
 

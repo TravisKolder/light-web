@@ -1,0 +1,77 @@
+# Guardrails on every push and pull request (backlog item 24, site review S6).
+# No secrets are used: the app builds and runs on the fictional sample fixture.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  app:
+    name: Build and security checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Known vulnerabilities in dependencies
+        run: npm audit --audit-level=moderate
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+      - name: Sample fixture has no private fields
+        run: npm run check:fixture
+      - name: Public page leaks no private values
+        run: npm run check:public-page
+      - name: Security headers on every page
+        run: npm run check:headers
+      - name: No secrets or source maps in browser files
+        run: npm run check:build-output
+
+  database:
+    name: Migrations and privacy check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: postgres
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply every migration and the sample seed to an empty database
+        run: |
+          psql -v ON_ERROR_STOP=1 -q -f supabase/checks/local_stubs.sql
+          bash scripts/build-setup-sql.sh | psql -v ON_ERROR_STOP=1 -q
+      - name: No PRIVATE column in any public view
+        run: psql -v ON_ERROR_STOP=1 -f supabase/checks/public_views_no_private_columns.sql
+      - name: Signed-out visitors cannot read any base table
+        run: psql -v ON_ERROR_STOP=1 -f supabase/checks/anon_cannot_read_tables.sql
+      - name: Sample fixture matches what the public views return
+        run: |
+          psql -At -q -f scripts/export-sample-fixture.sql > /tmp/fixture-from-db.json
+          node scripts/compare-fixture.mjs /tmp/fixture-from-db.json
