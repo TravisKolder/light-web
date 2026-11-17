@@ -1,0 +1,5 @@
+# Light Web: how to report a security or privacy problem.
+# Please report privately; do not open a public issue.
+Contact: https://github.com/TravisKolder/light-web/security/advisories/new
+Expires: 2027-11-17T00:00:00.000Z
+Preferred-Languages: en

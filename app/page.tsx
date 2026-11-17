@@ -29,9 +29,12 @@ export default function Home() {
         <Link href="/p">Browse Project Passports</Link>{" "}
         <span className="muted">(currently one fictional sample)</span>
       </p>
-      <p className="muted">
-        Supabase: {configured ? "configured" : "not configured (see .env.example)"}
-      </p>
+      {/* Setup diagnostic: local development only, never on the public site. */}
+      {process.env.NODE_ENV !== "production" && (
+        <p className="muted small">
+          Dev only — Supabase: {configured ? "configured" : "not configured (see .env.example)"}
+        </p>
+      )}
     </main>
   );
 }

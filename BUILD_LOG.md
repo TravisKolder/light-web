@@ -1156,3 +1156,61 @@ reminder is removed from `BACKLOG.md`, so nightly summaries no longer need to
 mention it. Uses fictional sample data only.
 
 **Next:** 21d, ledger forms part 1 (budget lines and funds received).
+
+## 2026-11-17 — Session 43 (on request): Site review, item 22a security quick wins
+
+**Context:** Travis shared an external review of the live site (security +
+visual design). He asked for one session now on the most important holes,
+with the rest queued for nightly runs ahead of the remaining editor forms.
+The review's items became backlog section "Site review fixes" (22a–24).
+
+**Built (22a):**
+- Security headers on every route. `proxy.ts` now runs on all pages and sets a
+  Content-Security-Policy with a per-request nonce (`script-src 'self'
+  'nonce-…' 'strict-dynamic'`, `frame-ancestors 'none'`, `form-action
+  'self'`, `object-src 'none'`, `connect-src 'self'` since the browser never
+  talks to Supabase). Supabase session refresh still only runs on `/edit` and
+  `/auth`. `next.config.ts` adds `X-Content-Type-Options`, `Referrer-Policy`,
+  `X-Frame-Options: DENY`, `Permissions-Policy`, turns off `x-powered-by` and
+  browser source maps. The root layout calls `connection()` so every page is
+  rendered per request and gets the nonce (a prerendered page's scripts were
+  blocked in testing).
+- CSP enforced rather than report-only: tested with a production build in a
+  headless browser on `/`, `/p`, both passport pages, `/edit` and a 404, with
+  zero CSP violations and no un-nonced inline scripts.
+- Home page no longer shows "Supabase: configured" (dev builds only).
+- Styled `not-found.tsx` and `error.tsx` (error shows only Next's digest).
+- `robots.txt` disallows all and pages are `noindex` while data is sample-only.
+- `/.well-known/security.txt` pointing to GitHub private vulnerability
+  reporting.
+- Skip-to-content link, `:focus-visible` ring, link gold darkened to `#7a5f17`.
+- Next.js 16.4.2 → 16.4.6 and `eslint-config-next` to match (npm advisory
+  GHSA-mfr8-8qww-v76h; didn't affect this app, which doesn't use `use cache`),
+  plus `npm audit fix` for a dev-only lint dependency. `npm audit`: 0.
+
+**Repo check of review item S2 (full live check is 22b):** all 20 tables have
+RLS enabled; `anon` has no grants on any base table (migration 013) and reads
+only `public_*` views; there are no `"use client"` data components, no
+`service_role` key anywhere, and the public page reads only the views.
+
+**Files:** `proxy.ts`, `next.config.ts`, `app/layout.tsx`, `app/page.tsx`,
+`app/globals.css`, `app/not-found.tsx` (new), `app/error.tsx` (new),
+`app/robots.ts` (new), `public/.well-known/security.txt` (new),
+`package.json`, `package-lock.json`, `BACKLOG.md`. **Size:** about 250 lines
+plus the backlog section.
+
+**Checks:** typecheck, lint, build pass; `check:public-page` passes; header
+scan of `/`, `/p`, passport, 404, `/edit` shows all headers and no
+`x-powered-by`.
+
+**Questions for Travis:**
+1. `security.txt` points to GitHub's private vulnerability reporting. Turn it
+   on in the repo (Settings → Security → Private vulnerability reporting), or
+   give an address to use instead.
+2. In Vercel, check that Deployment Protection is on for preview deployments
+   (Settings → Deployment Protection), so branch builds aren't public.
+3. The "The roof has been repaired." statement dated Nov 16 on the sample is
+   probably your test from setup night; the date is a day ahead because the
+   server uses UTC (fixed in 22d). Delete it in Supabase if you don't want it.
+
+**Next:** 22b, live access audit and anon-key check.
