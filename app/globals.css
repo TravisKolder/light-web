@@ -373,3 +373,50 @@ h2[id] { scroll-margin-top: 20px; }
   .print-only { display: block !important; }
 }
 .print-only { display: none; }
+
+/* Evidence items (site review V8): icon, kind, caption, date and place.
+   Thumbnails and a viewer arrive with file uploads. */
+.support.evidence-items { list-style: none; padding: 0; display: grid; gap: 8px; margin-top: 6px; }
+.evidence-items li {
+  display: flex; gap: 12px; align-items: flex-start; margin: 0; padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent); border-radius: 8px;
+  background: color-mix(in srgb, var(--fg) 2.5%, transparent);
+}
+.evidence-items li.is-private { border-style: dashed; background: none; }
+.support-icon { flex: none; margin-top: 2px; color: var(--muted); }
+.evidence-items .small { margin-top: 2px; }
+.private-note { display: inline-flex; align-items: center; gap: 4px; margin-left: 10px; white-space: nowrap; }
+.private-note .support-icon { width: 15px; height: 15px; margin: 0; }
+
+/* Phones (site review V11): each table row becomes a stacked card, with the
+   column name beside every value, so nothing scrolls sideways. */
+@media (max-width: 520px) {
+  main { padding-top: 28px; }
+  .passport section.summary { padding: 16px; }
+  .ledger thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ledger, .ledger tbody, .ledger tfoot, .ledger tr, .ledger th, .ledger td { display: block; width: auto; }
+  .ledger tr { padding: 10px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
+  .ledger th, .ledger td, .ledger tfoot th, .ledger tfoot td { border-bottom: none; padding: 3px 0; }
+  .ledger tbody th, .ledger tfoot th { font-size: 1rem; padding-bottom: 6px; }
+  .ledger td[data-label] {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    text-align: right; white-space: normal;
+  }
+  .ledger td[data-label]::before {
+    content: attr(data-label); flex: none; text-align: left;
+    font-size: 0.875rem; font-weight: 400; color: var(--muted);
+  }
+  .ledger td[data-label] { flex-wrap: wrap; }
+  .ledger td[data-label] > .small { flex-basis: 100%; text-align: right; }
+  .ledger td.wide { display: block; text-align: left; font-weight: 600; padding-bottom: 6px; }
+  .ledger td.wide::before { display: none; }
+  .ledger td.wide .small { font-weight: 400; }
+  .ledger td.empty { display: none; }
+  .ledger.purchases th:nth-child(2), .ledger.purchases td:nth-child(2) { width: auto; min-width: 0; }
+  .ledger td:first-child { white-space: normal; }
+  .ledger tfoot tr { border-bottom: none; border-top: 2px solid color-mix(in srgb, var(--muted) 45%, transparent); }
+  .ledger .num .small { min-width: 0; }
+  .line-bar { max-width: none; }
+  .private-note { margin-left: 0; display: flex; white-space: normal; }
+  .leaders li { flex-direction: column; gap: 0; }
+}

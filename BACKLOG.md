@@ -47,14 +47,14 @@ first. Item 22a was done in the same session as the review.
 - [x] 23a. Passport summary band under the title: Claim / Documented / Verified counts with a segmented bar, money at a glance (approved, received, spent), "needs review" chip linking to the flags, last-updated date.
 - [x] 23b. Type and hierarchy: larger h1/h2/h3 scale with spacing, a self-hosted serif heading font via `next/font` (keeps the CSP tight), minimum 14px text, tabular numbers in money columns.
 - [x] 23c. Site chrome: slim header (wordmark using the ○ ◐ ● progression, Projects, How it works), footer (purpose, status legend, contact, sample-data notice), favicon/app icon, `theme-color`.
-- [ ] 23d. Share previews: Open Graph/Twitter metadata and a generated share image per passport (title + status counts).
+- [x] 23d. Share previews: Open Graph/Twitter metadata and a generated share image per passport (title + status counts).
 - [x] 23e. Section navigation on the passport: `id`s on every section heading, sticky "On this page" rail on wide screens, collapsible list on narrow screens, back-to-top.
 - [x] 23f. Landing page: tagline as the headline, three-column Claim → Documented → Verified explainer with an example from the sample, a preview card of the sample passport, and a primary button style.
 - [x] 23g. Projects index as cards: title, organization, region, dates, segmented status bar, budget progress; whole card clickable with hover/focus states; empty state.
-- [ ] 23h. Mark sample data once: one banner on the passport and a "Sample" tag on its card; remove the inline "SAMPLE"/"(fictional)" repeats from the seed data (fixture + a SQL update for the test database).
-- [ ] 23i. Evidence that looks like evidence: type icon, date and place on each item, lock icon + privacy note on private items. (Thumbnails and a viewer wait for file uploads.)
+- [x] 23h. Mark sample data once: one banner on the passport and a "Sample" tag on its card; remove the inline "SAMPLE"/"(fictional)" repeats from the seed data (fixture + a SQL update for the test database).
+- [x] 23i. Evidence that looks like evidence: type icon, date and place on each item, lock icon + privacy note on private items. (Thumbnails and a viewer wait for file uploads.)
 - [x] 23j. Tables polish: hidden captions, wider description column, "No statement" as a neutral outlined pill, row hover, approved-vs-spent bars on budget lines.
-- [ ] 23k. Mobile and dark-mode pass: screenshot every page at 360/390/768px and in dark mode, fix what breaks, stacked rows for tables under 520px; confirm the public pages ship no unnecessary client JavaScript.
+- [x] 23k. Mobile and dark-mode pass: screenshot every page at 360/390/768px and in dark mode, fix what breaks, stacked rows for tables under 520px; confirm the public pages ship no unnecessary client JavaScript.
 - [x] 23l. Print stylesheet for passports: hide navigation, avoid splitting table rows, print URL and date.
 - [ ] 24. CI guardrails: GitHub Actions running typecheck, lint, build, the public-page leak check, a header check, and a build-output scan that fails on `service_role`/`sb_secret_`/service JWTs; Dependabot for npm.
 

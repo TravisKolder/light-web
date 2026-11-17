@@ -75,9 +75,10 @@ export function PassportView({ passport, publicView = false }: { passport: Passp
         {publicView && <span className="muted"> · public read-only view</span>}
       </p>
 
-      {passport.source === "sample" && (
+      {(passport.source === "sample" || project.is_sample) && (
         <p className="sample-banner" role="note">
-          Sample data: this project, its people, places, and amounts are entirely fictional.
+          <strong>Sample.</strong> This is a fictional project used to demonstrate the
+          format. Its people, places, documents and amounts are not real.
         </p>
       )}
 

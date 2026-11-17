@@ -32,26 +32,26 @@ insert into public.organizations
    registration_number, contact_email, contact_phone, address_line)
 values
   ('00000000-5a3e-4000-8000-000000000001',
-   'Hillside Hope Fellowship (SAMPLE)', 'UG', 'Eastern Region (fictional)',
-   'Fictional local church network used as sample data.', null,
+   'Hillside Hope Fellowship', 'UG', 'Eastern Region',
+   'A local church network serving village congregations.', null,
    'SAMPLE-REG-0001', 'office@hillside-hope.example', '+256 555 0100',
    'P.O. Box 0, Fictional Town');
 
 insert into public.projects
   (id, slug, title, organization_id, country, region, need_statement,
-   objectives, status, start_date, end_date, base_currency, visibility, timezone)
+   objectives, status, start_date, end_date, base_currency, visibility, timezone, is_sample)
 values
   ('00000000-5a3e-4000-8000-0000000000a1',
    'sample-kibira-classroom-block',
-   'SAMPLE: Kibira Village Primary School classroom block',
+   'Kibira Village Primary School classroom block',
    '00000000-5a3e-4000-8000-000000000001',
-   'UG', 'Eastern Region (fictional)',
-   'The fictional Kibira village primary school teaches 180 pupils in two '
+   'UG', 'Eastern Region',
+   'Kibira village primary school teaches 180 pupils in two '
    'rooms and under a tree. In the rainy season outdoor classes stop.',
    array['Build a two-classroom block with a durable iron-sheet roof',
          'Furnish both rooms with desks for 80 pupils',
          'Hand maintenance to the parents'' committee'],
-   'active', '2026-02-01', '2026-11-30', 'USD', 'public', 'Africa/Kampala');
+   'active', '2026-02-01', '2026-11-30', 'USD', 'public', 'Africa/Kampala', true);
 
 -- ---------------------------------------------------------------------------
 -- People (private by default; only display_name/role_title of public
@@ -114,16 +114,16 @@ insert into public.documents
   (id, assertion_id, kind, title, issued_on, uploaded_by, contains_personal_data, storage_path)
 values
   ('00000000-5a3e-4000-8000-0000000000d1', '00000000-5a3e-4000-8000-0000000000b1',
-   'report', 'Board minutes approving the budget (SAMPLE)', '2026-01-20',
+   'report', 'Board minutes approving the budget', '2026-01-20',
    '00000000-5a3e-4000-8000-0000000000c1', false, 'sample/board-minutes.pdf'),
   ('00000000-5a3e-4000-8000-0000000000d2', '00000000-5a3e-4000-8000-0000000000b2',
-   'bank_statement', 'Bank statement, February 2026 (SAMPLE)', '2026-02-28',
+   'bank_statement', 'Bank statement, February 2026', '2026-02-28',
    '00000000-5a3e-4000-8000-0000000000c2', true, 'sample/bank-statement-feb.pdf'),
   ('00000000-5a3e-4000-8000-0000000000d3', '00000000-5a3e-4000-8000-0000000000b3',
-   'receipt', 'Cement receipt (SAMPLE)', '2026-03-04',
+   'receipt', 'Cement receipt', '2026-03-04',
    '00000000-5a3e-4000-8000-0000000000c2', false, 'sample/cement-receipt.jpg'),
   ('00000000-5a3e-4000-8000-0000000000d4', '00000000-5a3e-4000-8000-0000000000b4',
-   'invoice', 'Roofing sheets invoice (SAMPLE)', '2026-05-10',
+   'invoice', 'Roofing sheets invoice', '2026-05-10',
    '00000000-5a3e-4000-8000-0000000000c2', true, 'sample/roofing-invoice.pdf');
 
 -- ---------------------------------------------------------------------------
@@ -161,11 +161,11 @@ insert into public.suppliers
   (id, name, kind, country, region, contact_person_id, contact_name,
    contact_phone, contact_email, bank_details_note)
 values
-  ('00000000-5a3e-4000-8000-000000000051', 'Fictional Town Hardware (SAMPLE)', 'business',
-   'UG', 'Eastern Region (fictional)', '00000000-5a3e-4000-8000-0000000000c5',
+  ('00000000-5a3e-4000-8000-000000000051', 'Kibira Town Hardware', 'business',
+   'UG', 'Eastern Region', '00000000-5a3e-4000-8000-0000000000c5',
    'Fictional Shopkeeper', '+256 555 0105', 'shop@hardware.example', 'SAMPLE account, not real'),
-  ('00000000-5a3e-4000-8000-000000000052', 'Kibira Builders Cooperative (SAMPLE)', 'cooperative',
-   'UG', 'Eastern Region (fictional)', null, 'Fictional Foreman', '+256 555 0107', null, null);
+  ('00000000-5a3e-4000-8000-000000000052', 'Kibira Builders Cooperative', 'cooperative',
+   'UG', 'Eastern Region', null, 'Fictional Foreman', '+256 555 0107', null, null);
 
 insert into public.purchases
   (id, project_id, budget_line_id, supplier_id, description, quantity, unit,
@@ -210,8 +210,8 @@ insert into public.evidence_items
 values
   ('00000000-5a3e-4000-8000-000000000081', '00000000-5a3e-4000-8000-0000000000a1',
    '00000000-5a3e-4000-8000-0000000000b5', 'photo',
-   'Completed roof of the two-classroom block, seen from the school yard (SAMPLE)',
-   '2026-06-28', 'Kibira village (fictional)', 'sample/roof-complete.jpg', false,
+   'Completed roof of the two-classroom block, seen from the school yard',
+   '2026-06-28', 'Kibira village', 'sample/roof-complete.jpg', false,
    null, null, '00000000-5a3e-4000-8000-0000000000c1'),
   ('00000000-5a3e-4000-8000-000000000082', '00000000-5a3e-4000-8000-0000000000a1',
    '00000000-5a3e-4000-8000-0000000000b6', 'photo',
@@ -254,7 +254,7 @@ values
   ('00000000-5a3e-4000-8000-0000000000a9', '00000000-5a3e-4000-8000-0000000000a1',
    'The parents'' committee inspects the roof after each rainy season and repairs gutters.',
    'A small termly maintenance contribution set by the parents'' committee.',
-   'Kibira P.S. parents'' committee (fictional)', '2027-04-30');
+   'Kibira P.S. parents'' committee', '2027-04-30');
 
 -- ---------------------------------------------------------------------------
 -- Kingdom Return — narrative + linked evidence, no score

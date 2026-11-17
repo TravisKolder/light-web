@@ -33,8 +33,8 @@
     "project": {
         "id": "00000000-5a3e-4000-8000-0000000000a1",
         "slug": "sample-kibira-classroom-block",
-        "title": "SAMPLE: Kibira Village Primary School classroom block",
-        "region": "Eastern Region (fictional)",
+        "title": "Kibira Village Primary School classroom block",
+        "region": "Eastern Region",
         "status": "active",
         "country": "UG",
         "end_date": "2026-11-30",
@@ -46,20 +46,21 @@
         ],
         "start_date": "2026-02-01",
         "base_currency": "USD",
-        "need_statement": "The fictional Kibira village primary school teaches 180 pupils in two rooms and under a tree. In the rainy season outdoor classes stop.",
+        "need_statement": "Kibira village primary school teaches 180 pupils in two rooms and under a tree. In the rainy season outdoor classes stop.",
         "organization_id": "00000000-5a3e-4000-8000-000000000001",
-        "timezone": "Africa/Kampala"
+        "timezone": "Africa/Kampala",
+        "is_sample": true
     },
     "evidence": [
         {
             "id": "00000000-5a3e-4000-8000-000000000081",
             "kind": "photo",
-            "caption": "Completed roof of the two-classroom block, seen from the school yard (SAMPLE)",
+            "caption": "Completed roof of the two-classroom block, seen from the school yard",
             "project_id": "00000000-5a3e-4000-8000-0000000000a1",
             "captured_on": "2026-06-28",
             "assertion_id": "00000000-5a3e-4000-8000-0000000000b5",
             "storage_path": "sample/roof-complete.jpg",
-            "location_label": "Kibira village (fictional)"
+            "location_label": "Kibira village"
         }
     ],
     "outcomes": [
@@ -144,7 +145,7 @@
         {
             "id": "00000000-5a3e-4000-8000-0000000000d1",
             "kind": "report",
-            "title": "Board minutes approving the budget (SAMPLE)",
+            "title": "Board minutes approving the budget",
             "issued_on": "2026-01-20",
             "project_id": "00000000-5a3e-4000-8000-0000000000a1",
             "assertion_id": "00000000-5a3e-4000-8000-0000000000b1",
@@ -154,7 +155,7 @@
         {
             "id": "00000000-5a3e-4000-8000-0000000000d2",
             "kind": "bank_statement",
-            "title": "Bank statement, February 2026 (SAMPLE)",
+            "title": "Bank statement, February 2026",
             "issued_on": "2026-02-28",
             "project_id": "00000000-5a3e-4000-8000-0000000000a1",
             "assertion_id": "00000000-5a3e-4000-8000-0000000000b2",
@@ -164,7 +165,7 @@
         {
             "id": "00000000-5a3e-4000-8000-0000000000d3",
             "kind": "receipt",
-            "title": "Cement receipt (SAMPLE)",
+            "title": "Cement receipt",
             "issued_on": "2026-03-04",
             "project_id": "00000000-5a3e-4000-8000-0000000000a1",
             "assertion_id": "00000000-5a3e-4000-8000-0000000000b3",
@@ -174,7 +175,7 @@
         {
             "id": "00000000-5a3e-4000-8000-0000000000d4",
             "kind": "invoice",
-            "title": "Roofing sheets invoice (SAMPLE)",
+            "title": "Roofing sheets invoice",
             "issued_on": "2026-05-10",
             "project_id": "00000000-5a3e-4000-8000-0000000000a1",
             "assertion_id": "00000000-5a3e-4000-8000-0000000000b4",
@@ -198,9 +199,9 @@
             "purchased_on": "2026-03-04",
             "exchange_rate": 0.00027000,
             "supplier_kind": "business",
-            "supplier_name": "Fictional Town Hardware (SAMPLE)",
+            "supplier_name": "Kibira Town Hardware",
             "budget_line_id": "00000000-5a3e-4000-8000-0000000000e1",
-            "supplier_region": "Eastern Region (fictional)",
+            "supplier_region": "Eastern Region",
             "supplier_country": "UG"
         },
         {
@@ -218,9 +219,9 @@
             "purchased_on": "2026-03-15",
             "exchange_rate": 1.00000000,
             "supplier_kind": "cooperative",
-            "supplier_name": "Kibira Builders Cooperative (SAMPLE)",
+            "supplier_name": "Kibira Builders Cooperative",
             "budget_line_id": "00000000-5a3e-4000-8000-0000000000e2",
-            "supplier_region": "Eastern Region (fictional)",
+            "supplier_region": "Eastern Region",
             "supplier_country": "UG"
         },
         {
@@ -238,9 +239,9 @@
             "purchased_on": "2026-05-10",
             "exchange_rate": 1.00000000,
             "supplier_kind": "business",
-            "supplier_name": "Fictional Town Hardware (SAMPLE)",
+            "supplier_name": "Kibira Town Hardware",
             "budget_line_id": "00000000-5a3e-4000-8000-0000000000e1",
-            "supplier_region": "Eastern Region (fictional)",
+            "supplier_region": "Eastern Region",
             "supplier_country": "UG"
         }
     ],
@@ -348,11 +349,11 @@
     ],
     "organization": {
         "id": "00000000-5a3e-4000-8000-000000000001",
-        "name": "Hillside Hope Fellowship (SAMPLE)",
-        "region": "Eastern Region (fictional)",
+        "name": "Hillside Hope Fellowship",
+        "region": "Eastern Region",
         "country": "UG",
         "website": null,
-        "description": "Fictional local church network used as sample data."
+        "description": "A local church network serving village congregations."
     },
     "fundsReceived": [
         {
@@ -486,7 +487,7 @@
             "plan": "The parents' committee inspects the roof after each rainy season and repairs gutters.",
             "review_on": "2027-04-30",
             "project_id": "00000000-5a3e-4000-8000-0000000000a1",
-            "local_owner": "Kibira P.S. parents' committee (fictional)",
+            "local_owner": "Kibira P.S. parents' committee",
             "funding_after_grant": "A small termly maintenance contribution set by the parents' committee."
         }
     ],

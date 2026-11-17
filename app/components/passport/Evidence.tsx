@@ -27,6 +27,34 @@ const FINDING: Record<VerificationFinding, string> = {
   confirmed: "Confirmed", not_confirmed: "Not confirmed", disputed: "Disputed",
 };
 
+// Small line icons so supporting material reads as evidence, not as a line of
+// text (backlog item 23i). Decorative: the kind is always written out too.
+type IconName = "photo" | "video" | "page" | "receipt" | "report" | "lock";
+const ICON_PATHS: Record<IconName, React.ReactNode> = {
+  photo: <><rect x="2.5" y="4.5" width="15" height="11" rx="1.5" /><circle cx="7" cy="8.5" r="1.3" /><path d="M3 14l4-3.5 3 2.5 3-3 4 4" /></>,
+  video: <><rect x="2.5" y="4.5" width="15" height="11" rx="1.5" /><path d="M8.5 7.8v4.4l3.8-2.2z" /></>,
+  page: <><path d="M5.5 2.5h6l3 3v12h-9z" /><path d="M11.5 2.5v3h3M7.5 9.5h5M7.5 12.5h5" /></>,
+  receipt: <><path d="M5.5 2.5h9v15l-1.5-1-1.5 1-1.5-1-1.5 1-1.5-1-1.5 1z" /><path d="M7.5 6.5h5M7.5 9.5h5M7.5 12.5h3" /></>,
+  report: <><rect x="4.5" y="3.5" width="11" height="14" rx="1.5" /><path d="M7.5 3.5v-1h5v1M7.5 8h5M7.5 11h5M7.5 14h3" /></>,
+  lock: <><rect x="4.5" y="9" width="11" height="8" rx="1.5" /><path d="M7 9V6.5a3 3 0 0 1 6 0V9" /></>,
+};
+const DOC_ICON: Record<DocumentKind, IconName> = {
+  receipt: "receipt", invoice: "receipt", photo: "photo", report: "report",
+  contract: "page", bank_statement: "page", other: "page",
+};
+const EVIDENCE_ICON: Record<EvidenceKind, IconName> = {
+  photo: "photo", video: "video", receipt: "receipt", site_report: "report", other: "page",
+};
+
+function Icon({ name }: { name: IconName }) {
+  return (
+    <svg className="support-icon" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"
+      fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+      {ICON_PATHS[name]}
+    </svg>
+  );
+}
+
 export function EvidenceList({ passport }: { passport: Passport }) {
   const { assertions, documents, evidence, verifications } = passport;
 
@@ -58,28 +86,42 @@ export function EvidenceList({ passport }: { passport: Passport }) {
               {(docs.length > 0 || ev.length > 0 || hiddenSupport) && (
                 <>
                   <h3 className="sub">Supporting material</h3>
-                  <ul className="support">
+                  <ul className="support evidence-items">
                     {docs.map((d) => (
-                      <li key={d.id}>
-                        <span className="kind">{DOC_KIND[d.kind]}</span> {d.title}
-                        {d.issued_on && <span className="muted small"> · {formatDate(d.issued_on)}</span>}
-                        {d.contains_personal_data && (
-                          <span className="muted small"> · file not public (contains personal data)</span>
-                        )}
+                      <li key={d.id} className={d.contains_personal_data ? "is-private" : undefined}>
+                        <Icon name={DOC_ICON[d.kind]} />
+                        <div>
+                          <span className="kind">{DOC_KIND[d.kind]}</span> {d.title}
+                          <div className="muted small">
+                            {d.issued_on ? `Issued ${formatDate(d.issued_on)}` : "Date not recorded"}
+                            {d.contains_personal_data && (
+                              <span className="private-note">
+                                <Icon name="lock" /> File not public (contains personal data)
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </li>
                     ))}
                     {ev.map((e) => (
                       <li key={e.id}>
-                        <span className="kind">{EVIDENCE_KIND[e.kind]}</span> {e.caption}
-                        {(e.captured_on || e.location_label) && (
-                          <span className="muted small">
-                            {" · "}{[formatDate(e.captured_on), e.location_label].filter(Boolean).join(", ")}
-                          </span>
-                        )}
+                        <Icon name={EVIDENCE_ICON[e.kind]} />
+                        <div>
+                          <span className="kind">{EVIDENCE_KIND[e.kind]}</span> {e.caption}
+                          <div className="muted small">
+                            {[
+                              e.captured_on ? `Captured ${formatDate(e.captured_on)}` : "Date not recorded",
+                              e.location_label,
+                            ].filter(Boolean).join(" · ")}
+                          </div>
+                        </div>
                       </li>
                     ))}
                     {hiddenSupport && (
-                      <li className="muted">Supported by material not shown publicly, to protect people&apos;s privacy.</li>
+                      <li className="is-private">
+                        <Icon name="lock" />
+                        <div className="muted">Supported by material not shown publicly, to protect people&apos;s privacy.</div>
+                      </li>
                     )}
                   </ul>
                 </>

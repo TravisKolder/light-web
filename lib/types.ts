@@ -92,6 +92,8 @@ export interface PublicProject {
   created_at: string;
   /** IANA time zone; the project's dates are local dates in this zone. Absent until migration 015 is applied. */
   timezone?: string;
+  /** True for fictional demonstration projects. Absent until migration 016 is applied. */
+  is_sample?: boolean;
 }
 
 export interface PublicOrganization {

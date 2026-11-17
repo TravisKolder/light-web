@@ -216,6 +216,12 @@ for a project is a local calendar date in that zone. The editor forms use it
 for "today" and the not-in-the-future check; a new statement with no date gets
 the project's local date. Passport pages say which zone the dates are in.
 
+### Sample flag (migration 016)
+
+`projects.is_sample` (public, default false). True for fictional demonstration
+projects; pages show one banner on the passport and a "Sample" tag on the
+card, so the data itself no longer says SAMPLE / (fictional) on every line.
+
 ## 3. Privacy model (detail in backlog item 8)
 
 - Base tables have RLS on; `anon` has **no** direct select on any base table.

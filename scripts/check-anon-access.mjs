@@ -56,7 +56,7 @@ const BASE_TABLES = [
 // Every public view and its exact documented columns
 // (migrations 009 and 010; docs/security-policies.md).
 const PUBLIC_VIEWS = {
-  public_projects: ["id", "slug", "title", "organization_id", "country", "region", "need_statement", "objectives", "status", "start_date", "end_date", "base_currency", "created_at", "timezone"],
+  public_projects: ["id", "slug", "title", "organization_id", "country", "region", "need_statement", "objectives", "status", "start_date", "end_date", "base_currency", "created_at", "timezone", "is_sample"],
   public_organizations: ["id", "name", "country", "region", "description", "website"],
   public_project_leaders: ["project_id", "role", "since", "display_name", "role_title"],
   public_assertions: ["id", "project_id", "statement", "status", "asserted_on", "asserted_by_name"],

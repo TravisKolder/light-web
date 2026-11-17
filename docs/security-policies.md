@@ -53,7 +53,7 @@ nothing can insert, update or delete through a view.
 
 | View | Columns exposed | Deliberately left out |
 | --- | --- | --- |
-| `public_projects` | id, slug, title, organization_id, country, region, need_statement, objectives, status, start_date, end_date, base_currency, created_at, timezone | private projects; visibility |
+| `public_projects` | id, slug, title, organization_id, country, region, need_statement, objectives, status, start_date, end_date, base_currency, created_at, timezone, is_sample | private projects; visibility |
 | `public_organizations` | id, name, country, region, description, website | registration_number, contact_email, contact_phone, address_line; orgs with no public project |
 | `public_project_leaders` | project_id, role, since, display_name\*, role_title\* | person id, full_name, email, phone, address, notes |
 | `public_assertions` | id, project_id, statement, status, asserted_on, asserted_by_name\* | asserted_by person id |

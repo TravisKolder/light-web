@@ -14,7 +14,20 @@ const serif = localFont({
   variable: "--font-serif",
 });
 
+// Absolute base for link-preview URLs: the site's own address on Vercel.
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  openGraph: {
+    siteName: "The Light Web",
+    title: "The Light Web — Project Passports",
+    description: "Don't merely verify the story. Verify the fruit.",
+    type: "website",
+  },
+  twitter: { card: "summary" },
   title: "Light Web — Project Passport",
   description:
     "A transparent record of a ministry project: claims, documents, and independently verified results.",

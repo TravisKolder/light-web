@@ -82,13 +82,13 @@ export function Ledger({ passport }: { passport: Passport }) {
                       />
                     </span>
                   </th>
-                  <td className="num">{formatAmount(l.approved_amount_base, base)}</td>
-                  <td className="num">{formatAmount(l.spent_base, base)}</td>
-                  <td className={`num${over ? " over" : ""}`}>
+                  <td className="num" data-label={`Approved (${base})`}>{formatAmount(l.approved_amount_base, base)}</td>
+                  <td className="num" data-label={`Spent (${base})`}>{formatAmount(l.spent_base, base)}</td>
+                  <td className={`num${over ? " over" : ""}`} data-label={`Remaining (${base})`}>
                     {formatAmount(l.remaining_base, base)}
                     {over && <div className="small">Over budget</div>}
                   </td>
-                  <td><Status id={l.assertion_id} statusOf={statusOf} /></td>
+                  <td data-label="Status"><Status id={l.assertion_id} statusOf={statusOf} /></td>
                 </tr>
               );
             })}
@@ -96,10 +96,10 @@ export function Ledger({ passport }: { passport: Passport }) {
           <tfoot>
             <tr>
               <th scope="row">Total</th>
-              <td className="num">{formatAmount(approved, base)}</td>
-              <td className="num">{formatAmount(spent, base)}</td>
-              <td className="num">{formatAmount(approved - spent, base)}</td>
-              <td />
+              <td className="num" data-label={`Approved (${base})`}>{formatAmount(approved, base)}</td>
+              <td className="num" data-label={`Spent (${base})`}>{formatAmount(spent, base)}</td>
+              <td className="num" data-label={`Remaining (${base})`}>{formatAmount(approved - spent, base)}</td>
+              <td className="empty" />
             </tr>
           </tfoot>
         </table>
@@ -121,21 +121,21 @@ export function Ledger({ passport }: { passport: Passport }) {
           <tbody>
             {passport.fundsReceived.map((f) => (
               <tr key={f.id}>
-                <td>{formatDate(f.received_on)}</td>
-                <td>{SOURCE_LABEL[f.source_category]}</td>
-                <td className="num">
+                <td data-label="Date">{formatDate(f.received_on)}</td>
+                <td data-label="Source">{SOURCE_LABEL[f.source_category]}</td>
+                <td className="num" data-label={`Amount (${base})`}>
                   {formatAmount(f.amount_base, base)}
                   <Original row={f} base={base} />
                 </td>
-                <td><Status id={f.assertion_id} statusOf={statusOf} /></td>
+                <td data-label="Status"><Status id={f.assertion_id} statusOf={statusOf} /></td>
               </tr>
             ))}
           </tbody>
           <tfoot>
             <tr>
               <th scope="row" colSpan={2}>Total received</th>
-              <td className="num">{formatAmount(received, base)}</td>
-              <td />
+              <td className="num" data-label={`Amount (${base})`}>{formatAmount(received, base)}</td>
+              <td className="empty" />
             </tr>
           </tfoot>
         </table>
@@ -166,19 +166,19 @@ export function Ledger({ passport }: { passport: Passport }) {
               const line = passport.budgetLines.find((b) => b.id === p.budget_line_id);
               return (
                 <tr key={p.id}>
-                  <td>{formatDate(p.purchased_on)}</td>
-                  <td>
+                  <td data-label="Date">{formatDate(p.purchased_on)}</td>
+                  <td data-label="What and from whom" className="wide">
                     {p.quantity != null && `${Number(p.quantity)} ${p.unit ?? ""} · `}{p.description}
                     <div className="muted small">
                       {p.supplier_name ?? "Supplier not shown"}{line && ` · ${line.category}`}
                     </div>
                   </td>
-                  <td className="num">
+                  <td className="num" data-label={`Cost (${base})`}>
                     {formatAmount(p.amount_base, base)}
                     <Original row={p} base={base} />
                   </td>
-                  <td className="num">{formatAmount(paid, base)}</td>
-                  <td><Status id={p.assertion_id} statusOf={statusOf} /></td>
+                  <td className="num" data-label={`Paid (${base})`}>{formatAmount(paid, base)}</td>
+                  <td data-label="Status"><Status id={p.assertion_id} statusOf={statusOf} /></td>
                 </tr>
               );
             })}

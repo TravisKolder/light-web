@@ -62,9 +62,9 @@ export function Results({ passport }: { passport: Passport }) {
                 {outcomes.map((o) => (
                   <tr key={o.id}>
                     <th scope="row">{o.description}</th>
-                    <td>{o.target ?? "—"}</td>
-                    <td>{o.achieved ?? "—"}</td>
-                    <td><Badge id={o.assertion_id} statusOf={statusOf} /></td>
+                    <td data-label="Target">{o.target ?? "—"}</td>
+                    <td data-label="Achieved">{o.achieved ?? "—"}</td>
+                    <td data-label="Status"><Badge id={o.assertion_id} statusOf={statusOf} /></td>
                   </tr>
                 ))}
               </tbody>

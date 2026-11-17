@@ -20,7 +20,7 @@ export function ProjectCard({ summary, heading = "h2" }: { summary: ProjectSumma
     <article className="project-card">
       <p className="card-meta">
         <span>{STATUS_LABEL[project.status]}</span>
-        {source === "sample" && <span className="sample-tag">Sample</span>}
+        {(source === "sample" || project.is_sample) && <span className="sample-tag">Sample</span>}
       </p>
       <Heading className="card-title">
         <Link href={`/p/${project.slug}`} className="card-link">{project.title}</Link>
