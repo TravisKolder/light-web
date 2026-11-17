@@ -1252,3 +1252,12 @@ public functions over `/rpc`; the only one that reads data,
    next log entry or a note; that's the "live" half of 22b.
 
 **Next:** 22c, append-only audit log.
+
+## 2026-11-17 — Follow-up from Travis (on request)
+
+Travis confirmed: GitHub private vulnerability reporting is on (the
+`security.txt` contact works), Vercel Deployment Protection is set to
+Standard Protection for preview builds, and 2FA is on for his Vercel account.
+Questions 1 and 2 from session 43 are closed. He's keeping the test statement
+"The roof has been repaired." in the sample data for now; its date shows one
+day ahead until item 22d (project time zones) is done.
