@@ -1262,7 +1262,7 @@ Questions 1 and 2 from session 43 are closed. He's keeping the test statement
 "The roof has been repaired." in the sample data for now; its date shows one
 day ahead until item 22d (project time zones) is done.
 
-## 2026-11-17 — Session 44 (20-minute session requested by Travis): items 22c, 22d, 23a, 23b, 23c, 23e, 23f, 23g, 23j, 23l
+## 2026-11-17 — Session 45 (20-minute session requested by Travis): items 22c, 22d, 23a, 23b, 23c, 23e, 23f, 23g, 23j, 23l
 
 Ten items from the site-review section, in backlog order except that 23d
 (share images), 23h (rename sample data), 23i (evidence display) and 23k
