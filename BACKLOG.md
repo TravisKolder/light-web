@@ -48,9 +48,9 @@ first. Item 22a was done in the same session as the review.
 - [x] 23b. Type and hierarchy: larger h1/h2/h3 scale with spacing, a self-hosted serif heading font via `next/font` (keeps the CSP tight), minimum 14px text, tabular numbers in money columns.
 - [x] 23c. Site chrome: slim header (wordmark using the ○ ◐ ● progression, Projects, How it works), footer (purpose, status legend, contact, sample-data notice), favicon/app icon, `theme-color`.
 - [ ] 23d. Share previews: Open Graph/Twitter metadata and a generated share image per passport (title + status counts).
-- [ ] 23e. Section navigation on the passport: `id`s on every section heading, sticky "On this page" rail on wide screens, collapsible list on narrow screens, back-to-top.
-- [ ] 23f. Landing page: tagline as the headline, three-column Claim → Documented → Verified explainer with an example from the sample, a preview card of the sample passport, and a primary button style.
-- [ ] 23g. Projects index as cards: title, organization, region, dates, segmented status bar, budget progress; whole card clickable with hover/focus states; empty state.
+- [x] 23e. Section navigation on the passport: `id`s on every section heading, sticky "On this page" rail on wide screens, collapsible list on narrow screens, back-to-top.
+- [x] 23f. Landing page: tagline as the headline, three-column Claim → Documented → Verified explainer with an example from the sample, a preview card of the sample passport, and a primary button style.
+- [x] 23g. Projects index as cards: title, organization, region, dates, segmented status bar, budget progress; whole card clickable with hover/focus states; empty state.
 - [ ] 23h. Mark sample data once: one banner on the passport and a "Sample" tag on its card; remove the inline "SAMPLE"/"(fictional)" repeats from the seed data (fixture + a SQL update for the test database).
 - [ ] 23i. Evidence that looks like evidence: type icon, date and place on each item, lock icon + privacy note on private items. (Thumbnails and a viewer wait for file uploads.)
 - [ ] 23j. Tables polish: hidden captions, wider description column, "No statement" as a neutral outlined pill, row hover, approved-vs-spent bars on budget lines.

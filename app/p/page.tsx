@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { StatusBadge } from "@/app/components/StatusBadge";
+import { ProjectCard } from "@/app/components/ProjectCard";
 import { listProjects } from "@/lib/passport";
 
-// Projects index (backlog item 18): every public project with a summary of
-// how many of its claims are claims, documented, or independently verified.
-// Counts are context, not a rating.
+// Projects index (backlog items 18, 23g): every public project as a card with
+// a summary of how many of its statements are claims, documented, or
+// independently verified. Counts are context, not a rating.
 
 export const metadata: Metadata = { title: "Projects — Light Web" };
 export const dynamic = "force-dynamic";
-
-const STATUS_LABEL = { planned: "Planned", active: "Active", completed: "Completed", paused: "Paused" } as const;
 
 export default async function ProjectsIndex() {
   const projects = await listProjects();
@@ -19,27 +17,21 @@ export default async function ProjectsIndex() {
     <main className="passport">
       <p className="crumbs"><Link href="/">Light Web</Link> / Projects</p>
       <h1>Project Passports</h1>
-      {projects.some((p) => p.source === "sample") && (
-        <p className="sample-banner" role="note">
-          Sample data: the project below is entirely fictional.
-        </p>
-      )}
+      <p className="muted">
+        Each passport records what a project says, what supports it, and what has
+        been independently verified. Counts are context, not a rating.
+      </p>
       {projects.length === 0 ? (
-        <p className="muted">No public projects yet.</p>
+        <div className="empty-state">
+          <p><strong>No public projects yet.</strong></p>
+          <p className="muted">
+            Passports appear here once a project&apos;s organization makes its record public.
+          </p>
+        </div>
       ) : (
-        <ul className="project-list">
-          {projects.map(({ project, organizationName, statusCounts }) => (
-            <li key={project.id}>
-              <Link href={`/p/${project.slug}`} className="project-title">{project.title}</Link>
-              <p className="muted small">
-                {[organizationName, project.region, STATUS_LABEL[project.status]].filter(Boolean).join(" · ")}
-              </p>
-              <p className="status-counts">
-                <span><StatusBadge status="verified" /> {statusCounts.verified}</span>
-                <span><StatusBadge status="documented" /> {statusCounts.documented}</span>
-                <span><StatusBadge status="claim" /> {statusCounts.claim}</span>
-              </p>
-            </li>
+        <ul className="project-cards">
+          {projects.map((summary) => (
+            <li key={summary.project.id}><ProjectCard summary={summary} /></li>
           ))}
         </ul>
       )}

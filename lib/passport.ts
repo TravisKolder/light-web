@@ -104,7 +104,16 @@ export interface ProjectSummary {
   project: PublicProject;
   organizationName: string | null;
   statusCounts: Record<"claim" | "documented" | "verified", number>;
+  /** Recorded totals in the project's reporting currency. */
+  money: { approved: number; spent: number };
   source: "supabase" | "sample";
+}
+
+function sumMoney(lines: Pick<PublicBudgetVsActual, "approved_amount_base" | "spent_base">[]) {
+  return {
+    approved: lines.reduce((t, l) => t + Number(l.approved_amount_base ?? 0), 0),
+    spent: lines.reduce((t, l) => t + Number(l.spent_base ?? 0), 0),
+  };
 }
 
 function countStatuses(assertions: Pick<PublicAssertion, "status">[]) {
@@ -121,25 +130,29 @@ export async function listProjects(): Promise<ProjectSummary[]> {
       project: SAMPLE_PASSPORT.project,
       organizationName: SAMPLE_PASSPORT.organization?.name ?? null,
       statusCounts: countStatuses(SAMPLE_PASSPORT.assertions),
+      money: sumMoney(SAMPLE_PASSPORT.budgetVsActual),
       source: "sample",
     }];
   }
 
-  const [projects, orgs, assertions] = await Promise.all([
+  const [projects, orgs, assertions, budget] = await Promise.all([
     supabase.from("public_projects").select("*").order("title"),
     supabase.from("public_organizations").select("id, name"),
     supabase.from("public_assertions").select("project_id, status"),
+    supabase.from("public_budget_vs_actual").select("project_id, approved_amount_base, spent_base"),
   ]);
-  for (const r of [projects, orgs, assertions]) {
+  for (const r of [projects, orgs, assertions, budget]) {
     if (r.error) throw new Error(`Loading projects failed: ${r.error.message}`);
   }
   const orgName = new Map((orgs.data ?? []).map((o: { id: string; name: string }) => [o.id, o.name]));
   const rows = (assertions.data ?? []) as Pick<PublicAssertion, "project_id" | "status">[];
+  const lines = (budget.data ?? []) as Pick<PublicBudgetVsActual, "project_id" | "approved_amount_base" | "spent_base">[];
 
   return ((projects.data ?? []) as PublicProject[]).map((p) => ({
     project: p,
     organizationName: orgName.get(p.organization_id) ?? null,
     statusCounts: countStatuses(rows.filter((a) => a.project_id === p.id)),
+    money: sumMoney(lines.filter((l) => l.project_id === p.id)),
     source: "supabase" as const,
   }));
 }

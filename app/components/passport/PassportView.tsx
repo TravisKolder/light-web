@@ -27,13 +27,49 @@ const ROLE_LABEL: Record<LeaderRole, string> = {
   other: "Other",
 };
 
+// Section navigation (backlog item 23e). Ids match the h2 in each section.
+const SECTIONS: [id: string, label: string][] = [
+  ["summary-h", "Summary"],
+  ["org-h", "Responsible organization"],
+  ["leaders-h", "Local leaders"],
+  ["need-h", "The need"],
+  ["obj-h", "Objectives"],
+  ["flags-h", "Needs review"],
+  ["ledger-h", "Budget and spending"],
+  ["evidence-h", "Claims, evidence, verification"],
+  ["progress-h", "Progress reports"],
+  ["outcomes-h", "Outcomes"],
+  ["lessons-h", "Lessons learned"],
+  ["sustain-h", "Sustainability"],
+  ["kr-h", "Kingdom Return"],
+];
+
+function SectionLinks() {
+  return (
+    <ol>
+      {SECTIONS.map(([id, label]) => (
+        <li key={id}><a href={`#${id}`}>{label}</a></li>
+      ))}
+    </ol>
+  );
+}
+
 export function PassportView({ passport, publicView = false }: { passport: Passport; publicView?: boolean }) {
   const { project, organization, leaders } = passport;
   const start = formatDate(project.start_date);
   const end = formatDate(project.end_date);
 
   return (
-    <main className="passport">
+    <main className="passport" id="top">
+      {/* Wide screens: a sticky rail beside the page. */}
+      <nav className="toc-rail" aria-label="On this page">
+        <div>
+          <p className="toc-title">On this page</p>
+          <SectionLinks />
+          <p><a href="#top">Back to top</a></p>
+        </div>
+      </nav>
+
       <p className="crumbs">
         <Link href="/">Light Web</Link> / Project Passport
         {publicView && <span className="muted"> · public read-only view</span>}
@@ -65,6 +101,14 @@ export function PassportView({ passport, publicView = false }: { passport: Passp
       </header>
 
       <Summary passport={passport} />
+
+      {/* Narrow screens: a collapsible list under the summary. */}
+      <nav className="toc-inline" aria-label="On this page">
+        <details>
+          <summary>On this page</summary>
+          <SectionLinks />
+        </details>
+      </nav>
 
       <section aria-labelledby="org-h">
         <h2 id="org-h">Responsible organization</h2>
@@ -130,6 +174,8 @@ export function PassportView({ passport, publicView = false }: { passport: Passp
       <Results passport={passport} />
 
       <KingdomReturn passport={passport} />
+
+      <p className="back-to-top"><a href="#top">Back to top</a></p>
     </main>
   );
 }
