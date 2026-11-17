@@ -420,3 +420,6 @@ h2[id] { scroll-margin-top: 20px; }
   .private-note { margin-left: 0; display: flex; white-space: normal; }
   .leaders li { flex-direction: column; gap: 0; }
 }
+
+.payment-list { margin: 6px 0 0; padding-left: 18px; }
+.payment-list li { padding: 2px 0; border-bottom: none; }

@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import {
   FUNDS_SOURCES, UUID, isValidDate, parseAmount, resolveMoney,
 } from "@/lib/edit-validation";
-import { todayInTimeZone } from "@/lib/format";
 import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server";
+import { currencyError, loadProject, moneyFields, statementInProject } from "../action-helpers";
 
 // Server actions for the ledger forms, part 1 (backlog item 21d): budget
 // lines and funds received. Money is only RECORDED here; nothing is moved or
@@ -17,37 +17,6 @@ import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server
 const MAX_CATEGORY = 80;
 const MAX_TEXT = 500;
 const MAX_DONOR = 200;
-
-type Supabase = NonNullable<Awaited<ReturnType<typeof getSupabaseServerClient>>>;
-
-async function loadProject(supabase: Supabase, projectId: string) {
-  const { data } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", projectId)
-    .maybeSingle<{ id: string; base_currency: string; timezone?: string }>();
-  return data ? { base: data.base_currency, today: todayInTimeZone(data.timezone) } : null;
-}
-
-// The linked statement must belong to this project (the composite foreign
-// key enforces it too; checking first gives a plain-language error).
-async function statementInProject(supabase: Supabase, assertionId: string, projectId: string) {
-  const { data } = await supabase
-    .from("assertions").select("id").eq("id", assertionId).eq("project_id", projectId).maybeSingle();
-  return Boolean(data);
-}
-
-// The database has its own currency rule; if it still refuses, say why.
-function currencyError(message: string): string | null {
-  if (/Same currency as project base/.test(message)) return "rateNotNeeded";
-  if (/differs from project base/.test(message)) return "rateSource";
-  return null;
-}
-
-function moneyFields(formData: FormData) {
-  const get = (k: string) => String(formData.get(k) ?? "").trim();
-  return { currency: get("currency"), rate: get("exchange_rate"), rateDate: get("rate_date"), rateSource: get("rate_source") };
-}
 
 export async function addBudgetLine(formData: FormData) {
   const get = (k: string) => String(formData.get(k) ?? "").trim();
