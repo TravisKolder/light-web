@@ -337,3 +337,39 @@ h2[id] { scroll-margin-top: 20px; }
   .toc-rail li a:hover { color: var(--fg); border-left-color: var(--accent); }
   .toc-rail p { margin: 0; }
 }
+
+/* Tables polish (site review V9) */
+.status-none { background: transparent; color: var(--muted); }
+.ledger tbody tr:hover { background: color-mix(in srgb, var(--fg) 4%, transparent); }
+.line-bar { max-width: 180px; margin-top: 6px; }
+.money-fill.money-over { background: var(--review-fg); }
+.ledger.purchases th:nth-child(2), .ledger.purchases td:nth-child(2) { width: 46%; min-width: 220px; }
+.ledger.purchases td:last-child { white-space: nowrap; }
+
+/* Print (site review V10): passports get printed for boards and givers. */
+@media print {
+  :root {
+    --bg: #fff; --fg: #000; --muted: #444; --accent: #5c4710;
+    --claim-bg: #fff; --claim-fg: #333; --documented-bg: #fff; --documented-fg: #1b3f69;
+    --verified-bg: #fff; --verified-fg: #17502a; --review-bg: #fff; --review-fg: #6b3a08;
+  }
+  body { font-size: 11pt; }
+  .site-header nav, .skip-link, .toc-rail, .toc-inline, .back-to-top, .crumbs, .button { display: none !important; }
+  .site-header { border-bottom: 1px solid #999; }
+  main { max-width: none; padding: 12pt 0 0; }
+  .site-inner { max-width: none; padding: 0; }
+  a { color: inherit; text-decoration: none; }
+  .passport section { margin-top: 22pt; }
+  h2, h3 { break-after: avoid; }
+  tr, li, .card, .kr-dim, .assertion, .summary-block, .project-card { break-inside: avoid; }
+  thead { display: table-header-group; }
+  /* Totals belong after the last row, not repeated at each page break. */
+  tfoot { display: table-row-group; }
+  .table-wrap { overflow: visible; }
+  .passport section.summary, .project-card { background: none; }
+  .status-badge, .status-bar .seg, .money-fill, .money-track { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  .site-footer { padding: 14pt 0 0; margin-top: 22pt; }
+  .site-footer .badge-legend { display: none; }
+  .print-only { display: block !important; }
+}
+.print-only { display: none; }

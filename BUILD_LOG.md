@@ -1261,3 +1261,88 @@ Standard Protection for preview builds, and 2FA is on for his Vercel account.
 Questions 1 and 2 from session 43 are closed. He's keeping the test statement
 "The roof has been repaired." in the sample data for now; its date shows one
 day ahead until item 22d (project time zones) is done.
+
+## 2026-11-17 — Session 44 (20-minute session requested by Travis): items 22c, 22d, 23a, 23b, 23c, 23e, 23f, 23g, 23j, 23l
+
+Ten items from the site-review section, in backlog order except that 23d
+(share images), 23h (rename sample data), 23i (evidence display) and 23k
+(mobile/dark pass) were left for nightly runs; each needs more than a few
+minutes or touches the live data.
+
+**22c — audit log (migration 014).** `audit_log` records every insert, update
+and delete on all 20 tables (who, when, table, row, old row, new row), written
+only by triggers. Editors can read it; nobody can write through the API, and a
+guard trigger refuses update/delete/truncate for every role. Status changes
+made by the status trigger are logged too. Tested on a local Postgres 16 with
+stubbed Supabase roles: editor insert + document produced three log rows
+including claim → documented; editor/anon/non-editor tampering and reads all
+refused; superuser delete and truncate refused.
+
+**22d — project time zone (migration 015).** `projects.timezone` (IANA name,
+validated, default UTC; sample = Africa/Kampala), exposed on
+`public_projects`. Editor forms use the project's local date for "today", the
+default date, and the not-in-the-future check (read from the database, not the
+form); a statement with no date gets the project's local date in the database
+too. Passport pages say which zone the dates are in. The app tolerates a
+database without the column, so it deployed safely before the upgrade is run.
+
+**Upgrade file for the live test database:**
+`supabase/upgrades/20261117_014_015_audit_log_timezone.sql` (014 + 015 +
+sample time zone, one transaction). Tested as an upgrade on a database built
+from migrations 001–013 and as part of a fresh full setup;
+`public_views_no_private_columns.sql` passes after both.
+
+**23a — summary band** under the passport title: counts of verified /
+documented / claim with a proportional bar ("Counts are context, not a
+rating"), approved / received / spent with bars, a "needs review" chip linking
+to the flags, and the latest dated entry.
+**23b — type:** self-hosted Source Serif 4 for headings (file in `app/fonts/`,
+OFL licence alongside; Google Fonts isn't contacted, so CSP stays
+`font-src 'self'`), larger h1/h2/h3 with a gold tick above each h2, no text
+under 13.6px (was 73 nodes at 12.8px), tabular numbers.
+**23c — chrome:** header with a ○ ◐ ● wordmark (inline SVG), Projects and How
+it works links; footer with purpose, legend and the sample-data/money notice;
+`app/icon.svg`; `theme-color` for light and dark.
+**23e — section navigation:** sticky "On this page" rail at ≥1180px, a
+collapsible list under the summary on smaller screens, back-to-top link. No
+client JavaScript, so the current section is not highlighted.
+**23f — landing page:** tagline as the headline, primary button, three-state
+explainer with an example statement from the sample, preview card.
+**23g — project cards:** status, sample tag, title, organization, region,
+dates, status bar and counts, spent-of-approved bar; whole card clickable with
+hover and focus states; empty state. Search/filter left until there are
+enough projects to need it.
+**23j — tables:** hidden captions, "No statement" as a neutral outlined pill,
+row hover, spent-vs-approved bar on each budget line, wider purchase
+description column.
+**23l — print stylesheet:** hides navigation, keeps rows and cards together,
+totals only after the last row, prints status colours, adds a "printed from"
+note. Checked by rendering the sample passport to a 7-page A4 PDF.
+
+**Files:** migrations 014, 015 and the upgrade file (new);
+`app/components/passport/Summary.tsx`, `app/components/ProjectCard.tsx`,
+`app/icon.svg`, `app/fonts/*` (new); `app/layout.tsx`, `app/page.tsx`,
+`app/p/page.tsx`, `app/globals.css`, `app/components/passport/PassportView.tsx`,
+`Ledger.tsx`, `Results.tsx`, `app/edit/[slug]/page.tsx`, `actions.ts`,
+`lib/format.ts`, `lib/passport.ts`, `lib/types.ts`, `lib/sample/passport.json`,
+`supabase/seed.sql`, `scripts/check-anon-access.mjs`, `docs/security-policies.md`,
+`docs/data-model.md`, `docs/setup.md`, `BACKLOG.md`. **Size:** about 1,100 lines.
+
+**Checks:** typecheck, lint, build pass; `check:public-page` (HTML + RSC) and
+`check:fixture` pass; no CSP violations or console errors in a headless
+browser on `/`, `/p` and the passport at 1280px and 375px, light and dark; no
+horizontal scroll at 375px. Not checked: the live site after deploy, and the
+editor pages against the live database.
+
+**Questions for Travis:**
+1. Run `supabase/upgrades/20261117_014_015_audit_log_timezone.sql` once in the
+   Supabase SQL Editor, then update the table in `docs/setup.md` (or tell
+   Claude). Until then there is no audit trail and dates still use UTC.
+2. Still open from 22b: `npm run check:anon-access` against the test project.
+   After the upgrade it also checks `audit_log` and the new `timezone` column.
+3. The footer has no contact line yet. What address (or none) should it show?
+4. Editor dates now follow the project's time zone (Kampala for the sample),
+   so in the US evening "today" is still the next calendar day there. Say if
+   you'd rather the forms default to the editor's own date.
+
+**Next:** 23d, share previews (Open Graph image per passport).

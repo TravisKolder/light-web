@@ -53,9 +53,9 @@ first. Item 22a was done in the same session as the review.
 - [x] 23g. Projects index as cards: title, organization, region, dates, segmented status bar, budget progress; whole card clickable with hover/focus states; empty state.
 - [ ] 23h. Mark sample data once: one banner on the passport and a "Sample" tag on its card; remove the inline "SAMPLE"/"(fictional)" repeats from the seed data (fixture + a SQL update for the test database).
 - [ ] 23i. Evidence that looks like evidence: type icon, date and place on each item, lock icon + privacy note on private items. (Thumbnails and a viewer wait for file uploads.)
-- [ ] 23j. Tables polish: hidden captions, wider description column, "No statement" as a neutral outlined pill, row hover, approved-vs-spent bars on budget lines.
+- [x] 23j. Tables polish: hidden captions, wider description column, "No statement" as a neutral outlined pill, row hover, approved-vs-spent bars on budget lines.
 - [ ] 23k. Mobile and dark-mode pass: screenshot every page at 360/390/768px and in dark mode, fix what breaks, stacked rows for tables under 520px; confirm the public pages ship no unnecessary client JavaScript.
-- [ ] 23l. Print stylesheet for passports: hide navigation, avoid splitting table rows, print URL and date.
+- [x] 23l. Print stylesheet for passports: hide navigation, avoid splitting table rows, print URL and date.
 - [ ] 24. CI guardrails: GitHub Actions running typecheck, lint, build, the public-page leak check, a header check, and a build-output scan that fails on `service_role`/`sb_secret_`/service JWTs; Dependabot for npm.
 
 Later, with file uploads (separate proposal): content-sniffed type allowlist, size cap, strip EXIF/GPS from photos, random stored names, private bucket with short-lived signed URLs.

@@ -17,7 +17,13 @@ const SOURCE_LABEL: Record<FundsSourceCategory, string> = {
 
 function Status({ id, statusOf }: { id: string | null; statusOf: Map<string, AssertionStatus> }) {
   const s = id ? statusOf.get(id) : undefined;
-  return s ? <StatusBadge status={s} /> : <span className="muted small">No assertion</span>;
+  // An entry with no statement behind it is a gap worth seeing, so it gets a
+  // pill like the three states do (neutral, outlined).
+  return s ? <StatusBadge status={s} /> : (
+    <span className="status-badge status-none" title="No statement has been recorded for this entry">
+      <span aria-hidden="true">–</span> No statement
+    </span>
+  );
 }
 
 function Original({ row, base }: { row: RecordedAmount; base: string }) {
@@ -35,6 +41,10 @@ export function Ledger({ passport }: { passport: Passport }) {
   const lines = passport.budgetVsActual;
   const sum = (xs: (string | number)[]) => xs.reduce<number>((t, x) => t + Number(x), 0);
 
+  // Share of the approved amount that has been spent, capped at 100.
+  const barPct = (spentAmt: string | number, approvedAmt: string | number) =>
+    Number(approvedAmt) > 0 ? Math.max(0, Math.min(100, (Number(spentAmt) / Number(approvedAmt)) * 100)) : 0;
+
   const approved = sum(lines.map((l) => l.approved_amount_base));
   const spent = sum(lines.map((l) => l.spent_base));
   const received = sum(passport.fundsReceived.map((f) => f.amount_base));
@@ -48,6 +58,7 @@ export function Ledger({ passport }: { passport: Passport }) {
 
       <div className="table-wrap">
         <table className="ledger">
+          <caption className="visually-hidden">Budget lines: approved, spent and remaining amounts in {base}</caption>
           <thead>
             <tr>
               <th scope="col">Budget line</th>
@@ -62,7 +73,15 @@ export function Ledger({ passport }: { passport: Passport }) {
               const over = Number(l.remaining_base) < 0;
               return (
                 <tr key={l.budget_line_id}>
-                  <th scope="row">{l.category}</th>
+                  <th scope="row">
+                    {l.category}
+                    <span className="money-track line-bar" aria-hidden="true">
+                      <span
+                        className={`money-fill ${over ? "money-over" : "money-spent"}`}
+                        style={{ width: `${barPct(l.spent_base, l.approved_amount_base)}%` }}
+                      />
+                    </span>
+                  </th>
                   <td className="num">{formatAmount(l.approved_amount_base, base)}</td>
                   <td className="num">{formatAmount(l.spent_base, base)}</td>
                   <td className={`num${over ? " over" : ""}`}>
@@ -90,6 +109,7 @@ export function Ledger({ passport }: { passport: Passport }) {
       <p className="muted small">Givers&apos; identities are private; only the kind of source is shown.</p>
       <div className="table-wrap">
         <table className="ledger">
+          <caption className="visually-hidden">Funds received, by date and kind of source, in {base}</caption>
           <thead>
             <tr>
               <th scope="col">Date</th>
@@ -129,7 +149,8 @@ export function Ledger({ passport }: { passport: Passport }) {
 
       <h3>Purchases</h3>
       <div className="table-wrap">
-        <table className="ledger">
+        <table className="ledger purchases">
+          <caption className="visually-hidden">Purchases: cost and amount paid in {base}</caption>
           <thead>
             <tr>
               <th scope="col">Date</th>

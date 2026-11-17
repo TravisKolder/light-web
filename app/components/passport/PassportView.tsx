@@ -176,6 +176,12 @@ export function PassportView({ passport, publicView = false }: { passport: Passp
       <KingdomReturn passport={passport} />
 
       <p className="back-to-top"><a href="#top">Back to top</a></p>
+      {publicView && (
+        <p className="print-only muted small">
+          Printed from the Light Web public passport at /p/{project.slug}. The online
+          record may have changed since; check it for the current status of each statement.
+        </p>
+      )}
     </main>
   );
 }

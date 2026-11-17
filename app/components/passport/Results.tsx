@@ -49,6 +49,7 @@ export function Results({ passport }: { passport: Passport }) {
         ) : (
           <div className="table-wrap">
             <table className="ledger">
+              <caption className="visually-hidden">Outcomes recorded for this project</caption>
               <thead>
                 <tr>
                   <th scope="col">Outcome</th>
