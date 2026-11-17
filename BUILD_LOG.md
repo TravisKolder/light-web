@@ -1355,3 +1355,88 @@ editor pages against the live database.
   test project's SQL Editor (migrations 014 and 015). Not independently
   checked from here; `npm run check:anon-access` against the test project is
   still the open item that would confirm it.
+
+## 2026-11-17 — Session 46 (second 20-minute session requested by Travis): items 23d, 23h, 23i, 23k, 24, 21d
+
+That finishes the site-review section (22a–24). Editor forms resumed with 21d.
+
+**23d — share previews.** Each public passport has Open Graph / Twitter
+metadata and a generated 1200×630 image (wordmark, title, organization, the
+three status counts, "Fictional sample" tag). `robots.txt` now lets link-preview
+fetchers (Slack, WhatsApp, iMessage, X, Facebook, LinkedIn, …) read `/p/`;
+search engines are still disallowed and pages stay `noindex`.
+
+**23h — one sample flag (migration 016).** `projects.is_sample` (public). The
+passport shows one banner and the card a "Sample" tag; SAMPLE / (fictional)
+removed from the sample's public text in `seed.sql` and the fixture (private
+fields keep their markers). Upgrade file for the live test database:
+`supabase/upgrades/20261117_016_sample_flag.sql` (016 + the same text changes,
+one transaction, sample rows only, each change logged in `audit_log`). Tested
+locally both ways: upgrading a 001–015 database and a fresh setup give
+identical public data, and both match the committed fixture.
+
+**23i — evidence items.** Supporting material is shown as items with a type
+icon, kind, caption, date and place; private items get a dashed outline, a
+lock icon and the privacy note. No thumbnails or viewer until file uploads.
+
+**23k — mobile and dark pass.** Screenshots of `/`, `/p`, both passport pages,
+`/edit` and the 404 at 360, 390 and 768px, light and dark. Fixed: all four
+tables scrolled sideways on phones, so under 520px each row is now a stacked
+card with the column name beside each value. No horizontal scroll anywhere, no
+console or CSP errors. Public pages ship no client components of their own
+(only `error.tsx` is a client file).
+
+**24 — CI.** `.github/workflows/ci.yml`, two jobs on every push and PR, no
+secrets needed: (1) `npm audit`, typecheck, lint, build, fixture check,
+public-page leak check, new `check:headers` (all headers on 5 pages, strict
+CSP, fresh nonce per request) and `check:build-output` (no service keys,
+private keys or source maps in browser files); (2) Postgres 16 service: every
+migration + seed applied to an empty database, then
+`public_views_no_private_columns.sql`, new `anon_cannot_read_tables.sql`
+(anon has no privilege on any base table; RLS on everywhere) and
+`compare-fixture.mjs` (committed fixture = what the public views return).
+`supabase/checks/local_stubs.sql` stands in for Supabase's roles and
+`auth.uid()`. Dependabot weekly for npm, monthly for actions. **First run on
+GitHub: both jobs passed.** Negative tests done locally: the anon check fails
+on a stray grant, the fixture check fails on a changed value.
+
+**21d — budget and funds forms.** New page `/edit/[slug]/ledger` (button on the
+project's edit page): lists budget lines and funds received with their
+statement's status, and two forms. Amounts in the reporting currency need no
+rate; any other currency needs rate, date and source, checked before the
+insert and explained in plain language (the database's own currency errors are
+translated too). Optional link to a statement; optional private giver details
+with a note that a giver recorded as a person can't later verify. Shared input
+checks moved to `lib/edit-validation.ts` (15 unit cases pass). The inserts were
+run as a signed-in editor on local Postgres: base-currency and UGX rows saved
+with correct converted totals, a wrong rate was refused, both writes appeared
+in `audit_log`.
+
+**Files (new):** `app/p/[slug]/opengraph-image.tsx`, migration 016, the 016
+upgrade file, `app/edit/[slug]/ledger/{page,actions}.tsx/.ts`,
+`lib/edit-validation.ts`, `scripts/check-headers.mjs`,
+`scripts/check-build-output.mjs`, `scripts/compare-fixture.mjs`,
+`supabase/checks/{local_stubs,anon_cannot_read_tables}.sql`,
+`.github/workflows/ci.yml`, `.github/dependabot.yml`. **Changed:**
+`app/layout.tsx`, `app/robots.ts`, `app/p/[slug]/page.tsx`, `app/globals.css`,
+`Evidence.tsx`, `Ledger.tsx`, `Results.tsx`, `PassportView.tsx`,
+`ProjectCard.tsx`, `app/edit/[slug]/page.tsx`, `lib/types.ts`,
+`lib/sample/passport.json`, `supabase/seed.sql`, `package.json`, docs.
+**Size:** about 1,300 lines.
+
+**Checks:** typecheck, lint, build; `check:public-page`, `check:fixture`,
+`check:headers`, `check:build-output` pass locally and in CI. Not checked: the
+live site after deploy; the ledger page in a browser (it needs a signed-in
+editor, so it can only be tried on the live site).
+
+**Questions for Travis:**
+1. Run `supabase/upgrades/20261117_016_sample_flag.sql` once in the SQL Editor.
+   Until then the live sample keeps its SAMPLE / (fictional) wording and shows
+   no banner or tag.
+2. Try `/edit/sample-kibira-classroom-block/ledger` on the live site: add a
+   budget line in USD and a gift in another currency.
+3. Dependabot will start opening pull requests for dependency updates. Merge
+   them when CI is green, or say if you'd rather it be turned off.
+4. Still open: `npm run check:anon-access` against the test project.
+
+**Next:** 21e, purchases and payments forms.

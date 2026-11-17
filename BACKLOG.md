@@ -68,6 +68,6 @@ Signed-in editors only. Forms record data; the database still sets every claim/d
 - [x] 21b. `/edit/[slug]` statements: list the project's assertions with their status badges, plus a form to add a new assertion (statement, asserted by, date). Server action with validation; status is read-only.
 - [x] 21c1. Document metadata form on `/edit/[slug]`, linked to one of the project's statements (kind, title, date issued, supplied by, `contains_personal_data`). Metadata only, no file upload. (Split from 21c, 2026-11-14.)
 - [x] 21c2. Evidence metadata form linked to a statement (kind, caption, date captured, location label, supplied by, `shows_identifiable_people`, private GPS pair). Metadata only, no file upload.
-- [ ] 21d. Ledger forms, part 1: budget lines and funds received (source category; donor identity optional and private). Show the database's currency-rule errors in plain language.
+- [x] 21d. Ledger forms, part 1: budget lines and funds received (source category; donor identity optional and private). Show the database's currency-rule errors in plain language.
 - [ ] 21e. Ledger forms, part 2: purchases (linked to a budget line) and payments (private reference number).
 - [ ] 21f. Verification form: record an independent verification with a required independence declaration; show the database's independence rejection in plain language.
