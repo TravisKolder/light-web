@@ -20,8 +20,17 @@ body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   line-height: 1.55;
 }
-main { max-width: 760px; margin: 0 auto; padding: 48px 16px; }
-h1 { margin: 0 0 4px; }
+main { max-width: 760px; margin: 0 auto; padding: 40px 16px 64px; }
+
+/* Type scale (site review V3): serif headings, sans body, nothing under 14px. */
+h1, h2, h3, .wordmark { font-family: var(--font-serif), Georgia, "Times New Roman", serif; }
+h1 { font-size: clamp(1.9rem, 1.4rem + 2.2vw, 2.4rem); line-height: 1.15; font-weight: 650; letter-spacing: -0.01em; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-size: 1.5rem; line-height: 1.25; font-weight: 620; margin: 48px 0 10px; }
+h3 { font-size: 1.125rem; line-height: 1.3; font-weight: 620; }
+h2::before {
+  content: ""; display: block; width: 28px; height: 2px;
+  background: var(--accent); margin-bottom: 14px;
+}
 .tagline { color: var(--accent); margin: 0 0 24px; font-style: italic; }
 .muted { color: var(--muted); }
 code { font-size: 0.9em; }
@@ -44,7 +53,7 @@ code { font-size: 0.9em; }
 .status-badge {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor;
-  font-size: 0.8em; font-weight: 600; white-space: nowrap;
+  font-size: 0.85rem; font-weight: 600; white-space: nowrap;
 }
 .status-claim      { background: var(--claim-bg);      color: var(--claim-fg); border-style: dashed; }
 .status-documented { background: var(--documented-bg); color: var(--documented-fg); }
@@ -54,34 +63,34 @@ code { font-size: 0.9em; }
 
 /* Project Passport page */
 a { color: var(--accent); }
-.crumbs { font-size: 0.9em; color: var(--muted); margin: 0 0 16px; }
+.crumbs { font-size: 0.875rem; color: var(--muted); margin: 0 0 16px; }
 .sample-banner {
   border: 1px dashed var(--accent); border-radius: 8px;
   padding: 8px 12px; margin: 0 0 20px; font-size: 0.9em;
 }
-.passport h1 { line-height: 1.2; margin-bottom: 12px; }
-.passport section { margin-top: 32px; }
-.passport h2 { font-size: 1.15em; margin: 0 0 8px; }
+.passport h1 { margin-bottom: 14px; }
+.passport section { margin-top: 52px; }
+.passport section > h2 { margin-top: 0; }
 .facts { display: flex; flex-wrap: wrap; gap: 8px 24px; margin: 0; }
 .facts div { min-width: 0; }
-.facts dt { font-size: 0.8em; color: var(--muted); }
+.facts dt { font-size: 0.875rem; color: var(--muted); }
 .facts dd { margin: 0; font-weight: 600; }
 .org-name { font-weight: 600; margin: 0 0 4px; }
 .leaders { list-style: none; padding: 0; margin: 0; }
 .leaders li { display: flex; gap: 12px; padding: 6px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
-.leader-role { min-width: 90px; color: var(--muted); font-size: 0.9em; }
+.leader-role { min-width: 90px; color: var(--muted); font-size: 0.9rem; }
 .objectives { padding-left: 20px; margin: 0; }
 
 /* Ledger */
-.passport h3 { font-size: 1em; margin: 24px 0 4px; }
-.small { font-size: 0.82em; }
+.passport h3 { margin: 28px 0 6px; }
+.small { font-size: 0.875rem; }
 .table-wrap { overflow-x: auto; margin: 8px 0 0; }
-.ledger { width: 100%; border-collapse: collapse; font-size: 0.92em; }
+.ledger { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
 .ledger th, .ledger td {
   text-align: left; padding: 8px 8px 8px 0; vertical-align: top;
   border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
 }
-.ledger thead th { font-size: 0.8em; color: var(--muted); font-weight: 600; }
+.ledger thead th { font-size: 0.875rem; color: var(--muted); font-weight: 600; }
 .ledger tbody th { font-weight: 600; }
 .ledger tfoot th, .ledger tfoot td { font-weight: 700; border-bottom: none; }
 .ledger .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
@@ -95,21 +104,21 @@ a { color: var(--accent); }
 .assertion { padding: 14px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
 .assertion-head { display: flex; align-items: center; gap: 10px; }
 .assertion-statement { margin: 6px 0 0; font-weight: 600; }
-.passport h3.sub { font-size: 0.8em; color: var(--muted); font-weight: 600; margin: 10px 0 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+.passport h3.sub { font-family: inherit; font-size: 0.875rem; color: var(--muted); font-weight: 600; margin: 10px 0 2px; text-transform: uppercase; letter-spacing: 0.04em; }
 .support { margin: 0; padding-left: 18px; }
 .support li { margin: 2px 0; }
-.kind { font-size: 0.8em; font-weight: 600; color: var(--muted); }
+.kind { font-size: 0.875rem; font-weight: 600; color: var(--muted); }
 
 /* Results */
 .card { padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
 .card p { margin: 6px 0 0; }
 .plan { margin: 0; }
-.plan dt { font-size: 0.8em; color: var(--muted); margin-top: 8px; }
+.plan dt { font-size: 0.875rem; color: var(--muted); margin-top: 8px; }
 .plan dd { margin: 0; }
 
 /* Kingdom Return */
 .kr-dim { padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
-.passport .kr-dim h3 { margin: 0; font-size: 1.05em; color: var(--accent); }
+.passport .kr-dim h3 { margin: 0; color: var(--accent); }
 .kr-q { margin: 2px 0 6px; font-style: italic; }
 .kr-entry p { margin: 4px 0; }
 .kr-entry .support li { margin: 4px 0; }
@@ -120,6 +129,7 @@ a { color: var(--accent); }
 .project-title { font-weight: 700; font-size: 1.05em; }
 .project-list p { margin: 4px 0 0; }
 .status-counts { display: flex; flex-wrap: wrap; gap: 6px 16px; font-variant-numeric: tabular-nums; }
+.project-title { font-family: var(--font-serif), Georgia, serif; font-size: 1.2rem; }
 
 /* Review flags */
 .flags { list-style: none; padding: 0; margin: 8px 0 0; }
@@ -165,3 +175,80 @@ a { color: var(--accent); }
   background: none; border: none; padding: 0; font: inherit;
   color: var(--accent); text-decoration: underline; cursor: pointer;
 }
+
+/* Site header and footer (site review V4) */
+.site-inner { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+.site-header { border-bottom: 1px solid color-mix(in srgb, var(--muted) 25%, transparent); }
+.site-header .site-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 4px 20px; padding-top: 12px; padding-bottom: 12px;
+}
+.wordmark { font-size: 1.15rem; font-weight: 650; color: var(--fg); text-decoration: none; white-space: nowrap; }
+.wordmark { display: inline-flex; align-items: center; gap: 10px; }
+.wordmark .mark { color: var(--accent); flex: none; }
+.site-header nav { display: flex; gap: 20px; font-size: 0.95rem; }
+.site-header nav a { color: var(--fg); text-decoration: none; padding: 4px 0; }
+.site-header nav a:hover, .wordmark:hover { color: var(--accent); }
+.site-footer {
+  border-top: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+  padding: 28px 0 40px; font-size: 0.95rem;
+}
+.site-footer p { margin: 0 0 12px; max-width: 60ch; }
+.site-footer .badge-legend { margin-bottom: 12px; }
+
+/* Passport summary band (site review V1) */
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+.passport section.summary {
+  margin-top: 24px; padding: 20px;
+  border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent); border-radius: 10px;
+  background: color-mix(in srgb, var(--fg) 3%, transparent);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px 32px;
+}
+.summary h2::before { display: none; }
+.summary-label { margin: 0 0 10px; font-size: 0.875rem; font-weight: 600; color: var(--muted); }
+.summary-counts { list-style: none; display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 8px 18px; padding: 0; margin: 0 0 12px; }
+.summary-counts li { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+.big-num {
+  font-family: var(--font-serif), Georgia, serif; font-size: 2.2rem; line-height: 1;
+  font-weight: 600; font-variant-numeric: tabular-nums lining-nums;
+}
+.summary-block .small { margin: 8px 0 0; }
+.status-bar {
+  display: flex; gap: 2px; height: 8px; border-radius: 999px; overflow: hidden;
+}
+.status-bar .seg { flex-basis: 0; min-width: 6px; }
+.seg-verified   { background: var(--verified-fg); }
+.seg-documented { background: var(--documented-fg); opacity: 0.75; }
+.seg-claim      {
+  background: repeating-linear-gradient(135deg, var(--claim-fg) 0 3px, transparent 3px 6px);
+  outline: 1px solid var(--claim-fg); outline-offset: -1px;
+}
+.money-bars { margin: 0; display: grid; gap: 10px; }
+.money-bars dt { font-size: 0.875rem; color: var(--muted); }
+.money-bars dd { margin: 0; }
+.money-value { font-weight: 600; font-variant-numeric: tabular-nums; }
+.money-track {
+  display: block; height: 6px; margin-top: 4px; border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 18%, transparent);
+}
+.money-fill { display: block; height: 100%; border-radius: 999px; background: var(--muted); }
+.money-fill.money-approved { background: color-mix(in srgb, var(--muted) 55%, transparent); }
+.money-fill.money-received { background: var(--accent); }
+.money-fill.money-spent    { background: var(--fg); }
+.summary-foot {
+  grid-column: 1 / -1; margin: 0; padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--muted) 25%, transparent);
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+}
+.review-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 12px;
+  border-radius: 999px; border: 1px solid currentColor; text-decoration: none;
+  background: var(--review-bg); color: var(--review-fg); font-size: 0.9rem; font-weight: 600;
+}
+.review-chip:hover { text-decoration: underline; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+:target, section:has(> :target) { scroll-margin-top: 16px; }

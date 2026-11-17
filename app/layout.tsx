@@ -1,6 +1,18 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
+import Link from "next/link";
 import { connection } from "next/server";
+import { StatusBadge } from "@/app/components/StatusBadge";
 import "./globals.css";
+
+// Heading typeface, self-hosted (Source Serif 4, SIL Open Font License) so
+// the Content-Security-Policy can stay at font-src 'self'.
+const serif = localFont({
+  src: "./fonts/source-serif-4-latin-wght-normal.woff2",
+  weight: "200 900",
+  display: "swap",
+  variable: "--font-serif",
+});
 
 export const metadata: Metadata = {
   title: "Light Web — Project Passport",
@@ -11,6 +23,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fbfaf7" },
+    { media: "(prefers-color-scheme: dark)", color: "#161614" },
+  ],
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -19,10 +38,48 @@ export default async function RootLayout({
   // no nonce and its scripts would be blocked.
   await connection();
   return (
-    <html lang="en">
+    <html lang="en" className={serif.variable}>
       <body>
         <a className="skip-link" href="#content">Skip to content</a>
+        <header className="site-header">
+          <div className="site-inner">
+            <Link href="/" className="wordmark">
+              <svg className="mark" viewBox="0 0 54 18" width="48" height="16" aria-hidden="true">
+                <g stroke="currentColor" strokeWidth="2" fill="none">
+                  <circle cx="9" cy="9" r="6.5" strokeDasharray="2.6 2" />
+                  <circle cx="27" cy="9" r="6.5" />
+                  <path d="M27 2.5a6.5 6.5 0 0 0 0 13z" fill="currentColor" stroke="none" />
+                  <circle cx="45" cy="9" r="6.5" fill="currentColor" />
+                </g>
+              </svg>
+              The Light Web
+            </Link>
+            <nav aria-label="Site">
+              <Link href="/p">Projects</Link>
+              <Link href="/#how-it-works">How it works</Link>
+            </nav>
+          </div>
+        </header>
         <div id="content" tabIndex={-1}>{children}</div>
+        <footer className="site-footer">
+          <div className="site-inner">
+            <p>
+              The Light Web keeps a transparent record of ministry projects, so that
+              what is claimed, what is documented, and what has been independently
+              verified are never confused.
+            </p>
+            <div className="badge-legend" aria-label="Statement status legend">
+              <StatusBadge status="claim" />
+              <StatusBadge status="documented" />
+              <StatusBadge status="verified" />
+            </div>
+            <p className="muted small">
+              Early prototype. All projects shown are fictional samples used to
+              demonstrate the format. Money is only recorded here, never collected
+              or moved.
+            </p>
+          </div>
+        </footer>
       </body>
     </html>
   );

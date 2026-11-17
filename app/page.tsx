@@ -15,6 +15,7 @@ export default function Home() {
         evidence of delivery, independent verification, outcomes, lessons, and
         sustainability.
       </p>
+      <h2 id="how-it-works">How it works</h2>
       <p>
         Every assertion is kept in one of three distinct states: a{" "}
         <em>claim</em>, a <em>supporting document</em>, or an{" "}
