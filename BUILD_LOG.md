@@ -1531,3 +1531,32 @@ tables saved and were logged in `audit_log`). Not checked: either page in a
 browser (needs a signed-in editor, so only on the live site).
 
 **Next:** 26a, history page from `audit_log`.
+
+## 2026-11-18 — Session 49 (nightly): item 26a
+
+**26a — change history.** New editors-only page `/edit/[slug]/history` that
+reads the append-only `audit_log` for the project, newest first (latest 200):
+when (in the project's time zone), who (editor display name; "System (role)"
+for SQL-editor/migration changes; "A former editor" if removed), what
+(added / changed / removed + kind of record + its statement/title/caption),
+and for changes a field-by-field old → new list (bookkeeping timestamps
+skipped). Filter links by kind: statements/documents/verifications, money,
+evidence and results, Kingdom Return, project and leaders. Documents and
+verifications have no `project_id`, so their log rows are found by the ids of
+the project's current ones. Linked from a new "History" button on the
+project's edit page. The page says plainly that old/new values can include
+private details and is for editors only; nothing here feeds a public view.
+
+**Files:** `app/edit/[slug]/history/page.tsx` (new), `app/edit/[slug]/page.tsx`,
+`BACKLOG.md`. **Size:** about 190 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers`,
+`check:build-output` pass. Not checked: the page in a browser with real log
+rows (needs a signed-in editor, so only on the live site).
+
+**Known gaps (for Travis):** changes to people and organizations aren't shown
+(they aren't tied to one project), nor documents/verifications that were since
+deleted. If you want those, a small migration could stamp `project_id` on
+their audit rows — say the word.
+
+**Next:** 26b, corrections and withdrawals with a required reason.

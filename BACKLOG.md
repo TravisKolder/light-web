@@ -79,6 +79,6 @@ wait for a separate go-ahead and a storage bucket.
 
 - [x] 25a. Results forms on `/edit/[slug]/results`: progress reports (period, summary, setbacks, author, linked statement), outcomes (description, measure, target, achieved, linked statement), lessons learned, sustainability plan.
 - [x] 25b. Kingdom Return form on `/edit/[slug]/kingdom-return`: one narrative entry per dimension at a time, linked to statements and evidence. No score, ever.
-- [ ] 26a. History: `/edit/[slug]/history` shows the project's change log from `audit_log` (who, when, what changed, old → new), filterable by kind of record.
+- [x] 26a. History: `/edit/[slug]/history` shows the project's change log from `audit_log` (who, when, what changed, old → new), filterable by kind of record.
 - [ ] 26b. Corrections: editors can correct a statement's wording or withdraw a statement, each with a required reason kept in the history; withdrawn statements stay visible as withdrawn rather than disappearing.
 - [ ] 26c. People, leaders and organization: add a person (display name, role, public or not; private contact details optional), list and add project leaders, edit the organization's public description and the project's need and objectives.
