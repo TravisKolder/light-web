@@ -1644,3 +1644,37 @@ don't mark a withdrawn linked statement (they show its status only).
 
 **For Travis:** run the 018 upgrade on the test database; until then
 `check:anon-access` will report the four new columns as missing.
+
+**26c — people, leaders and project details.** New editors-only page
+`/edit/[slug]/people` ("People and details" button on the project's edit
+page): edit the project's need and objectives (one per line, up to 20) and
+the organization's public description (shared by its projects); list the
+project's leaders (role, since, whether the name shows publicly) and add one
+(person, role, since); add a person (name to show, title, public-profile
+tick, beneficiary tick; private full name, email, phone in a "Private (never
+public)" box) and see everyone recorded. Guards: beneficiary can't be public
+or a leader; duplicate person+role refused; a person who already verified a
+statement in this project can't be added as its leader (the database only
+checked the other order). No migration needed; every write lands in
+`audit_log`.
+
+**Files:** `app/edit/[slug]/people/{page.tsx,actions.ts}` (new),
+`app/edit/[slug]/page.tsx`, `BACKLOG.md`. **Size:** about 330 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers`,
+`check:build-output` pass. The same inserts/updates ran as a signed-in editor
+under RLS on local Postgres; the new public-profile leader appeared in
+`public_project_leaders`, and all four tables were audited. Not checked in a
+browser (needs a signed-in editor).
+
+**Known gaps:** no editing or removing of existing people/leaders yet (add
+only); History's filters still don't show people/organization changes.
+
+**Backlog status:** every item is now checked off. Proposed next three, for
+Travis to approve:
+1. Edit and remove: fix a person's details or public-profile choice, end a
+   leader's role (with a date), all logged.
+2. File uploads (the earlier separate proposal): private storage bucket,
+   type/size checks, EXIF/GPS stripping, signed URLs.
+3. A short pilot walkthrough for John: enter one real (or realistic) project
+   end to end on the test site and collect what's confusing.
