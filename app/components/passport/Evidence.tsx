@@ -1,5 +1,5 @@
 import { NeedsReviewBadge, StatusBadge } from "@/app/components/StatusBadge";
-import { formatDate } from "@/lib/format";
+import { formatDate, todayInTimeZone } from "@/lib/format";
 import type { Passport } from "@/lib/passport";
 import type {
   DocumentKind, EvidenceKind, VerificationFinding, VerificationMethod,
@@ -57,6 +57,8 @@ function Icon({ name }: { name: IconName }) {
 
 export function EvidenceList({ passport }: { passport: Passport }) {
   const { assertions, documents, evidence, verifications } = passport;
+  // Correction/withdrawal times shown as the project's local date (26b2).
+  const localDate = (ts: string) => formatDate(todayInTimeZone(passport.project.timezone, new Date(ts)));
 
   return (
     <section aria-labelledby="evidence-h">
@@ -76,12 +78,26 @@ export function EvidenceList({ passport }: { passport: Passport }) {
           const hiddenSupport = a.status !== "claim" && docs.length === 0 && ev.length === 0;
 
           return (
-            <li key={a.id} className="assertion">
+            <li key={a.id} className={a.withdrawn_at ? "assertion withdrawn" : "assertion"}>
               <div className="assertion-head">
                 <StatusBadge status={a.status} />
+                {a.withdrawn_at && <span className="pill-withdrawn">Withdrawn</span>}
                 <span className="muted small">{formatDate(a.asserted_on)}</span>
               </div>
-              <p className="assertion-statement">{a.statement}</p>
+              <p className="assertion-statement">
+                {a.withdrawn_at ? <s>{a.statement}</s> : a.statement}
+              </p>
+              {a.withdrawn_at && (
+                <p className="correction-note">
+                  <strong>Withdrawn by the project on {localDate(a.withdrawn_at)}.</strong>{" "}
+                  Reason: {a.withdrawal_reason}
+                </p>
+              )}
+              {a.corrected_at && (
+                <p className="correction-note muted small">
+                  Wording corrected on {localDate(a.corrected_at)}. Reason: {a.correction_reason}
+                </p>
+              )}
 
               {(docs.length > 0 || ev.length > 0 || hiddenSupport) && (
                 <>

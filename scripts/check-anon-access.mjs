@@ -59,7 +59,7 @@ const PUBLIC_VIEWS = {
   public_projects: ["id", "slug", "title", "organization_id", "country", "region", "need_statement", "objectives", "status", "start_date", "end_date", "base_currency", "created_at", "timezone", "is_sample"],
   public_organizations: ["id", "name", "country", "region", "description", "website"],
   public_project_leaders: ["project_id", "role", "since", "display_name", "role_title"],
-  public_assertions: ["id", "project_id", "statement", "status", "asserted_on", "asserted_by_name"],
+  public_assertions: ["id", "project_id", "statement", "status", "asserted_on", "asserted_by_name", "corrected_at", "correction_reason", "withdrawn_at", "withdrawal_reason"],
   public_budget_lines: ["id", "project_id", "category", "description", "approved_amount", "currency", "exchange_rate", "rate_date", "rate_source", "approved_amount_base", "approved_on", "assertion_id"],
   public_funds_received: ["id", "project_id", "amount", "currency", "exchange_rate", "rate_date", "rate_source", "amount_base", "received_on", "source_category", "assertion_id"],
   public_purchases: ["id", "project_id", "budget_line_id", "supplier_name", "supplier_kind", "supplier_country", "supplier_region", "description", "quantity", "unit", "amount", "currency", "exchange_rate", "rate_date", "rate_source", "amount_base", "purchased_on", "assertion_id"],

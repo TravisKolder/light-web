@@ -1610,3 +1610,37 @@ Withdrawal reasons stay on the public passport, for maximum transparency.
 "corrected" note with its reason), and add a line on the editor forms that
 reasons are public, so they must not contain private details. Upgrades 016
 and 017 are on the test database.
+
+## 2026-11-19 — Session 51 (on request): items 26b2, then 26c
+
+**26b2 — corrections and withdrawals on public passports.** Migration 018
+appends `corrected_at`, `correction_reason`, `withdrawn_at`,
+`withdrawal_reason` to `public_assertions` (reasons public per Travis's
+decision). Passport "Claims, evidence, and verification" list: withdrawn
+statements keep their place, struck through with a "Withdrawn" pill and
+"Withdrawn by the project on <date>. Reason: …"; corrected statements get a
+"Wording corrected on <date>. Reason: …" line (local project date). Withdrawn
+statements are left out of the status counts (summary band, projects index
+cards, share text and image) — the summary shows "(+N withdrawn)" — and raise
+no review flags. Kingdom Return links mark a withdrawn statement. The editor
+panel now says reasons are public and must not hold private details. Sample
+fixture gains the four (null) fields; `check:anon-access` and
+`docs/security-policies.md` list the new columns. Upgrade file:
+`supabase/upgrades/20261119_018_public_assertion_corrections.sql` (needs 017;
+safe to re-run).
+
+**Files:** migration 018 + upgrade (new), `lib/types.ts`, `lib/passport.ts`,
+`lib/flags.ts`, `lib/sample/passport.json`, `app/components/passport/{Evidence,Summary,KingdomReturn}.tsx`,
+`app/p/[slug]/{page,opengraph-image}.tsx`, `app/edit/[slug]/page.tsx`,
+`app/globals.css`, `scripts/check-anon-access.mjs`, docs. **Size:** about 200 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers`,
+`check:build-output`, `check:fixture` pass; full local setup plus the
+private-column, anon-access and fixture comparison pass; anon sees a
+withdrawn statement's reason through the view. Rendering checked by building
+once with a temporarily withdrawn sample statement (pill, reason, local date,
+"+1 withdrawn" all present), then restored. Not done: ledger/results badges
+don't mark a withdrawn linked statement (they show its status only).
+
+**For Travis:** run the 018 upgrade on the test database; until then
+`check:anon-access` will report the four new columns as missing.

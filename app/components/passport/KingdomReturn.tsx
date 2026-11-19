@@ -43,7 +43,16 @@ export function KingdomReturn({ passport }: { passport: Passport }) {
                           const a = l.assertion_id ? assertionById.get(l.assertion_id) : undefined;
                           const ev = l.evidence_item_id ? evidenceById.get(l.evidence_item_id) : undefined;
                           if (a) return (
-                            <li key={l.id}><StatusBadge status={a.status} /> {a.statement}</li>
+                            <li key={l.id}>
+                              <StatusBadge status={a.status} />
+                              {a.withdrawn_at ? (
+                                <>
+                                  {" "}<span className="pill-withdrawn">Withdrawn</span> <s>{a.statement}</s>
+                                </>
+                              ) : (
+                                <> {a.statement}</>
+                              )}
+                            </li>
                           );
                           if (ev) return (
                             <li key={l.id}><span className="kind">Evidence</span> {ev.caption}</li>

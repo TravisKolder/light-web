@@ -3,6 +3,7 @@
 // Computed from public data only, so they can be shown on the public page.
 
 import type { Passport } from "@/lib/passport";
+import { activeAssertions } from "@/lib/types";
 
 export interface ReviewFlag {
   id: string;
@@ -65,7 +66,8 @@ export function computeFlags(p: Passport, today: Date = new Date()): ReviewFlag[
 
   // Old claims with nothing attached.
   const cutoff = today.getTime() - STALE_CLAIM_DAYS * 86_400_000;
-  for (const a of p.assertions) {
+  // Withdrawn statements (26b2) are settled, so they raise no flags.
+  for (const a of activeAssertions(p.assertions)) {
     if (a.status === "claim" && new Date(`${a.asserted_on}T00:00:00Z`).getTime() < cutoff) {
       flags.push({
         id: `stale-${a.id}`, area: "claims",
@@ -77,6 +79,7 @@ export function computeFlags(p: Passport, today: Date = new Date()): ReviewFlag[
   // Verifications later found to have a tie, or that didn't confirm.
   for (const v of p.verifications) {
     const a = p.assertions.find((x) => x.id === v.assertion_id);
+    if (a?.withdrawn_at) continue;
     if (v.tie_flagged) {
       flags.push({
         id: `tie-${v.id}`, area: "verification",

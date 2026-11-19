@@ -7,6 +7,7 @@
 
 import { getSupabaseClient } from "@/lib/supabase/client";
 import sample from "@/lib/sample/passport.json";
+import { activeAssertions } from "@/lib/types";
 import type {
   PublicAssertion, PublicBudgetLine, PublicBudgetVsActual, PublicDocument,
   PublicEvidence, PublicFundsReceived, PublicKingdomReturnEntry,
@@ -116,9 +117,10 @@ function sumMoney(lines: Pick<PublicBudgetVsActual, "approved_amount_base" | "sp
   };
 }
 
-function countStatuses(assertions: Pick<PublicAssertion, "status">[]) {
+/** Counts by status, leaving out withdrawn statements (26b2). */
+export function countStatuses(assertions: Pick<PublicAssertion, "status" | "withdrawn_at">[]) {
   const c = { claim: 0, documented: 0, verified: 0 };
-  for (const a of assertions) c[a.status] += 1;
+  for (const a of activeAssertions(assertions)) c[a.status] += 1;
   return c;
 }
 
@@ -138,14 +140,15 @@ export async function listProjects(): Promise<ProjectSummary[]> {
   const [projects, orgs, assertions, budget] = await Promise.all([
     supabase.from("public_projects").select("*").order("title"),
     supabase.from("public_organizations").select("id, name"),
-    supabase.from("public_assertions").select("project_id, status"),
+    // "*" so this still works before migration 018 adds withdrawn_at.
+    supabase.from("public_assertions").select("*"),
     supabase.from("public_budget_vs_actual").select("project_id, approved_amount_base, spent_base"),
   ]);
   for (const r of [projects, orgs, assertions, budget]) {
     if (r.error) throw new Error(`Loading projects failed: ${r.error.message}`);
   }
   const orgName = new Map((orgs.data ?? []).map((o: { id: string; name: string }) => [o.id, o.name]));
-  const rows = (assertions.data ?? []) as Pick<PublicAssertion, "project_id" | "status">[];
+  const rows = (assertions.data ?? []) as Pick<PublicAssertion, "project_id" | "status" | "withdrawn_at">[];
   const lines = (budget.data ?? []) as Pick<PublicBudgetVsActual, "project_id" | "approved_amount_base" | "spent_base">[];
 
   return ((projects.data ?? []) as PublicProject[]).map((p) => ({

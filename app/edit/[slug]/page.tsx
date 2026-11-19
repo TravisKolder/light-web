@@ -229,6 +229,11 @@ export default async function EditProjectStatements({
               {!a.withdrawn_at && (
                 <details className="correct-box">
                   <summary>Correct or withdraw</summary>
+                  <p className="small muted">
+                    Reasons appear on the public passport, so leave out private
+                    details (names of donors, workers or beneficiaries, contact details,
+                    account numbers).
+                  </p>
                   <form action={correctAssertion} className="editor-form">
                     <input type="hidden" name="slug" value={project.slug} />
                     <input type="hidden" name="project_id" value={project.id} />

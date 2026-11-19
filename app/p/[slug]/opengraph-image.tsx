@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getPassport } from "@/lib/passport";
+import { countStatuses, getPassport } from "@/lib/passport";
 
 // Link-preview image for a public passport (backlog item 23d): title,
 // organization and the three status counts. Public data only, same source as
@@ -22,8 +22,7 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const { slug } = await params;
   const passport = await getPassport(slug).catch(() => null);
 
-  const counts = { claim: 0, documented: 0, verified: 0 };
-  for (const a of passport?.assertions ?? []) counts[a.status] += 1;
+  const counts = countStatuses(passport?.assertions ?? []);
   const title = passport?.project.title ?? "Project Passport";
   const sample = passport && (passport.source === "sample" || passport.project.is_sample);
 

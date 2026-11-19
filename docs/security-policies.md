@@ -56,7 +56,7 @@ nothing can insert, update or delete through a view.
 | `public_projects` | id, slug, title, organization_id, country, region, need_statement, objectives, status, start_date, end_date, base_currency, created_at, timezone, is_sample | private projects; visibility |
 | `public_organizations` | id, name, country, region, description, website | registration_number, contact_email, contact_phone, address_line; orgs with no public project |
 | `public_project_leaders` | project_id, role, since, display_name\*, role_title\* | person id, full_name, email, phone, address, notes |
-| `public_assertions` | id, project_id, statement, status, asserted_on, asserted_by_name\* | asserted_by person id |
+| `public_assertions` | id, project_id, statement, status, asserted_on, asserted_by_name\*, corrected_at, correction_reason, withdrawn_at, withdrawal_reason (018) | asserted_by person id |
 | `public_budget_lines` | id, project_id, category, description, approved_amount, currency, exchange_rate, rate_date, rate_source, approved_amount_base, approved_on, assertion_id | — |
 | `public_funds_received` | id, project_id, amount, currency, exchange_rate, rate_date, rate_source, amount_base, received_on, source_category, assertion_id | **donor identity**: donor_person_id, donor_name, donor_contact, donor_reference |
 | `public_purchases` | id, project_id, budget_line_id, supplier_name, supplier_kind, supplier_country, supplier_region, description, quantity, unit, amount, currency, exchange_rate, rate_date, rate_source, amount_base, purchased_on, assertion_id | supplier contact_person_id, contact_name, contact_phone, contact_email, bank_details_note |

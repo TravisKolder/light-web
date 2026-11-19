@@ -13,6 +13,7 @@
 export type Uuid = string;
 /** ISO date, YYYY-MM-DD */
 export type IsoDate = string;
+export type IsoTimestamp = string;
 /** numeric(…) from Postgres */
 export type Money = number | string;
 
@@ -121,6 +122,17 @@ export interface PublicAssertion {
   status: AssertionStatus;
   asserted_on: IsoDate;
   asserted_by_name: string | null;
+  /** Migration 018 (26b2): last wording correction and its reason. */
+  corrected_at: IsoTimestamp | null;
+  correction_reason: string | null;
+  /** Withdrawn statements stay on the record; they don't count toward the status totals. */
+  withdrawn_at: IsoTimestamp | null;
+  withdrawal_reason: string | null;
+}
+
+/** Statements the project still stands behind (not withdrawn). */
+export function activeAssertions<T extends { withdrawn_at?: string | null }>(xs: T[]): T[] {
+  return xs.filter((a) => !a.withdrawn_at);
 }
 
 export interface PublicBudgetLine {

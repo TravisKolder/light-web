@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PassportView } from "@/app/components/passport/PassportView";
-import { getPassport } from "@/lib/passport";
+import { countStatuses, getPassport } from "@/lib/passport";
 
 // Public read-only Project Passport (backlog item 17). Reads only the
 // public_* views (or the public-only sample fixture). Checked by
@@ -17,8 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Link previews (backlog item 23d). The image comes from opengraph-image.tsx
   // in this folder; everything here is public data.
-  const counts = { claim: 0, documented: 0, verified: 0 };
-  for (const a of passport.assertions) counts[a.status] += 1;
+  const counts = countStatuses(passport.assertions);
   const sample = passport.source === "sample" || passport.project.is_sample;
   const title = `${passport.project.title} — Project Passport`;
   const description =

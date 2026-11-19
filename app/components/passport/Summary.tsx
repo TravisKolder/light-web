@@ -2,7 +2,7 @@ import { StatusBadge } from "@/app/components/StatusBadge";
 import { computeFlags } from "@/lib/flags";
 import { formatDate, formatMoney } from "@/lib/format";
 import type { Passport } from "@/lib/passport";
-import type { AssertionStatus } from "@/lib/types";
+import { activeAssertions, type AssertionStatus } from "@/lib/types";
 
 // Summary band at the top of a Passport (backlog item 23a): how many
 // statements are claims / documented / verified, the money at a glance, and
@@ -30,8 +30,11 @@ export function StatusBar({ counts }: { counts: Record<AssertionStatus, number> 
 export function Summary({ passport }: { passport: Passport }) {
   const base = passport.project.base_currency;
   const counts: Record<AssertionStatus, number> = { claim: 0, documented: 0, verified: 0 };
-  for (const a of passport.assertions) counts[a.status] += 1;
-  const total = passport.assertions.length;
+  // Withdrawn statements stay on the record but don't count (26b2).
+  const active = activeAssertions(passport.assertions);
+  for (const a of active) counts[a.status] += 1;
+  const total = active.length;
+  const withdrawn = passport.assertions.length - total;
 
   const sum = (xs: (string | number)[]) => xs.reduce<number>((t, x) => t + Number(x), 0);
   const approved = sum(passport.budgetVsActual.map((l) => l.approved_amount_base));
@@ -62,6 +65,11 @@ export function Summary({ passport }: { passport: Passport }) {
       <div className="summary-block">
         <p className="summary-label">
           {total} statement{total === 1 ? "" : "s"} made by this project
+          {withdrawn > 0 && (
+            <>
+              {" "}<a href="#evidence-h">(+{withdrawn} withdrawn)</a>
+            </>
+          )}
         </p>
         <ul className="summary-counts">
           {ORDER.map((s) => (

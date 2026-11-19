@@ -231,8 +231,11 @@ reason written for that change (not a repeat of the last one) and stamps
 withdrawn statement can't be reworded or un-withdrawn; timestamps can't be
 set by hand. Earlier wordings and reasons are kept in `audit_log`. Status
 (claim / documented / verified) is unaffected. Withdrawn statements are never
-deleted this way; they stay on the record marked withdrawn. Not yet on public
-views (backlog 26b2).
+deleted this way; they stay on the record marked withdrawn. Migration 018
+(26b2) adds all four columns to `public_assertions`: reasons are public by
+Travis's decision (2026-11-19), and the editor form warns to keep private
+details out. Withdrawn statements don't count toward status totals and raise
+no review flags.
 
 ## 3. Privacy model (detail in backlog item 8)
 
