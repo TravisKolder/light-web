@@ -60,7 +60,7 @@ migrations are applied by pasting one upgrade file into the SQL Editor, once:
 | --- | --- | --- |
 | `supabase/upgrades/20261117_014_015_audit_log_timezone.sql` | Audit log (014), project time zone (015) | yes, run by Travis 2026-11-17 (not yet confirmed by `check:anon-access`) |
 | `supabase/upgrades/20261117_016_sample_flag.sql` | Sample flag (016); removes SAMPLE / (fictional) from the sample's public text | yes (already applied; a re-run on 2026-11-19 said "already exists") |
-| `supabase/upgrades/20261119_017_assertion_corrections.sql` | Correcting and withdrawing statements (017); needs 016 first | not yet |
+| `supabase/upgrades/20261119_017_assertion_corrections.sql` | Correcting and withdrawing statements (017); needs 016 first | yes, run by Travis 2026-11-19 |
 
 The app keeps working before an upgrade is applied (it just lacks the new
 feature). A brand-new project needs only `scripts/build-setup-sql.sh`.
