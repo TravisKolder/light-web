@@ -1602,3 +1602,11 @@ Restoration), or only the word "Withdrawn" and the date? Editors would need to
 keep private details out of reasons either way.
 
 **Next:** 26b2, show withdrawn/corrected statements on public passport pages.
+
+## 2026-11-19 — Decision from Travis (after session 50)
+
+Withdrawal reasons stay on the public passport, for maximum transparency.
+26b2 will show withdrawn statements with their date and reason (and the
+"corrected" note with its reason), and add a line on the editor forms that
+reasons are public, so they must not contain private details. Upgrades 016
+and 017 are on the test database.
