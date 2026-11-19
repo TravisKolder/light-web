@@ -222,6 +222,18 @@ the project's local date. Passport pages say which zone the dates are in.
 projects; pages show one banner on the passport and a "Sample" tag on the
 card, so the data itself no longer says SAMPLE / (fictional) on every line.
 
+### Corrections and withdrawals (migration 017)
+
+`assertions` gains `correction_reason`, `corrected_at`, `withdrawal_reason`,
+`withdrawn_at`. A trigger enforces: changing a statement's wording needs a
+reason written for that change (not a repeat of the last one) and stamps
+`corrected_at`; giving a `withdrawal_reason` stamps `withdrawn_at`; a
+withdrawn statement can't be reworded or un-withdrawn; timestamps can't be
+set by hand. Earlier wordings and reasons are kept in `audit_log`. Status
+(claim / documented / verified) is unaffected. Withdrawn statements are never
+deleted this way; they stay on the record marked withdrawn. Not yet on public
+views (backlog 26b2).
+
 ## 3. Privacy model (detail in backlog item 8)
 
 - Base tables have RLS on; `anon` has **no** direct select on any base table.

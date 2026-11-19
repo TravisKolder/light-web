@@ -6,11 +6,13 @@ import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server
 import { timeZoneLabel, todayInTimeZone } from "@/lib/format";
 import type { AssertionStatus } from "@/lib/types";
 import { addAssertion, addDocument, addEvidence } from "./actions";
+import { correctAssertion, withdrawAssertion } from "./corrections";
 
 // Editor: a project's statements (backlog items 21b, 21c1, 21c2). Lists every
 // assertion with its status badge and offers forms to add a new one and to
 // attach supporting document or evidence metadata to one. Status is
 // read-only here; the database sets it from documents and verifications.
+// Item 26b1: each statement can be corrected or withdrawn, with a reason.
 
 export const metadata: Metadata = { title: "Edit statements — Light Web" };
 export const dynamic = "force-dynamic";
@@ -52,6 +54,19 @@ const EV_ERRORS: Record<string, string> = {
   save: "The evidence couldn't be saved. Please try again; if it keeps failing, tell Travis.",
 };
 
+const CORR_ERRORS: Record<string, string> = {
+  statementId: "That statement couldn't be found in this project.",
+  withdrawn: "This statement was withdrawn; it can no longer be corrected or withdrawn again.",
+  reason: "Please give a reason. It is kept in the project's history.",
+  reasonLong: "The reason is too long (1,000 characters at most).",
+  sameReason: "Please write a reason for this correction (it can't repeat the previous one).",
+  statement: ERRORS.statement,
+  long: ERRORS.long,
+  unchanged: "The wording is the same as before; nothing to correct.",
+  confirm: "Please tick the box to confirm the withdrawal.",
+  save: "The change couldn't be saved. Please try again; if it keeps failing, tell Travis.",
+};
+
 const EVIDENCE_KINDS: { value: string; label: string }[] = [
   { value: "photo", label: "Photo" },
   { value: "video", label: "Video" },
@@ -76,6 +91,11 @@ type AssertionRow = {
   asserted_on: string;
   status: AssertionStatus;
   asserted_by: { display_name: string } | null;
+  // Migration 017 (26b1); absent on a database without it.
+  correction_reason?: string | null;
+  corrected_at?: string | null;
+  withdrawal_reason?: string | null;
+  withdrawn_at?: string | null;
   documents: { count: number }[];
   evidence_items: { count: number }[];
 };
@@ -94,6 +114,10 @@ export default async function EditProjectStatements({
     docError?: string;
     evAdded?: string;
     evError?: string;
+    corrected?: string;
+    withdrawn?: string;
+    corrError?: string;
+    corrId?: string;
   }>;
 }) {
   const session = await getEditorSession();
@@ -101,7 +125,8 @@ export default async function EditProjectStatements({
   if (session.state === "signed-out") redirect("/edit/sign-in");
 
   const { slug } = await params;
-  const { added, error, docAdded, docError, evAdded, evError } = await searchParams;
+  const { added, error, docAdded, docError, evAdded, evError, corrected, withdrawn, corrError, corrId } =
+    await searchParams;
   const supabase = (await getSupabaseServerClient())!;
 
   const { data: project } = await supabase
@@ -117,7 +142,8 @@ export default async function EditProjectStatements({
     supabase
       .from("assertions")
       .select(
-        "id, statement, asserted_on, status, asserted_by:people(display_name), documents(count), evidence_items(count)",
+        // "*" so the page still works where migration 017 isn't applied yet.
+        "*, asserted_by:people(display_name), documents(count), evidence_items(count)",
       )
       .eq("project_id", project.id)
       .order("asserted_on", { ascending: false })
@@ -131,6 +157,10 @@ export default async function EditProjectStatements({
   ]);
   const assertions = (assertionsRes.data ?? []) as unknown as AssertionRow[];
   const people = (peopleRes.data ?? []) as PersonRow[];
+  // Withdrawn statements stay listed but can't take new documents or evidence.
+  const open = assertions.filter((a) => !a.withdrawn_at);
+  const when = (ts: string) =>
+    new Date(ts).toLocaleDateString("en-CA", { timeZone: project.timezone || "UTC" });
   // "Today" where the project is, not where the server or the editor is (22d).
   const today = todayInTimeZone(project.timezone);
   const zone = timeZoneLabel(project.timezone);
@@ -166,10 +196,15 @@ export default async function EditProjectStatements({
       ) : assertions.length === 0 ? (
         <p className="muted">No statements yet.</p>
       ) : (
+        <>
+        {corrected && <p className="sample-banner" role="status">Correction saved; the earlier wording is kept in History.</p>}
+        {withdrawn && <p className="sample-banner" role="status">Statement withdrawn; it stays on the record as withdrawn.</p>}
         <ul className="statement-list">
           {assertions.map((a) => (
-            <li key={a.id}>
-              <StatusBadge status={a.status} /> {a.statement}
+            <li key={a.id} id={`s-${a.id}`} className={a.withdrawn_at ? "withdrawn" : undefined}>
+              <StatusBadge status={a.status} />
+              {a.withdrawn_at && <span className="pill-withdrawn">Withdrawn</span>}{" "}
+              {a.withdrawn_at ? <s>{a.statement}</s> : a.statement}
               <p className="muted small">
                 {a.asserted_by?.display_name ?? "Person not recorded"} · {a.asserted_on}
                 {" · "}
@@ -177,9 +212,52 @@ export default async function EditProjectStatements({
                 {" · "}
                 {evCount(a)} evidence item{evCount(a) === 1 ? "" : "s"}
               </p>
+              {a.corrected_at && (
+                <p className="muted small">
+                  Wording corrected {when(a.corrected_at)}: {a.correction_reason}{" "}
+                  (<Link href={`/edit/${project.slug}/history?kind=statements`}>earlier wording in History</Link>)
+                </p>
+              )}
+              {a.withdrawn_at && (
+                <p className="small">
+                  <strong>Withdrawn {when(a.withdrawn_at)}:</strong> {a.withdrawal_reason}
+                </p>
+              )}
+              {corrId === a.id && corrError && CORR_ERRORS[corrError] && (
+                <p className="form-error" role="alert">{CORR_ERRORS[corrError]}</p>
+              )}
+              {!a.withdrawn_at && (
+                <details className="correct-box">
+                  <summary>Correct or withdraw</summary>
+                  <form action={correctAssertion} className="editor-form">
+                    <input type="hidden" name="slug" value={project.slug} />
+                    <input type="hidden" name="project_id" value={project.id} />
+                    <input type="hidden" name="assertion_id" value={a.id} />
+                    <label htmlFor={`stmt-${a.id}`}>Corrected wording</label>
+                    <textarea id={`stmt-${a.id}`} name="statement" rows={3} maxLength={2000} required defaultValue={a.statement} />
+                    <label htmlFor={`creason-${a.id}`}>Reason for the correction</label>
+                    <input id={`creason-${a.id}`} name="reason" maxLength={1000} required placeholder="e.g. The amount was mistyped; the board minutes say USD 10,000." />
+                    <button type="submit">Save correction</button>
+                  </form>
+                  <form action={withdrawAssertion} className="editor-form">
+                    <input type="hidden" name="slug" value={project.slug} />
+                    <input type="hidden" name="project_id" value={project.id} />
+                    <input type="hidden" name="assertion_id" value={a.id} />
+                    <label htmlFor={`wreason-${a.id}`}>Reason for withdrawing</label>
+                    <input id={`wreason-${a.id}`} name="reason" maxLength={1000} required placeholder="e.g. The second classroom was not built; the funds went to repairs instead." />
+                    <label className="checkbox">
+                      <input type="checkbox" name="confirm" value="yes" required /> The project no
+                      longer stands behind this statement. It stays on the record, marked withdrawn,
+                      and can&apos;t be un-withdrawn.
+                    </label>
+                    <button type="submit">Withdraw statement</button>
+                  </form>
+                </details>
+              )}
             </li>
           ))}
         </ul>
+        </>
       )}
 
       <h2 id="add">Add a statement</h2>
@@ -220,7 +298,7 @@ export default async function EditProjectStatements({
       {docError && DOC_ERRORS[docError] && (
         <p className="form-error" role="alert">{DOC_ERRORS[docError]}</p>
       )}
-      {assertions.length === 0 ? (
+      {open.length === 0 ? (
         <p className="muted">Add a statement first; every document supports a statement.</p>
       ) : (
         <form action={addDocument} className="editor-form">
@@ -229,7 +307,7 @@ export default async function EditProjectStatements({
           <label htmlFor="assertion_id">Supports which statement</label>
           <select id="assertion_id" name="assertion_id" required defaultValue="">
             <option value="" disabled>Choose a statement…</option>
-            {assertions.map((a) => (
+            {open.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.statement.length > 90 ? `${a.statement.slice(0, 90)}…` : a.statement}
               </option>
@@ -285,7 +363,7 @@ export default async function EditProjectStatements({
       {evError && EV_ERRORS[evError] && (
         <p className="form-error" role="alert">{EV_ERRORS[evError]}</p>
       )}
-      {assertions.length === 0 ? (
+      {open.length === 0 ? (
         <p className="muted">Add a statement first; every evidence item supports a statement.</p>
       ) : (
         <form action={addEvidence} className="editor-form">
@@ -294,7 +372,7 @@ export default async function EditProjectStatements({
           <label htmlFor="ev_assertion_id">Supports which statement</label>
           <select id="ev_assertion_id" name="assertion_id" required defaultValue="">
             <option value="" disabled>Choose a statement…</option>
-            {assertions.map((a) => (
+            {open.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.statement.length > 90 ? `${a.statement.slice(0, 90)}…` : a.statement}
               </option>

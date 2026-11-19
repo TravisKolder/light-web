@@ -1560,3 +1560,45 @@ deleted. If you want those, a small migration could stamp `project_id` on
 their audit rows — say the word.
 
 **Next:** 26b, corrections and withdrawals with a required reason.
+
+## 2026-11-19 — Session 50 (nightly): item 26b1
+
+**Split:** 26b was more than one night, so it became 26b1 (database + editor
+forms, done tonight) and 26b2 (show withdrawn/corrected on public passport
+pages).
+
+**26b1 — correct or withdraw a statement.** Migration 017 adds
+`correction_reason`, `corrected_at`, `withdrawal_reason`, `withdrawn_at` to
+`assertions`, with a trigger that: requires a reason for every wording change
+(not a repeat of the previous reason) and stamps `corrected_at`; stamps
+`withdrawn_at` when a withdrawal reason is given; refuses any rewording or
+un-withdrawing of a withdrawn statement; ignores hand-set timestamps. The
+claim/documented/verified status is unaffected. Old and new wording and every
+reason land in `audit_log`, so they show on the History page. On
+`/edit/[slug]` each statement has a "Correct or withdraw" panel (reason
+required; withdrawal needs a confirm tick); withdrawn statements stay listed,
+struck through with a "Withdrawn" pill, date and reason, and are no longer
+offered in the document/evidence forms. Upgrade file for the test database:
+`supabase/upgrades/20261119_017_assertion_corrections.sql` (needs 016 first).
+
+**Files:** `supabase/migrations/20261119000017_assertion_corrections.sql`,
+`supabase/upgrades/20261119_017_assertion_corrections.sql` (new),
+`app/edit/[slug]/corrections.ts` (new), `app/edit/[slug]/page.tsx`,
+`app/globals.css`, `docs/data-model.md`, `docs/setup.md`, `BACKLOG.md`.
+**Size:** about 330 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers`,
+`check:build-output` pass. Full setup on local Postgres plus the no-private-
+column, anon-access and fixture checks pass; the trigger rules were exercised
+(missing/repeated reason rejected, withdrawn statement locked, status kept)
+and the same correct + withdraw ran as a signed-in editor under RLS, leaving
+two audit rows. The upgrade file applies cleanly on top of 001–016. Not
+checked: the forms in a browser (needs a signed-in editor; live site only,
+after the 016 and 017 upgrades are run).
+
+**Question for Travis:** should a withdrawal reason be shown on the public
+passport (26b2 assumes yes — it's the "acknowledged and corrected" part of
+Restoration), or only the word "Withdrawn" and the date? Editors would need to
+keep private details out of reasons either way.
+
+**Next:** 26b2, show withdrawn/corrected statements on public passport pages.
