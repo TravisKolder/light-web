@@ -1678,3 +1678,23 @@ Travis to approve:
    type/size checks, EXIF/GPS stripping, signed URLs.
 3. A short pilot walkthrough for John: enter one real (or realistic) project
    end to end on the test site and collect what's confusing.
+
+## 2026-11-19 — Redesign (on request): "clean modern nonprofit"
+
+Travis asked for the site to look good; he chose a clean modern nonprofit
+style for public and editor pages. `app/globals.css` rewritten as a small
+design system (same class names, so components barely changed): white cards
+with soft shadows on a light grey page, one warm accent (orange-700, 5.2:1 on
+white; orange-400 in dark mode), Inter variable font self-hosted (replaces
+Source Serif; CSP unchanged), pill buttons, sticky blurred header, dark
+footer. Home page: full-width hero with headline, two buttons and a
+"three states" card; numbered how-it-works cards; three principles (money
+recorded never moved, private by default, fruit not a score). Passport: header
+card with accent top edge, every section a card, statements with a colored
+left edge by status, cleaner tables and summary. Editor: forms as cards with
+focus rings, statement list as cards, page links as secondary pills. Phone
+and dark mode checked by screenshot; print styles kept (cards flattened).
+
+**Files:** `app/globals.css`, `app/page.tsx`, `app/layout.tsx`,
+`app/fonts/` (Inter added, Source Serif removed). **Checks:** lint, typecheck,
+build, `check:public-page`, `check:headers`, `check:build-output` pass.
