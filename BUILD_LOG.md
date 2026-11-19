@@ -1713,3 +1713,9 @@ dropped because its slashed zeros made dates and money look odd.
 **Files:** `app/globals.css`, `app/layout.tsx`, `app/fonts/*`. **Checks:**
 lint, typecheck, build, `check:public-page`, `check:headers`,
 `check:build-output` pass.
+
+## 2026-11-19 — Decision from Travis
+
+File uploads approved as the next work (proposal 2). Queued as items
+27a–27e in BACKLOG.md; nightly runs take them one at a time. Editing and
+removing people/leaders and the John walkthrough stay proposed.

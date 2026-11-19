@@ -83,3 +83,19 @@ wait for a separate go-ahead and a storage bucket.
 - [x] 26b1. Corrections, editor side (split from 26b, 2026-11-19): migration 017 (correction/withdrawal reason + timestamps on `assertions`, trigger rules), correct and withdraw forms on `/edit/[slug]` with a required reason; withdrawn statements stay listed, marked withdrawn; history keeps old wording.
 - [x] 26b2. Corrections, public side: add withdrawn/corrected (date, reason) to `public_assertions` and the sample fixture; passport pages show withdrawn statements as withdrawn (struck through, with reason) and a "corrected" note; review flags skip withdrawn statements. Withdrawal and correction reasons are public (Travis, 2026-11-19); add a note on the editor forms that reasons appear on the public passport, so no private details.
 - [x] 26c. People, leaders and organization: add a person (display name, role, public or not; private contact details optional), list and add project leaders, edit the organization's public description and the project's need and objectives.
+
+## File uploads (Travis approved 2026-11-19)
+
+Proposal 2 from the "backlog complete" note, chosen first. Files are
+evidence, not payments: nothing here moves money. Private by default; the
+public passport only ever gets a short-lived link to a file the public views
+already allow (documents without personal data, evidence without
+identifiable people). Travis runs each new upgrade file; nothing touches
+Supabase project settings.
+
+- [ ] 27a. Storage foundation: migration 019 creates a private `evidence` bucket (not public; size limit and allowed types set on the bucket) and storage policies so only editors can upload, read and delete; anon gets nothing. Upgrade file, `docs/security-policies.md`, and `check:anon-access` extended to confirm anon can't list or read the bucket.
+- [ ] 27b. Upload a file with a document: on the statement page's document form, an optional file (PDF, JPEG, PNG, WebP; 10 MB cap). Server action checks the real type from the file's first bytes (not the name or browser's claim), re-encodes images to strip EXIF/GPS, stores under a random name, and sets `documents.storage_path`. Editors only.
+- [ ] 27c. Upload a photo with an evidence item: same checks and EXIF/GPS stripping; if the photo carried GPS, offer it to fill the item's private GPS fields (never public).
+- [ ] 27d. Viewing files: editors open any file through a short-lived signed URL; the public passport shows thumbnails/download links only for files the public views expose, served via a server route that re-checks the public view and signs a 60-second URL. Extend `check:public-page` so no private file path or URL appears.
+- [ ] 27e. Replace or remove a file (logged in `audit_log`, old file deleted from storage), and a storage note in `docs/data-model.md` and the README.
+
