@@ -5,10 +5,18 @@ import { connection } from "next/server";
 import { StatusBadge } from "@/app/components/StatusBadge";
 import "./globals.css";
 
-// Site typeface: Inter (variable), self-hosted under the SIL Open Font
-// License so the Content-Security-Policy can stay at font-src 'self'.
+// Typefaces, self-hosted under the SIL Open Font License so the
+// Content-Security-Policy can stay at font-src 'self'.
+// Headings: Newsreader, an editorial serif (a record you can trust).
+// Body: Hanken Grotesk, a warm, open sans that stays readable at small sizes.
+const serif = localFont({
+  src: "./fonts/newsreader-latin-opsz-normal.woff2",
+  weight: "200 800",
+  display: "swap",
+  variable: "--font-serif",
+});
 const sans = localFont({
-  src: "./fonts/inter-latin-wght-normal.woff2",
+  src: "./fonts/hanken-grotesk-latin-wght-normal.woff2",
   weight: "100 900",
   display: "swap",
   variable: "--font-sans",
@@ -38,8 +46,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#131a25" },
+    { media: "(prefers-color-scheme: light)", color: "#fffefb" },
+    { media: "(prefers-color-scheme: dark)", color: "#1a221d" },
   ],
 };
 
@@ -51,7 +59,7 @@ export default async function RootLayout({
   // no nonce and its scripts would be blocked.
   await connection();
   return (
-    <html lang="en" className={sans.variable}>
+    <html lang="en" className={`${serif.variable} ${sans.variable}`}>
       <body>
         <a className="skip-link" href="#content">Skip to content</a>
         <header className="site-header">

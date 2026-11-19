@@ -1698,3 +1698,18 @@ and dark mode checked by screenshot; print styles kept (cards flattened).
 **Files:** `app/globals.css`, `app/page.tsx`, `app/layout.tsx`,
 `app/fonts/` (Inter added, Source Serif removed). **Checks:** lint, typecheck,
 build, `check:public-page`, `check:headers`, `check:build-output` pass.
+
+## 2026-11-19 — Palette and type revision (on request)
+
+Travis found the orange harsh and Inter "AI generic". New palette tells the
+story and is easy on the eyes: warm parchment background, soft dawn gold for
+"light" (logo, kicker, sample notices, highlight under "Verify the fruit"),
+deep evergreen for "fruit" (buttons, links), muted status colors, deep green
+footer; dark mode to match. Type: Newsreader (editorial serif) for headings
+and the wordmark, Hanken Grotesk for body text; both self-hosted, OFL
+licenses in `app/fonts/`. Atkinson Hyperlegible Next was tried for body and
+dropped because its slashed zeros made dates and money look odd.
+
+**Files:** `app/globals.css`, `app/layout.tsx`, `app/fonts/*`. **Checks:**
+lint, typecheck, build, `check:public-page`, `check:headers`,
+`check:build-output` pass.
