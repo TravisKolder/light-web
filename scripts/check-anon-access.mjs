@@ -6,7 +6,9 @@
 //   2. every public_* view is readable and returns exactly the documented
 //      columns (docs/security-policies.md), nothing more,
 //   3. the one function that reads base tables as the caller
-//      (compute_assertion_status) is refused, and is_editor() says false.
+//      (compute_assertion_status) is refused, and is_editor() says false,
+//   4. the private `evidence` storage bucket (migration 019) can't be seen,
+//      listed or read through a public URL.
 // Read-only: it never inserts, updates or deletes anything.
 //
 // Usage:
@@ -129,6 +131,29 @@ for (const [view, expected] of Object.entries(PUBLIC_VIEWS)) {
   if (res.ok && body === false) console.log("ok   rpc/is_editor: false for anon");
   else if (res.ok) failures.push(`rpc/is_editor: returned ${JSON.stringify(body)} for anon`);
   else notes.push(`rpc/is_editor: refused (${res.status}); harmless, but the policies expect it callable`);
+}
+
+// Storage (migration 019): the private `evidence` bucket. Anon must not see
+// the bucket, list its files, or reach a file through a public URL.
+{
+  const storage = (path, init) => fetch(`${URL_.replace(/\/$/, "")}/storage/v1/${path}`, { ...init, headers: { ...headers, ...init?.headers } });
+  const bucket = await storage("bucket/evidence");
+  const bucketBody = await bucket.json().catch(() => null);
+  if (bucket.ok && bucketBody?.id) failures.push("storage bucket/evidence: anon can read the bucket's settings");
+  else console.log(`ok   storage bucket/evidence: hidden from anon (${bucket.status})`);
+
+  const list = await storage("object/list/evidence", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ prefix: "", limit: 100 }),
+  });
+  const listBody = await list.json().catch(() => null);
+  if (list.ok && Array.isArray(listBody) && listBody.length > 0) failures.push(`storage evidence: anon can LIST ${listBody.length} file(s)/folder(s)`);
+  else console.log(`ok   storage evidence: listing gives anon nothing (${list.status})`);
+
+  const pub = await storage("object/public/evidence/light-web-anon-probe.pdf");
+  if (pub.ok) failures.push("storage evidence: a public URL served a file (bucket must be private)");
+  else console.log(`ok   storage evidence: no public URLs (${pub.status})`);
 }
 
 for (const n of notes) console.log(`note ${n}`);

@@ -74,6 +74,24 @@ nothing can insert, update or delete through a view.
 
 \* Name/title only when that person set `public_profile = true`; otherwise null.
 
+## File storage (migration 019)
+
+One Supabase Storage bucket, `evidence`, for document and evidence files
+(uploads arrive in items 27b–27c).
+
+| Setting / policy | Value |
+| --- | --- |
+| Public bucket? | **No.** There are no public URLs for any file |
+| Size limit | 10 MB per file (enforced by Storage) |
+| Allowed types | `application/pdf`, `image/jpeg`, `image/png`, `image/webp` (the app also checks the real type from the file's bytes, 27b) |
+| `evidence_editors_select` / `_insert` / `_update` / `_delete` on `storage.objects` | `authenticated` and `is_editor()`, only for `bucket_id = 'evidence'` |
+| anon, signed-in non-editors | No policy, so RLS returns nothing and rejects every write (not even a listing) |
+
+The public passport will never link to storage directly: a server route
+(27d) re-checks the public views and signs a 60-second URL only for files
+those views already allow. Checks: `supabase/checks/evidence_bucket_private.sql`
+(CI) and the storage probes in `npm run check:anon-access` (live).
+
 ## Functions callable over the API
 
 Postgres grants `EXECUTE` on new functions to everyone by default, so

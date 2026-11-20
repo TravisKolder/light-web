@@ -71,6 +71,8 @@ jobs:
         run: psql -v ON_ERROR_STOP=1 -f supabase/checks/public_views_no_private_columns.sql
       - name: Signed-out visitors cannot read any base table
         run: psql -v ON_ERROR_STOP=1 -f supabase/checks/anon_cannot_read_tables.sql
+      - name: Evidence storage bucket is private and editors-only
+        run: psql -v ON_ERROR_STOP=1 -f supabase/checks/evidence_bucket_private.sql
       - name: Sample fixture matches what the public views return
         run: |
           psql -At -q -f scripts/export-sample-fixture.sql > /tmp/fixture-from-db.json

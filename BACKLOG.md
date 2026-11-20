@@ -93,7 +93,7 @@ already allow (documents without personal data, evidence without
 identifiable people). Travis runs each new upgrade file; nothing touches
 Supabase project settings.
 
-- [ ] 27a. Storage foundation: migration 019 creates a private `evidence` bucket (not public; size limit and allowed types set on the bucket) and storage policies so only editors can upload, read and delete; anon gets nothing. Upgrade file, `docs/security-policies.md`, and `check:anon-access` extended to confirm anon can't list or read the bucket.
+- [x] 27a. Storage foundation: migration 019 creates a private `evidence` bucket (not public; size limit and allowed types set on the bucket) and storage policies so only editors can upload, read and delete; anon gets nothing. Upgrade file, `docs/security-policies.md`, and `check:anon-access` extended to confirm anon can't list or read the bucket.
 - [ ] 27b. Upload a file with a document: on the statement page's document form, an optional file (PDF, JPEG, PNG, WebP; 10 MB cap). Server action checks the real type from the file's first bytes (not the name or browser's claim), re-encodes images to strip EXIF/GPS, stores under a random name, and sets `documents.storage_path`. Editors only.
 - [ ] 27c. Upload a photo with an evidence item: same checks and EXIF/GPS stripping; if the photo carried GPS, offer it to fill the item's private GPS fields (never public).
 - [ ] 27d. Viewing files: editors open any file through a short-lived signed URL; the public passport shows thumbnails/download links only for files the public views expose, served via a server route that re-checks the public view and signs a 60-second URL. Extend `check:public-page` so no private file path or URL appears.

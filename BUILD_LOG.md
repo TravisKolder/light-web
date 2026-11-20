@@ -1719,3 +1719,40 @@ lint, typecheck, build, `check:public-page`, `check:headers`,
 File uploads approved as the next work (proposal 2). Queued as items
 27a–27e in BACKLOG.md; nightly runs take them one at a time. Editing and
 removing people/leaders and the John walkthrough stay proposed.
+
+## 2026-11-20 — Session 52 (nightly): item 27a, storage foundation
+
+**Built:** migration 019 creates a private `evidence` Storage bucket
+(`public = false`, 10 MB limit, only PDF/JPEG/PNG/WebP) and four policies on
+`storage.objects` (select/insert/update/delete) for signed-in editors only
+(`is_editor()`), scoped to that bucket. Anon and signed-in non-editors get no
+policy, so they see nothing and can't write. Upgrade file for the test
+database (safe to re-run). New SQL check `evidence_bucket_private.sql` (in CI)
+fails if the bucket is public, over 10 MB, allows other types, or has a policy
+not limited to editors. `check:anon-access` now also probes the Storage API as
+anon: bucket settings hidden, listing empty, no public URL. Storage section in
+`docs/security-policies.md`; upgrade row in `docs/setup.md`. Local Postgres
+stubs gained a minimal `storage` schema so CI can apply 019.
+
+**Files:** `supabase/migrations/20261120000019_evidence_storage.sql`,
+`supabase/upgrades/20261120_019_evidence_storage.sql`,
+`supabase/checks/evidence_bucket_private.sql`, `supabase/checks/local_stubs.sql`,
+`scripts/check-anon-access.mjs`, `.github/workflows/ci.yml`,
+`docs/security-policies.md`, `docs/setup.md`, `BACKLOG.md`. **Size:** about
+170 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers`,
+`check:build-output` pass. On local Postgres: all migrations + seed applied,
+the upgrade re-ran cleanly, the new bucket check and the anon table check
+pass; under RLS anon and a non-editor saw 0 objects and were refused on
+insert, an editor could read, insert and delete. The live Storage probes were
+not run (no Supabase env in this session).
+
+**For Travis:** please paste `supabase/upgrades/20261120_019_evidence_storage.sql`
+into the test project's SQL Editor and run it once, then
+`npm run check:anon-access`. Uploads (27b) need it. Note: the bucket's type
+and size limits only work if Storage's global upload limit is at least 10 MB
+(Supabase default is 50 MB); nothing here changes project settings.
+
+**Next:** 27b, upload a file with a document (real-type check, EXIF/GPS
+stripping, random stored name).
