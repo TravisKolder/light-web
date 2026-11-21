@@ -92,6 +92,14 @@ The public passport will never link to storage directly: a server route
 those views already allow. Checks: `supabase/checks/evidence_bucket_private.sql`
 (CI) and the storage probes in `npm run check:anon-access` (live).
 
+Uploads (27b, `lib/uploads.ts`): the server action uses the signed-in
+editor's session (never the service key), so the bucket policies above still
+apply. The type is read from the first bytes (`%PDF-`, JPEG, PNG, RIFF/WEBP);
+images are re-encoded without metadata (EXIF/GPS dropped); names are
+`documents/<random uuid>.<ext>`. PDFs are stored as sent (their internal
+metadata is not rewritten). If the document row can't be saved, the file is
+removed again.
+
 ## Functions callable over the API
 
 Postgres grants `EXECUTE` on new functions to everyone by default, so

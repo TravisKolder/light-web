@@ -1756,3 +1756,37 @@ and size limits only work if Storage's global upload limit is at least 10 MB
 
 **Next:** 27b, upload a file with a document (real-type check, EXIF/GPS
 stripping, random stored name).
+
+## 2026-11-20 — Session 53 (nightly): item 27b, upload a file with a document
+
+**Built:** the statement page's "Attach a supporting document" form takes an
+optional file (PDF, JPEG, PNG, WebP; 10 MB). New `lib/uploads.ts` reads the
+real type from the file's first bytes (name and browser type ignored),
+re-encodes images with `sharp` so EXIF/XMP/GPS are dropped (orientation kept),
+and stores the file in the private `evidence` bucket as
+`documents/<random uuid>.<ext>` using the editor's own session (bucket policies
+apply). `addDocument` checks all other fields first, uploads, then saves
+`documents.storage_path`; if the row insert fails the file is removed again.
+Plain-language errors for too big / wrong type / unreadable image / storage
+failure. `next.config.ts` raises the server-action and proxy body limits to
+11 MB (defaults are 1 MB / 10 MB). Limits live in `lib/upload-limits.ts`
+(shared with the form). Note added to `docs/security-policies.md`.
+
+**Files:** `lib/uploads.ts` (new), `lib/upload-limits.ts` (new),
+`app/edit/[slug]/actions.ts`, `app/edit/[slug]/page.tsx`, `next.config.ts`,
+`package.json`/`package-lock.json` (adds `sharp`), `docs/security-policies.md`,
+`BACKLOG.md`. **Size:** about 150 lines.
+
+**Checks:** typecheck, lint, build, `check:public-page`, `check:headers`,
+`check:build-output` pass. Confirmed locally that the re-encode drops EXIF
+from a test JPEG. Not tried end to end against Supabase (no env in this
+session): the upload needs upgrade 019 applied in the test project.
+
+**For Travis:** (1) If you haven't yet, run
+`supabase/upgrades/20261120_019_evidence_storage.sql` in the test project,
+then try attaching a phone photo on the Vercel preview. (2) PDFs are stored
+as sent, so a PDF's own metadata (author, software) isn't cleaned. Fine for
+the pilot? Rewriting PDFs would need another library.
+
+**Next:** 27c, upload a photo with an evidence item (same checks; offer
+the photo's GPS for the private GPS fields).

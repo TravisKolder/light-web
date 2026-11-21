@@ -17,6 +17,12 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Never publish browser source maps (site review S5).
   productionBrowserSourceMaps: false,
+  // File uploads (backlog 27b): the bucket caps files at 10 MB; allow a
+  // little more for the rest of the form. Default would be 1 MB / 10 MB.
+  experimental: {
+    serverActions: { bodySizeLimit: "11mb" },
+    proxyClientMaxBodySize: "11mb",
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { todayInTimeZone } from "@/lib/format";
 import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server";
+import { EVIDENCE_BUCKET, prepareUpload, randomStoragePath } from "@/lib/uploads";
 
 // Server action for adding an assertion (backlog item 21b).
 // The form never sends a status: every new assertion starts as a claim, and
@@ -71,8 +72,10 @@ export async function addAssertion(formData: FormData) {
   back("added=1");
 }
 
-// Server action for attaching document metadata to a statement (backlog
-// item 21c1). No file upload yet, so storage_path is never set. Adding a
+// Server action for attaching a document to a statement (backlog items 21c1
+// and 27b). The file is optional; when given, it is checked and cleaned in
+// lib/uploads.ts, stored under a random name in the private `evidence`
+// bucket, and its path saved in documents.storage_path. Adding a
 // document lets the database trigger move the statement from claim to
 // documented; this action never touches the status itself.
 
@@ -121,6 +124,25 @@ export async function addDocument(formData: FormData) {
     .maybeSingle();
   if (!assertion) back("docError=assertion");
 
+  // Optional file. Checked only after every other field passed, so a typo
+  // never leaves an orphaned file in storage.
+  let storagePath: string | null = null;
+  const file = formData.get("file");
+  if (file instanceof File && file.size > 0) {
+    const prepared = await prepareUpload(file);
+    if (!prepared.ok) back(`docError=${prepared.error}`);
+    if (prepared.ok) {
+      storagePath = randomStoragePath("documents", prepared.ext);
+      const { error: upErr } = await supabase!.storage
+        .from(EVIDENCE_BUCKET)
+        .upload(storagePath, prepared.bytes, { contentType: prepared.contentType, upsert: false });
+      if (upErr) {
+        console.error("addDocument upload failed:", upErr.message);
+        back("docError=fileUpload");
+      }
+    }
+  }
+
   const { error } = await supabase!.from("documents").insert({
     assertion_id: assertionId,
     kind,
@@ -128,9 +150,12 @@ export async function addDocument(formData: FormData) {
     issued_on: issuedOn || null,
     uploaded_by: uploadedBy || null,
     contains_personal_data: personal,
+    storage_path: storagePath,
   });
   if (error) {
     console.error("addDocument failed:", error.message);
+    // Don't leave a file behind that no document points to.
+    if (storagePath) await supabase!.storage.from(EVIDENCE_BUCKET).remove([storagePath]);
     back("docError=save");
   }
 

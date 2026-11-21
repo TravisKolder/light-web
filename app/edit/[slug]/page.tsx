@@ -6,6 +6,7 @@ import { getEditorSession, getSupabaseServerClient } from "@/lib/supabase/server
 import { timeZoneLabel, todayInTimeZone } from "@/lib/format";
 import type { AssertionStatus } from "@/lib/types";
 import { addAssertion, addDocument, addEvidence } from "./actions";
+import { UPLOAD_ACCEPT } from "@/lib/upload-limits";
 import { correctAssertion, withdrawAssertion } from "./corrections";
 
 // Editor: a project's statements (backlog items 21b, 21c1, 21c2). Lists every
@@ -37,6 +38,10 @@ const DOC_ERRORS: Record<string, string> = {
   date: ERRORS.date,
   future: ERRORS.future,
   save: "The document couldn't be saved. Please try again; if it keeps failing, tell Travis.",
+  fileSize: "The file must be smaller than 10 MB (and not empty).",
+  fileType: "Only PDF, JPEG, PNG or WebP files can be attached. The file's contents didn't match one of those.",
+  fileRead: "The image couldn't be read. It may be damaged; try saving it again or exporting a copy.",
+  fileUpload: "The file couldn't be stored. Nothing was saved; please try again, and tell Travis if it keeps failing.",
 };
 
 const EV_ERRORS: Record<string, string> = {
@@ -297,7 +302,7 @@ export default async function EditProjectStatements({
 
       <h2 id="add-document">Attach a supporting document</h2>
       <p className="small muted">
-        Records the document&apos;s details only; file upload comes later. A document
+        Records the document&apos;s details and, optionally, a copy of the file. A document
         moves a claim to <strong>documented</strong>, never to verified.
       </p>
       {docAdded && <p className="sample-banner" role="status">Document recorded.</p>}
@@ -355,6 +360,13 @@ export default async function EditProjectStatements({
             shown publicly. The kind, title and date are always public, so keep
             personal details out of the title.
           </label>
+          <label htmlFor="doc_file">File (optional)</label>
+          <input id="doc_file" name="file" type="file" accept={UPLOAD_ACCEPT} />
+          <p className="small muted">
+            PDF, JPEG, PNG or WebP, up to 10 MB. Photos are re-saved without camera
+            and location data, and the file gets a random name. Stored privately;
+            only editors can open it for now.
+          </p>
           <button type="submit">Record document</button>
         </form>
       )}
