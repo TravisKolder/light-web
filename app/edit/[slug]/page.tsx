@@ -56,6 +56,10 @@ const EV_ERRORS: Record<string, string> = {
   future: ERRORS.future,
   gpsPair: "Please give both latitude and longitude, or leave both empty.",
   gps: "Latitude must be between -90 and 90 and longitude between -180 and 180, with up to 6 decimal places.",
+  fileSize: DOC_ERRORS.fileSize,
+  fileType: DOC_ERRORS.fileType,
+  fileRead: DOC_ERRORS.fileRead,
+  fileUpload: DOC_ERRORS.fileUpload,
   save: "The evidence couldn't be saved. Please try again; if it keeps failing, tell Travis.",
 };
 
@@ -119,6 +123,7 @@ export default async function EditProjectStatements({
     docError?: string;
     evAdded?: string;
     evError?: string;
+    gps?: string;
     corrected?: string;
     withdrawn?: string;
     corrError?: string;
@@ -130,7 +135,7 @@ export default async function EditProjectStatements({
   if (session.state === "signed-out") redirect("/edit/sign-in");
 
   const { slug } = await params;
-  const { added, error, docAdded, docError, evAdded, evError, corrected, withdrawn, corrError, corrId } =
+  const { added, error, docAdded, docError, evAdded, evError, gps, corrected, withdrawn, corrError, corrId } =
     await searchParams;
   const supabase = (await getSupabaseServerClient())!;
 
@@ -373,11 +378,17 @@ export default async function EditProjectStatements({
 
       <h2 id="add-evidence">Record evidence of delivery</h2>
       <p className="small muted">
-        Records the evidence&apos;s details only; file upload comes later. Like a
+        Records the evidence&apos;s details and, optionally, a file. Like a
         document, evidence can move a claim to <strong>documented</strong>, never to
         verified.
       </p>
-      {evAdded && <p className="sample-banner" role="status">Evidence recorded.</p>}
+      {evAdded && (
+        <p className="sample-banner" role="status">
+          Evidence recorded.
+          {gps === "used" && " The photo's location was saved in the private GPS fields."}
+          {gps === "none" && " The photo had no location data, so the GPS fields were left empty."}
+        </p>
+      )}
       {evError && EV_ERRORS[evError] && (
         <p className="form-error" role="alert">{EV_ERRORS[evError]}</p>
       )}
@@ -444,6 +455,10 @@ export default async function EditProjectStatements({
             <input id="gps_lat" name="gps_lat" type="text" inputMode="decimal" placeholder="e.g. -1.234567" />
             <label htmlFor="gps_lng">Longitude</label>
             <input id="gps_lng" name="gps_lng" type="text" inputMode="decimal" placeholder="e.g. 36.123456" />
+            <label className="checkbox">
+              <input type="checkbox" name="use_photo_gps" /> If the fields above are empty
+              and the photo below has a location, save that location here (privately).
+            </label>
           </fieldset>
           <label className="checkbox">
             <input type="checkbox" name="shows_identifiable_people" /> Shows people who
@@ -451,6 +466,13 @@ export default async function EditProjectStatements({
             caption, date and place name of other items are public, so keep names out
             of them.
           </label>
+          <label htmlFor="ev_file">File (optional)</label>
+          <input id="ev_file" name="file" type="file" accept={UPLOAD_ACCEPT} />
+          <p className="small muted">
+            Photo (JPEG, PNG, WebP) or PDF, up to 10 MB. Photos are re-saved without
+            camera and location data, and the file gets a random name. Stored
+            privately; only editors can open it for now.
+          </p>
           <button type="submit">Record evidence</button>
         </form>
       )}

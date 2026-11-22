@@ -1790,3 +1790,33 @@ the pilot? Rewriting PDFs would need another library.
 
 **Next:** 27c, upload a photo with an evidence item (same checks; offer
 the photo's GPS for the private GPS fields).
+
+## 2026-11-21 — Session 54 (nightly): item 27c, upload a photo with an evidence item
+
+**Built:** the "Record evidence of delivery" form takes an optional file
+(same types, 10 MB cap and checks as documents: real type from first bytes,
+images re-encoded so EXIF/GPS are dropped, random name `evidence/<uuid>.<ext>`
+in the private bucket). New `readPhotoGps()` in `lib/uploads.ts` reads the
+original photo's EXIF GPS (via the small `exif-reader` package) before
+stripping; `prepareUpload` now returns it. A new opt-in checkbox ("save the
+photo's location here, privately") fills the PRIVATE `gps_lat`/`gps_lng`
+fields only when the editor left them empty. The confirmation says whether a
+location was used or the photo had none. `storage_path` is saved; if the row
+insert fails the file is removed again. Unchecked by default, so nothing
+about location is kept unless the editor asks.
+
+**Files:** `lib/uploads.ts`, `app/edit/[slug]/actions.ts`,
+`app/edit/[slug]/page.tsx`, `package.json`/`package-lock.json` (adds
+`exif-reader`), `BACKLOG.md`. **Size:** about 110 lines.
+
+**Checks:** typecheck, lint, build, `check:fixture`, `check:public-page`,
+`check:headers`, `check:build-output` pass. Locally, a test JPEG with GPS
+1°14'20"S 36°7'30"E came back as -1.238889, 36.125 and the stored copy had no
+EXIF; a JPEG without GPS returned none. Not tried against Supabase (no env
+in this session); needs upgrade 019 applied, as for 27b.
+
+**For Travis:** nothing new to decide. Try a phone photo on the preview with
+the box ticked and check the GPS fields on the record (editor view only).
+
+**Next:** 27d, viewing files (editor signed URLs; public thumbnails only for
+files the public views expose, via a re-checking 60-second server route).

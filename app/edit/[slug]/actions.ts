@@ -163,8 +163,11 @@ export async function addDocument(formData: FormData) {
   back("docAdded=1");
 }
 
-// Server action for recording evidence metadata against a statement (backlog
-// item 21c2). No file upload yet, so storage_path is never set. Evidence
+// Server action for recording evidence against a statement (backlog items
+// 21c2 and 27c). An optional file goes through the same checks as documents
+// (real type, EXIF/GPS stripped, random name, private bucket). If the editor
+// ticks "use the photo's location" and leaves the GPS fields empty, the GPS
+// read from the original photo fills the PRIVATE gps fields. Evidence
 // counts as a supporting document, so the database trigger may move the
 // statement from claim to documented; this action never sets a status.
 // GPS is PRIVATE (never in a public view); items that show identifiable
@@ -185,8 +188,9 @@ export async function addEvidence(formData: FormData) {
   const locationLabel = String(formData.get("location_label") ?? "").trim();
   const uploadedBy = String(formData.get("uploaded_by") ?? "").trim();
   const identifiable = formData.get("shows_identifiable_people") === "on";
-  const lat = String(formData.get("gps_lat") ?? "").trim();
-  const lng = String(formData.get("gps_lng") ?? "").trim();
+  let lat = String(formData.get("gps_lat") ?? "").trim();
+  let lng = String(formData.get("gps_lng") ?? "").trim();
+  const usePhotoGps = formData.get("use_photo_gps") === "on";
   const back = (q: string) => redirect(`/edit/${encodeURIComponent(slug)}?${q}#add-evidence`);
 
   const session = await getEditorSession();
@@ -221,6 +225,34 @@ export async function addEvidence(formData: FormData) {
     .maybeSingle();
   if (!assertion) back("evError=assertion");
 
+  // Optional file, checked only after every other field passed.
+  let storagePath: string | null = null;
+  let gpsNote = "";
+  const file = formData.get("file");
+  if (file instanceof File && file.size > 0) {
+    const prepared = await prepareUpload(file);
+    if (!prepared.ok) back(`evError=${prepared.error}`);
+    if (prepared.ok) {
+      if (usePhotoGps && !lat) {
+        if (prepared.gps) {
+          lat = String(prepared.gps.lat);
+          lng = String(prepared.gps.lng);
+          gpsNote = "&gps=used";
+        } else {
+          gpsNote = "&gps=none";
+        }
+      }
+      storagePath = randomStoragePath("evidence", prepared.ext);
+      const { error: upErr } = await supabase!.storage
+        .from(EVIDENCE_BUCKET)
+        .upload(storagePath, prepared.bytes, { contentType: prepared.contentType, upsert: false });
+      if (upErr) {
+        console.error("addEvidence upload failed:", upErr.message);
+        back("evError=fileUpload");
+      }
+    }
+  }
+
   const { error } = await supabase!.from("evidence_items").insert({
     project_id: projectId,
     assertion_id: assertionId,
@@ -232,12 +264,15 @@ export async function addEvidence(formData: FormData) {
     shows_identifiable_people: identifiable,
     gps_lat: lat ? Number(lat) : null,
     gps_lng: lng ? Number(lng) : null,
+    storage_path: storagePath,
   });
   if (error) {
     console.error("addEvidence failed:", error.message);
+    // Don't leave a file behind that no evidence item points to.
+    if (storagePath) await supabase!.storage.from(EVIDENCE_BUCKET).remove([storagePath]);
     back("evError=save");
   }
 
   revalidatePath(`/edit/${slug}`);
-  back("evAdded=1");
+  back(`evAdded=1${gpsNote}`);
 }
