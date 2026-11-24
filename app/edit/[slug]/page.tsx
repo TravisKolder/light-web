@@ -105,9 +105,13 @@ type AssertionRow = {
   corrected_at?: string | null;
   withdrawal_reason?: string | null;
   withdrawn_at?: string | null;
-  documents: { count: number }[];
-  evidence_items: { count: number }[];
+  // Listed so editors can open attached files (27d1). storage_path is only
+  // tested for presence; it is never rendered (the files route looks it up again).
+  documents: AttachedRow[];
+  evidence_items: AttachedRow[];
 };
+
+type AttachedRow = { id: string; label: string; kind: string; storage_path: string | null };
 
 type PersonRow = { id: string; display_name: string; role_title: string | null };
 
@@ -153,7 +157,7 @@ export default async function EditProjectStatements({
       .from("assertions")
       .select(
         // "*" so the page still works where migration 017 isn't applied yet.
-        "*, asserted_by:people(display_name), documents(count), evidence_items(count)",
+        "*, asserted_by:people(display_name), documents(id, label:title, kind, storage_path), evidence_items(id, label:caption, kind, storage_path)",
       )
       .eq("project_id", project.id)
       .order("asserted_on", { ascending: false })
@@ -223,6 +227,16 @@ export default async function EditProjectStatements({
                 {" · "}
                 {evCount(a)} evidence item{evCount(a) === 1 ? "" : "s"}
               </p>
+              {docCount(a) + evCount(a) > 0 && (
+                <ul className="attached-list small">
+                  {a.documents.map((d) => (
+                    <AttachedItem key={d.id} slug={project.slug} kind="documents" row={d} type="Document" />
+                  ))}
+                  {a.evidence_items.map((e) => (
+                    <AttachedItem key={e.id} slug={project.slug} kind="evidence" row={e} type="Evidence" />
+                  ))}
+                </ul>
+              )}
               {a.corrected_at && (
                 <p className="muted small">
                   Wording corrected {when(a.corrected_at)}: {a.correction_reason}{" "}
@@ -370,7 +384,7 @@ export default async function EditProjectStatements({
           <p className="small muted">
             PDF, JPEG, PNG or WebP, up to 10 MB. Photos are re-saved without camera
             and location data, and the file gets a random name. Stored privately;
-            only editors can open it for now.
+            editors open it from the statement list above.
           </p>
           <button type="submit">Record document</button>
         </form>
@@ -471,7 +485,7 @@ export default async function EditProjectStatements({
           <p className="small muted">
             Photo (JPEG, PNG, WebP) or PDF, up to 10 MB. Photos are re-saved without
             camera and location data, and the file gets a random name. Stored
-            privately; only editors can open it for now.
+            privately; editors open it from the statement list above.
           </p>
           <button type="submit">Record evidence</button>
         </form>
@@ -481,9 +495,36 @@ export default async function EditProjectStatements({
 }
 
 function docCount(a: AssertionRow) {
-  return a.documents?.[0]?.count ?? 0;
+  return a.documents?.length ?? 0;
 }
 
 function evCount(a: AssertionRow) {
-  return a.evidence_items?.[0]?.count ?? 0;
+  return a.evidence_items?.length ?? 0;
+}
+
+// One attached document or evidence item. The link goes to the editor-only
+// files route, which signs a 60-second URL; nothing here exposes the path.
+function AttachedItem({
+  slug,
+  kind,
+  row,
+  type,
+}: {
+  slug: string;
+  kind: "documents" | "evidence";
+  row: AttachedRow;
+  type: string;
+}) {
+  return (
+    <li>
+      <span className="muted">{type} ({row.kind.replace(/_/g, " ")}):</span> {row.label}{" "}
+      {row.storage_path ? (
+        <a href={`/edit/${slug}/files/${kind}/${row.id}`} target="_blank" rel="noopener noreferrer">
+          Open file<span className="visually-hidden"> (opens in a new tab)</span>
+        </a>
+      ) : (
+        <span className="muted">(no file)</span>
+      )}
+    </li>
+  );
 }

@@ -1820,3 +1820,36 @@ the box ticked and check the GPS fields on the record (editor view only).
 
 **Next:** 27d, viewing files (editor signed URLs; public thumbnails only for
 files the public views expose, via a re-checking 60-second server route).
+
+## 2026-11-23 — Session 55 (nightly): item 27d1, viewing files (editor side)
+
+**Split:** 27d was two nights of work, so it became 27d1 (editors open files)
+and 27d2 (public thumbnails/links via a re-checking route, plus the
+`check:public-page` extension). Only 27d1 was done tonight.
+
+**Built:** each statement on `/edit/[slug]` now lists its attached documents
+(kind, title) and evidence items (kind, caption) instead of just counts. Rows
+with a stored file get an "Open file" link (new tab) to a new route
+`/edit/[slug]/files/[documents|evidence]/[id]`. The route re-checks the editor
+session, looks the row up again through its statement to confirm it belongs to
+that project, signs a 60-second URL with the editor's own session (bucket
+policies still apply), and answers with a 303 redirect marked `no-store` and
+`no-referrer`. Anyone else gets a plain 403/404; the stored path is never put
+in the page. The upload hint text now says where files are opened.
+
+**Files:** `app/edit/[slug]/files/[kind]/[id]/route.ts` (new),
+`app/edit/[slug]/page.tsx`, `app/globals.css`, `BACKLOG.md`. **Size:** about
+120 lines.
+
+**Checks:** typecheck, lint, build, `check:fixture`, `check:public-page`,
+`check:headers`, `check:build-output` pass. Locally (no Supabase env) the
+route returns 403 `no-store` for a valid-looking link and 404 for a bad kind.
+Not tried against Supabase in this session: needs upgrade 019 applied and a
+file uploaded via 27b/27c.
+
+**For Travis:** nothing to decide. On the preview, attach a photo to a
+statement, then click "Open file" under it; the link should stop working
+about a minute after it opens.
+
+**Next:** 27d2, public side (thumbnails/download links only for files the
+public views expose, via a server route that re-checks the public view).

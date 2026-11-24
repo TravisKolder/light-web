@@ -519,6 +519,10 @@ h2[id] { scroll-margin-top: 84px; }
 .statement-list li p { margin: 6px 0 0; }
 .statement-list li.withdrawn { background: var(--surface-2); box-shadow: none; }
 .statement-list li.withdrawn s { color: var(--muted); }
+.statement-list .attached-list { list-style: disc; margin: 6px 0 0; padding-left: 20px; }
+.statement-list .attached-list li {
+  padding: 2px 0; background: none; border: none; border-radius: 0; box-shadow: none;
+}
 .correct-box { margin-top: 10px; }
 .correct-box summary { cursor: pointer; color: var(--accent); font-size: 0.875rem; font-weight: 650; }
 .correct-box .editor-form { margin: 10px 0 0; box-shadow: none; background: var(--surface-2); }
