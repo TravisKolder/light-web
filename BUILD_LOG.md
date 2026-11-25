@@ -1899,3 +1899,13 @@ evidence item on a non-sample project, and check the thumbnail on `/p/...`.
 
 **Next:** 27e, replace or remove a file (audit-logged, old file deleted
 from storage) plus storage notes in `docs/data-model.md` and the README.
+
+## 2026-11-24 — Decision from Travis (after session 56)
+
+Public files: "Protecting private data matters more than convenience." So
+no service role key in the app. Added item 27d3 (before 27e): a narrow anon
+read policy on the `evidence` bucket for paths the public views already
+expose, the public route signs with the anon key, and the server-only
+signer and `SUPABASE_SERVICE_ROLE_KEY` are removed. Don't add that key to
+Vercel. Public file links stay off until 27d3 is done and upgrade 020 is
+applied.
