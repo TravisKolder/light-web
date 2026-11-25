@@ -1,6 +1,7 @@
 import { NeedsReviewBadge, StatusBadge } from "@/app/components/StatusBadge";
 import { formatDate, todayInTimeZone } from "@/lib/format";
 import type { Passport } from "@/lib/passport";
+import { canSignPublicFiles } from "@/lib/supabase/file-signer";
 import type {
   DocumentKind, EvidenceKind, VerificationFinding, VerificationMethod,
 } from "@/lib/types";
@@ -46,6 +47,25 @@ const EVIDENCE_ICON: Record<EvidenceKind, IconName> = {
   photo: "photo", video: "video", receipt: "receipt", site_report: "report", other: "page",
 };
 
+// Public file links (backlog 27d2). Only the item's kind and id go into the
+// page; the route re-checks the public views and streams the file, so no
+// storage path or signed URL appears in the HTML.
+const isImage = (path: string) => /\.(jpe?g|png|webp)$/i.test(path);
+
+function FileLink({ slug, kind, id, path, label }: {
+  slug: string; kind: "documents" | "evidence"; id: string; path: string; label: string;
+}) {
+  const href = `/p/${encodeURIComponent(slug)}/files/${kind}/${id}`;
+  return isImage(path) ? (
+    <a className="support-thumb" href={href} target="_blank" rel="noopener noreferrer">
+      {/* eslint-disable-next-line @next/next/no-img-element -- streamed by our own route, not optimisable */}
+      <img src={href} alt={label} loading="lazy" width={160} height={120} />
+    </a>
+  ) : (
+    <a className="small" href={href} target="_blank" rel="noopener noreferrer">Open file (PDF)</a>
+  );
+}
+
 function Icon({ name }: { name: IconName }) {
   return (
     <svg className="support-icon" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"
@@ -58,6 +78,10 @@ function Icon({ name }: { name: IconName }) {
 export function EvidenceList({ passport }: { passport: Passport }) {
   const { assertions, documents, evidence, verifications } = passport;
   // Correction/withdrawal times shown as the project's local date (26b2).
+  const slug = passport.project.slug;
+  // Sample projects have no real files; without the server signing key
+  // there is nothing to serve either.
+  const filesOn = passport.source === "supabase" && !passport.project.is_sample && canSignPublicFiles();
   const localDate = (ts: string) => formatDate(todayInTimeZone(passport.project.timezone, new Date(ts)));
 
   return (
@@ -116,6 +140,9 @@ export function EvidenceList({ passport }: { passport: Passport }) {
                               </span>
                             )}
                           </div>
+                          {filesOn && d.storage_path && (
+                            <FileLink slug={slug} kind="documents" id={d.id} path={d.storage_path} label={d.title} />
+                          )}
                         </div>
                       </li>
                     ))}
@@ -130,6 +157,9 @@ export function EvidenceList({ passport }: { passport: Passport }) {
                               e.location_label,
                             ].filter(Boolean).join(" · ")}
                           </div>
+                          {filesOn && e.storage_path && (
+                            <FileLink slug={slug} kind="evidence" id={e.id} path={e.storage_path} label={e.caption} />
+                          )}
                         </div>
                       </li>
                     ))}

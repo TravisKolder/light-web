@@ -389,6 +389,8 @@ h2[id] { scroll-margin-top: 84px; }
 .evidence-items li.is-private { border-style: dashed; background: transparent; }
 .support-icon { flex: none; margin-top: 2px; color: var(--accent); }
 .evidence-items .small { margin-top: 2px; }
+.support-thumb { display: inline-block; margin-top: 6px; }
+.support-thumb img { display: block; width: 160px; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
 .private-note { display: inline-flex; align-items: center; gap: 4px; margin-left: 10px; white-space: nowrap; }
 .private-note .support-icon { width: 15px; height: 15px; margin: 0; color: var(--muted); }
 .pill-withdrawn {

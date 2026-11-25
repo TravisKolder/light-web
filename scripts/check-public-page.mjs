@@ -22,6 +22,11 @@ const PRIVATE_VALUES = [
   "SAMPLE-REG", "SAMPLE account", "P.O. Box 0",
   "sample/bank-statement-feb.pdf", "sample/roofing-invoice.pdf",
   "sample/first-day.jpg", "Pupils in the new classroom",
+  // Backlog 27d2: even PUBLIC files are only reached through
+  // /p/<slug>/files/..., so no storage path (public or not) and no signed
+  // Storage URL may appear in the page.
+  "sample/roof-complete.jpg", "sample/board-minutes.pdf", "sample/cement-receipt.jpg",
+  "/storage/v1/", "token=",
   "Visited the site; both rooms", "I have no family, financial",
 ];
 
@@ -51,6 +56,10 @@ try {
   html += "\n" + rsc;
 
   const leaks = PRIVATE_VALUES.filter((v) => html.includes(v));
+  // Uploaded files are stored as <folder>/<uuid>.<ext> (27b/27c); the
+  // public link is /p/<slug>/files/<kind>/<uuid> with no extension.
+  const storedPath = html.match(/[a-z]+\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|jpe?g|png|webp)/i);
+  if (storedPath) leaks.push(`a stored file path (${storedPath[0]})`);
   if (leaks.length) {
     console.error("PRIVATE values found on the public page:\n" + leaks.join("\n"));
     process.exitCode = 1;

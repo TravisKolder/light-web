@@ -1853,3 +1853,49 @@ about a minute after it opens.
 
 **Next:** 27d2, public side (thumbnails/download links only for files the
 public views expose, via a server route that re-checks the public view).
+
+## 2026-11-24 — Session 56 (nightly): item 27d2, viewing files (public side)
+
+**Built:** a public file route `/p/[slug]/files/[documents|evidence]/[id]`.
+It looks the row up again with the anon key in `public_documents` /
+`public_evidence` (which already drop documents with personal data and
+photos of identifiable people), requires it to belong to the public,
+non-sample project with that slug, then signs a 60-second URL and streams
+the file back (only PDF/JPEG/PNG/WebP; `private, max-age=300`, no
+referrer). Streaming means neither the storage path nor the signed URL
+reaches the browser, and the page CSP (`img-src 'self'`) needs no change.
+On the passport's evidence list, public documents/evidence with a file now
+show a small thumbnail (images) or an "Open file (PDF)" link. Links only
+appear for real (non-sample) Supabase projects when signing is configured.
+`check:public-page` now also fails on the public sample storage paths,
+`/storage/v1/`, `token=`, or anything shaped like a stored path
+(`<folder>/<uuid>.<ext>`).
+
+**Design choice (needs Travis):** the bucket stays editors-only in storage
+RLS, so anon can't sign. Signing uses a new optional, server-only
+`SUPABASE_SERVICE_ROLE_KEY`, isolated in `lib/supabase/file-signer.ts`
+(`server-only` import) and used only to sign a path already re-checked
+through the public views. The existing `check:build-output` scan already
+fails if that key or its name reaches browser files. Without the key the
+public page just shows no file links. The alternative was an anon storage
+policy limited to paths in the public views (no service key, but it opens
+the bucket to anon via the API and changes 019's "editors only" rule and
+its checks); not done.
+
+**Files:** `app/p/[slug]/files/[kind]/[id]/route.ts` (new),
+`lib/supabase/file-signer.ts` (new), `app/components/passport/Evidence.tsx`,
+`app/globals.css`, `scripts/check-public-page.mjs`, `.env.example`,
+`README.md`, `BACKLOG.md`. **Size:** about 150 lines.
+
+**Checks:** typecheck, lint, build, `check:fixture`, `check:public-page`
+(34 values), `check:headers`, `check:build-output` pass. Locally (no
+Supabase env) the route answers 404 `no-store` for a valid-looking id, a bad
+kind and a bad id. Not tried against Supabase in this session.
+
+**For Travis:** (1) OK to use a server-only service key for this, or
+prefer the anon-policy route? (2) If OK, add `SUPABASE_SERVICE_ROLE_KEY` to
+Vercel (server env, not `NEXT_PUBLIC_`), upload a photo with a public
+evidence item on a non-sample project, and check the thumbnail on `/p/...`.
+
+**Next:** 27e, replace or remove a file (audit-logged, old file deleted
+from storage) plus storage notes in `docs/data-model.md` and the README.
