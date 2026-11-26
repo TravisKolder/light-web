@@ -7,8 +7,9 @@
 //      columns (docs/security-policies.md), nothing more,
 //   3. the one function that reads base tables as the caller
 //      (compute_assertion_status) is refused, and is_editor() says false,
-//   4. the private `evidence` storage bucket (migration 019) can't be seen,
-//      listed or read through a public URL.
+//   4. the private `evidence` storage bucket (migration 019) can't be seen
+//      or read through a public URL, and anon can list/sign ONLY the files
+//      the public views expose on non-sample projects (migration 020).
 // Read-only: it never inserts, updates or deletes anything.
 //
 // Usage:
@@ -142,14 +143,53 @@ for (const [view, expected] of Object.entries(PUBLIC_VIEWS)) {
   if (bucket.ok && bucketBody?.id) failures.push("storage bucket/evidence: anon can read the bucket's settings");
   else console.log(`ok   storage bucket/evidence: hidden from anon (${bucket.status})`);
 
-  const list = await storage("object/list/evidence", {
+  // Files anon may reach (migration 020): storage_path in public_documents /
+  // public_evidence on a public project that isn't sample data.
+  const get = async (q) => { const r = await rest(q); return r.ok ? r.json() : []; };
+  const projects = await get("public_projects?select=id,is_sample");
+  const real = new Set(projects.filter((p) => !p.is_sample).map((p) => p.id));
+  const viewPaths = [
+    ...(await get("public_documents?select=project_id,storage_path&storage_path=not.is.null")),
+    ...(await get("public_evidence?select=project_id,storage_path&storage_path=not.is.null")),
+  ];
+  const allowed = new Set(viewPaths.filter((r) => real.has(r.project_id)).map((r) => r.storage_path));
+  const samplePaths = viewPaths.filter((r) => !real.has(r.project_id)).map((r) => r.storage_path);
+
+  const listAt = async (prefix) => {
+    const res = await storage("object/list/evidence", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prefix, limit: 1000 }),
+    });
+    const body = await res.json().catch(() => null);
+    return res.ok && Array.isArray(body) ? body : [];
+  };
+  const seen = [];
+  for (const item of await listAt("")) {
+    if (item.id) seen.push(item.name);
+    else for (const f of await listAt(`${item.name}/`)) if (f.id) seen.push(`${item.name}/${f.name}`);
+  }
+  const leaked = seen.filter((n) => !allowed.has(n));
+  if (leaked.length) failures.push(`storage evidence: anon can LIST ${leaked.length} file(s) the public views don't expose`);
+  else console.log(`ok   storage evidence: anon lists only public-view files (${seen.length} listed, ${allowed.size} allowed)`);
+
+  const sign = (path) => storage(`object/sign/evidence/${path.split("/").map(encodeURIComponent).join("/")}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prefix: "", limit: 100 }),
+    body: JSON.stringify({ expiresIn: 60 }),
   });
-  const listBody = await list.json().catch(() => null);
-  if (list.ok && Array.isArray(listBody) && listBody.length > 0) failures.push(`storage evidence: anon can LIST ${listBody.length} file(s)/folder(s)`);
-  else console.log(`ok   storage evidence: listing gives anon nothing (${list.status})`);
+  for (const path of samplePaths.slice(0, 3)) {
+    if ((await sign(path)).ok) failures.push(`storage evidence: anon could sign a SAMPLE project file (${path})`);
+  }
+  if ((await sign("light-web-anon-probe/not-public.pdf")).ok) failures.push("storage evidence: anon could sign a path no public view exposes");
+  else console.log("ok   storage evidence: signing refused for a probe path outside the public views");
+  let signedOk = 0;
+  for (const path of [...allowed].slice(0, 3)) if ((await sign(path)).ok) signedOk++;
+  if (allowed.size && !signedOk) notes.push("storage evidence: anon couldn't sign any public-view file; is upgrade 020 applied?");
+  else if (allowed.size) console.log(`ok   storage evidence: anon can sign public-view files (${signedOk} tried)`);
+  // Private paths (personal-data documents, photos of identifiable people)
+  // are invisible to anon by design, so this script can't name them; the
+  // CI check supabase/checks/evidence_bucket_private.sql tests those cases.
 
   const pub = await storage("object/public/evidence/light-web-anon-probe.pdf");
   if (pub.ok) failures.push("storage evidence: a public URL served a file (bucket must be private)");

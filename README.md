@@ -45,11 +45,14 @@ npm run dev
 The app builds and runs without Supabase configured; data features will
 light up once the env vars are set.
 
-Public file links (photos and PDFs on `/p/<slug>`) are off unless the
-server-only `SUPABASE_SERVICE_ROLE_KEY` is set (see `.env.example`). The
-route `/p/<slug>/files/...` re-checks each file against the public views
-with the anon key before signing a 60-second link and streaming the file,
-so no storage path or signed URL ever reaches the browser.
+Public file links (photos and PDFs on `/p/<slug>`) need upgrade 020
+(`supabase/upgrades/20261126_020_public_file_policy.sql`). The route
+`/p/<slug>/files/...` re-checks each file against the public views, then
+signs a 60-second link **with the anon key** and streams the file, so no
+storage path or signed URL ever reaches the browser. The app holds no
+`service_role` key: a storage policy lets anon read only the files the
+public views expose (not personal-data documents, not photos of
+identifiable people, not sample or private projects).
 
 Scripts: `npm run dev`, `npm run build`, `npm run typecheck`.
 

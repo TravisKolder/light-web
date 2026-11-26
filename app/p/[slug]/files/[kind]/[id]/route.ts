@@ -1,5 +1,5 @@
 import { getSupabaseClient } from "@/lib/supabase/client";
-import { signPublicFile } from "@/lib/supabase/file-signer";
+import { EVIDENCE_BUCKET } from "@/lib/upload-limits";
 
 // Public file route (backlog 27d2). Serves a file only if the PUBLIC views
 // still expose it right now: the row is looked up again with the anon key in
@@ -7,9 +7,13 @@ import { signPublicFile } from "@/lib/supabase/file-signer";
 // personal data and photos of identifiable people), and must belong to the
 // public project with this slug. Sample projects have no real files.
 //
-// The file is then signed for 60 seconds and streamed through this route, so
-// neither the storage path nor the signed URL ever reaches the browser (and
-// the page's img-src 'self' CSP needs no Supabase host).
+// The file is then signed for 60 seconds WITH THE ANON KEY and streamed
+// through this route, so neither the storage path nor the signed URL ever
+// reaches the browser (and the page's img-src 'self' CSP needs no Supabase
+// host). Anon can only sign it because storage policy
+// evidence_public_view_select (migration 020, item 27d3) allows reads of
+// exactly the files the public views expose; the app holds no service key.
+const SIGNED_URL_SECONDS = 60;
 const VIEWS = { documents: "public_documents", evidence: "public_evidence" } as const;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const SERVABLE = new Set(["application/pdf", "image/jpeg", "image/png", "image/webp"]);
@@ -47,7 +51,10 @@ export async function GET(
     .maybeSingle<{ storage_path: string | null }>();
   if (!row?.storage_path) return noFile(404, "File not found.");
 
-  const signed = await signPublicFile(row.storage_path);
+  const { data: signedData } = await supabase.storage
+    .from(EVIDENCE_BUCKET)
+    .createSignedUrl(row.storage_path, SIGNED_URL_SECONDS);
+  const signed = signedData?.signedUrl;
   if (!signed) return noFile(503, "This file isn't available right now.");
 
   const upstream = await fetch(signed, { cache: "no-store" });

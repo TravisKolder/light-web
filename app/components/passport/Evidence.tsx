@@ -1,7 +1,6 @@
 import { NeedsReviewBadge, StatusBadge } from "@/app/components/StatusBadge";
 import { formatDate, todayInTimeZone } from "@/lib/format";
 import type { Passport } from "@/lib/passport";
-import { canSignPublicFiles } from "@/lib/supabase/file-signer";
 import type {
   DocumentKind, EvidenceKind, VerificationFinding, VerificationMethod,
 } from "@/lib/types";
@@ -79,9 +78,9 @@ export function EvidenceList({ passport }: { passport: Passport }) {
   const { assertions, documents, evidence, verifications } = passport;
   // Correction/withdrawal times shown as the project's local date (26b2).
   const slug = passport.project.slug;
-  // Sample projects have no real files; without the server signing key
-  // there is nothing to serve either.
-  const filesOn = passport.source === "supabase" && !passport.project.is_sample && canSignPublicFiles();
+  // Sample projects have no real files. Real files are signed with the anon
+  // key, which storage policy (migration 020) limits to public-view files.
+  const filesOn = passport.source === "supabase" && !passport.project.is_sample;
   const localDate = (ts: string) => formatDate(todayInTimeZone(passport.project.timezone, new Date(ts)));
 
   return (

@@ -74,7 +74,7 @@ nothing can insert, update or delete through a view.
 
 \* Name/title only when that person set `public_profile = true`; otherwise null.
 
-## File storage (migration 019)
+## File storage (migrations 019–020)
 
 One Supabase Storage bucket, `evidence`, for document and evidence files
 (uploads arrive in items 27b–27c).
@@ -85,11 +85,17 @@ One Supabase Storage bucket, `evidence`, for document and evidence files
 | Size limit | 10 MB per file (enforced by Storage) |
 | Allowed types | `application/pdf`, `image/jpeg`, `image/png`, `image/webp` (the app also checks the real type from the file's bytes, 27b) |
 | `evidence_editors_select` / `_insert` / `_update` / `_delete` on `storage.objects` | `authenticated` and `is_editor()`, only for `bucket_id = 'evidence'` |
-| anon, signed-in non-editors | No policy, so RLS returns nothing and rejects every write (not even a listing) |
+| `evidence_public_view_select` (020) | `anon`, `authenticated`; **select only**, and only objects whose name is a `storage_path` in `public_documents` or `public_evidence` on a public, non-sample project |
+| anon, signed-in non-editors | Read only the files above (listing shows only those); every write rejected |
 
-The public passport will never link to storage directly: a server route
-(27d) re-checks the public views and signs a 60-second URL only for files
-those views already allow. Checks: `supabase/checks/evidence_bucket_private.sql`
+The app holds **no `service_role` key** (Travis, 2026-11-24: protecting
+private data matters more than convenience). The public passport never
+links to storage directly: the route `/p/<slug>/files/...` re-checks the
+public views, signs a 60-second URL with the anon key (which policy 020
+allows only for public-view files), and streams the file. Documents marked
+`contains_personal_data`, photos with `shows_identifiable_people`, and files
+of private or sample projects are unreadable to anon even if someone guesses
+the path; hiding a row in the views hides its file immediately. Checks: `supabase/checks/evidence_bucket_private.sql`
 (CI) and the storage probes in `npm run check:anon-access` (live).
 
 Uploads (27b, `lib/uploads.ts`): the server action uses the signed-in

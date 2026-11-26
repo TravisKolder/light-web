@@ -1909,3 +1909,48 @@ expose, the public route signs with the anon key, and the server-only
 signer and `SUPABASE_SERVICE_ROLE_KEY` are removed. Don't add that key to
 Vercel. Public file links stay off until 27d3 is done and upgrade 020 is
 applied.
+
+## 2026-11-26 — Session 57 (nightly): item 27d3, public files without a service key
+
+**Built:** migration 020 + upgrade file adding one read-only storage policy,
+`evidence_public_view_select`, for `anon` and `authenticated`: SELECT only,
+and only objects in the `evidence` bucket whose name is a `storage_path` in
+`public_documents` or `public_evidence` on a public, non-sample project.
+Writes stay editors-only (019). The public file route now signs its
+60-second URL with the anon key and still streams the file (no path or URL
+reaches the browser). Removed `lib/supabase/file-signer.ts` and
+`SUPABASE_SERVICE_ROLE_KEY` from `.env.example`/README; the app has no
+service key path at all. Public file links now show on any real
+(non-sample) Supabase project.
+
+**Checks updated:** `supabase/checks/evidence_bucket_private.sql` now allows
+only the editor policies plus that one named SELECT policy, and tests
+behaviour in a rolled-back transaction with the seed paths: nothing visible
+to anon on the sample project; with the project treated as real, anon sees
+the public document and photo but not the personal-data bank statement,
+the photo of identifiable people, or a stray file; anon can't insert,
+rename or delete. `check:anon-access` now lists the bucket as anon and fails
+on any file not exposed by the public views, fails if a sample file can be
+signed, and notes if no public-view file can be signed (upgrade not run).
+`docs/security-policies.md` updated.
+
+**Files:** `supabase/migrations/20261126000020_public_file_policy.sql` (new),
+`supabase/upgrades/20261126_020_public_file_policy.sql` (new),
+`supabase/checks/evidence_bucket_private.sql`, `scripts/check-anon-access.mjs`,
+`app/p/[slug]/files/[kind]/[id]/route.ts`, `app/components/passport/Evidence.tsx`,
+`lib/supabase/file-signer.ts` (deleted, created in session 56), `.env.example`,
+`README.md`, `docs/security-policies.md`, `BACKLOG.md`. **Size:** about 200 lines.
+
+**Checks run:** typecheck, lint, build, `check:fixture`, `check:public-page`,
+`check:headers`, `check:build-output` pass. All migrations + seed applied to a
+local Postgres 16 with the stubs; the three SQL checks pass (including the
+new behaviour tests). Not run against the live Supabase project.
+
+**For Travis:** (1) Run `supabase/upgrades/20261126_020_public_file_policy.sql`
+in the Supabase SQL Editor. Until then, file links on a real public project
+answer "This file isn't available right now". (2) Then `npm run
+check:anon-access` with the test project's anon key. (3) If a
+`SUPABASE_SERVICE_ROLE_KEY` was ever added to Vercel, remove it.
+
+**Next:** 27e, replace or remove a file (audit-logged, old file deleted from
+storage) plus storage notes in `docs/data-model.md` and the README.
