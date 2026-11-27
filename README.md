@@ -54,6 +54,12 @@ storage path or signed URL ever reaches the browser. The app holds no
 public views expose (not personal-data documents, not photos of
 identifiable people, not sample or private projects).
 
+Editors can replace or remove an attached file from the statement page
+(**Replace or remove file** under each document or evidence item). The
+record stays; only its file changes. The change shows in the project's
+History, and the old file is deleted from storage (not archived). See
+"Stored files" in `docs/data-model.md`.
+
 Scripts: `npm run dev`, `npm run build`, `npm run typecheck`.
 
 ## Database

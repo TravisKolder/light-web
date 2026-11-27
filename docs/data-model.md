@@ -271,6 +271,26 @@ no review flags.
   `public_*` view reads a column commented `PRIVATE`. Run it after every
   migration that touches views.
 
+### Stored files (backlog items 27a–27e)
+
+- Files live in one private Supabase Storage bucket, `evidence` (migration
+  019): PDF, JPEG, PNG or WebP, 10 MB at most. Editors upload, read and
+  delete; anon can read only objects whose name is a `storage_path` in
+  `public_documents` / `public_evidence` on a public, non-sample project
+  (migration 020).
+- `documents.storage_path` and `evidence_items.storage_path` hold a random
+  object name (`documents/<uuid>.<ext>` or `evidence/<uuid>.<ext>`); the
+  original file name is never kept. Images are re-encoded on upload, which
+  strips EXIF/GPS; a photo's GPS only ever fills the PRIVATE gps fields.
+- Replacing or removing a file (27e) changes only `storage_path`. The
+  audit_log trigger records the old and new path, so History shows it; the
+  old object is then deleted from the bucket. Replace uploads first and
+  updates the row second, so a failure never leaves a row pointing at a
+  missing file. A delete that fails afterwards leaves an unreachable object,
+  logged on the server for cleanup.
+- Old files are not kept: the audit log keeps *that* a file changed and its
+  old name, not the file itself.
+
 ## 4. Review flags (backlog item 19)
 
 Consistency checks produce **needs review** flags, not verdicts — e.g. spent

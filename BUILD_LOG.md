@@ -1954,3 +1954,47 @@ check:anon-access` with the test project's anon key. (3) If a
 
 **Next:** 27e, replace or remove a file (audit-logged, old file deleted from
 storage) plus storage notes in `docs/data-model.md` and the README.
+
+## 2026-11-27 — Session 58 (nightly): item 27e, replace or remove a file
+
+**Built:** a `changeFile` server action (`app/edit/[slug]/file-actions.ts`)
+and, under every document and evidence item on `/edit/[slug]`, a
+"Replace or remove file" box (or "Add a file" when the record has none).
+Only `storage_path` changes; title, caption, flags and the statement's
+claim/documented/verified status are untouched. The existing audit_log
+trigger records the old and new path, so the change shows in History; the
+old object is then deleted from the `evidence` bucket. Replace uses the same
+checks as upload (real type from first bytes, EXIF/GPS stripped, random
+name), uploads first, updates the row second, and deletes the new upload if
+the row update fails, so a row never points at a missing file. Remove needs
+a confirm tick. The action re-checks the editor session and that the row
+belongs to the project. A replacement photo's GPS is not offered (the
+existing private GPS stays as it was). Storage notes added to
+`docs/data-model.md` ("Stored files") and the README.
+
+**Files:** `app/edit/[slug]/file-actions.ts` (new), `app/edit/[slug]/page.tsx`,
+`docs/data-model.md`, `README.md`, `BACKLOG.md`. **Size:** about 190 lines.
+No migration: editors already had update rights and the storage delete
+policy (019).
+
+**Checks run:** typecheck, lint, build, `check:fixture`, `check:public-page`,
+`check:headers`, `check:build-output` pass. Not exercised against the live
+Supabase project (no credentials here).
+
+**For Travis:** (1) Try it once on a test document: replace a file, then
+open History and confirm the path change is listed. (2) Old files are
+deleted, not archived; say if you'd rather keep a copy for audit. (3) The
+backlog is now fully checked off. Proposed next three items, for your
+approval (nothing will be built until you add them to BACKLOG.md):
+- **28a. Storage tidy-up check** — a read-only `check:storage-orphans`
+  script listing bucket files no row points to and rows whose file is
+  missing. Reports only, deletes nothing.
+- **28b. Pilot readiness checklist** — `docs/pilot-checklist.md`: the
+  upgrades to run, privacy review of each record, and the steps to enter the
+  first real project (paper section 7).
+- **28c. Independent reviewer access (design first)** — a short design note
+  for a read-only reviewer role that can see the private ledger and
+  documents but edit nothing, for the "invite independent review" step;
+  build only after you approve the design.
+
+**Next:** waiting on Travis to approve new items.

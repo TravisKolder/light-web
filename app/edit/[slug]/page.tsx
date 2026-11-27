@@ -8,6 +8,7 @@ import type { AssertionStatus } from "@/lib/types";
 import { addAssertion, addDocument, addEvidence } from "./actions";
 import { UPLOAD_ACCEPT } from "@/lib/upload-limits";
 import { correctAssertion, withdrawAssertion } from "./corrections";
+import { changeFile } from "./file-actions";
 
 // Editor: a project's statements (backlog items 21b, 21c1, 21c2). Lists every
 // assertion with its status badge and offers forms to add a new one and to
@@ -76,6 +77,19 @@ const CORR_ERRORS: Record<string, string> = {
   save: "The change couldn't be saved. Please try again; if it keeps failing, tell Travis.",
 };
 
+const FILE_ERRORS: Record<string, string> = {
+  row: "That document or evidence item couldn't be found in this project.",
+  op: "Please choose to replace or remove the file.",
+  noFile: "There is no file to remove.",
+  noUpload: "Please choose the new file.",
+  confirm: "Please tick the box to confirm removing the file.",
+  fileSize: DOC_ERRORS.fileSize,
+  fileType: DOC_ERRORS.fileType,
+  fileRead: DOC_ERRORS.fileRead,
+  fileUpload: "The new file couldn't be stored. Nothing changed; please try again, and tell Travis if it keeps failing.",
+  save: "The change couldn't be saved. Nothing changed; please try again, and tell Travis if it keeps failing.",
+};
+
 const EVIDENCE_KINDS: { value: string; label: string }[] = [
   { value: "photo", label: "Photo" },
   { value: "video", label: "Video" },
@@ -132,6 +146,10 @@ export default async function EditProjectStatements({
     withdrawn?: string;
     corrError?: string;
     corrId?: string;
+    fileError?: string;
+    fileReplaced?: string;
+    fileRemoved?: string;
+    fileId?: string;
   }>;
 }) {
   const session = await getEditorSession();
@@ -139,8 +157,9 @@ export default async function EditProjectStatements({
   if (session.state === "signed-out") redirect("/edit/sign-in");
 
   const { slug } = await params;
-  const { added, error, docAdded, docError, evAdded, evError, gps, corrected, withdrawn, corrError, corrId } =
-    await searchParams;
+  const sp = await searchParams;
+  const { added, error, docAdded, docError, evAdded, evError, gps, corrected, withdrawn, corrError, corrId } = sp;
+  const fileNotice: FileNotice = { id: sp.fileId, error: sp.fileError, replaced: sp.fileReplaced, removed: sp.fileRemoved };
   const supabase = (await getSupabaseServerClient())!;
 
   const { data: project } = await supabase
@@ -230,10 +249,10 @@ export default async function EditProjectStatements({
               {docCount(a) + evCount(a) > 0 && (
                 <ul className="attached-list small">
                   {a.documents.map((d) => (
-                    <AttachedItem key={d.id} slug={project.slug} kind="documents" row={d} type="Document" />
+                    <AttachedItem key={d.id} slug={project.slug} projectId={project.id} kind="documents" row={d} type="Document" notice={fileNotice} />
                   ))}
                   {a.evidence_items.map((e) => (
-                    <AttachedItem key={e.id} slug={project.slug} kind="evidence" row={e} type="Evidence" />
+                    <AttachedItem key={e.id} slug={project.slug} projectId={project.id} kind="evidence" row={e} type="Evidence" notice={fileNotice} />
                   ))}
                 </ul>
               )}
@@ -502,21 +521,30 @@ function evCount(a: AssertionRow) {
   return a.evidence_items?.length ?? 0;
 }
 
+type FileNotice = { id?: string; error?: string; replaced?: string; removed?: string };
+
 // One attached document or evidence item. The link goes to the editor-only
 // files route, which signs a 60-second URL; nothing here exposes the path.
+// Item 27e: the file can be replaced or removed (see file-actions.ts); the
+// change is kept in History and the old file is deleted from storage.
 function AttachedItem({
   slug,
+  projectId,
   kind,
   row,
   type,
+  notice,
 }: {
   slug: string;
+  projectId: string;
   kind: "documents" | "evidence";
   row: AttachedRow;
   type: string;
+  notice: FileNotice;
 }) {
+  const mine = notice.id === row.id;
   return (
-    <li>
+    <li id={`f-${row.id}`}>
       <span className="muted">{type} ({row.kind.replace(/_/g, " ")}):</span> {row.label}{" "}
       {row.storage_path ? (
         <a href={`/edit/${slug}/files/${kind}/${row.id}`} target="_blank" rel="noopener noreferrer">
@@ -525,6 +553,42 @@ function AttachedItem({
       ) : (
         <span className="muted">(no file)</span>
       )}
+      {mine && notice.replaced && <p className="sample-banner" role="status">File replaced; the change is kept in History.</p>}
+      {mine && notice.removed && <p className="sample-banner" role="status">File removed; the record stays, and the change is kept in History.</p>}
+      {mine && notice.error && FILE_ERRORS[notice.error] && (
+        <p className="form-error" role="alert">{FILE_ERRORS[notice.error]}</p>
+      )}
+      <details className="correct-box">
+        <summary>{row.storage_path ? "Replace or remove file" : "Add a file"}</summary>
+        <form action={changeFile} className="editor-form">
+          <input type="hidden" name="slug" value={slug} />
+          <input type="hidden" name="project_id" value={projectId} />
+          <input type="hidden" name="kind" value={kind} />
+          <input type="hidden" name="id" value={row.id} />
+          <input type="hidden" name="op" value="replace" />
+          <label htmlFor={`file-${row.id}`}>New file (PDF, JPEG, PNG or WebP, under 10 MB)</label>
+          <input id={`file-${row.id}`} name="file" type="file" accept={UPLOAD_ACCEPT} required />
+          <p className="small muted">
+            Photos are cleaned of location and camera details before they are stored.
+            {row.storage_path ? " The current file is deleted once the new one is saved." : ""}
+          </p>
+          <button type="submit">{row.storage_path ? "Replace file" : "Add file"}</button>
+        </form>
+        {row.storage_path && (
+          <form action={changeFile} className="editor-form">
+            <input type="hidden" name="slug" value={slug} />
+            <input type="hidden" name="project_id" value={projectId} />
+            <input type="hidden" name="kind" value={kind} />
+            <input type="hidden" name="id" value={row.id} />
+            <input type="hidden" name="op" value="remove" />
+            <label>
+              <input type="checkbox" name="confirm" value="yes" required /> Delete this file from storage.
+              The {type.toLowerCase()} record itself stays.
+            </label>
+            <button type="submit">Remove file</button>
+          </form>
+        )}
+      </details>
     </li>
   );
 }
