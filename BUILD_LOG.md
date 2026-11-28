@@ -1998,3 +1998,22 @@ approval (nothing will be built until you add them to BACKLOG.md):
   build only after you approve the design.
 
 **Next:** waiting on Travis to approve new items.
+
+## 2026-11-28 — Session 59 (nightly): backlog complete, still awaiting approval
+
+**Built:** nothing. Every item in BACKLOG.md is checked off and no new items
+have been added since session 58, so per the run rules no new scope was
+started. **Files:** `BUILD_LOG.md` only. **Size:** this entry.
+
+**For Travis:** the three proposals from session 58 still stand (add any you
+approve to BACKLOG.md and the next run picks up the first):
+- **28a. Storage tidy-up check** — read-only `check:storage-orphans` script.
+- **28b. Pilot readiness checklist** — `docs/pilot-checklist.md` for entering
+  the first real project (paper section 7).
+- **28c. Independent reviewer access (design note first)** — read-only role
+  that sees private ledger and documents but edits nothing.
+
+Also still open from session 58: try replace/remove on a test document, and
+say whether old files should be archived rather than deleted.
+
+**Next:** waiting on Travis to approve new items.
